@@ -153,7 +153,7 @@ const Navbar = () => {
         className={`flex justify-center items-center overflow-hidden transition-all ease-in-out 
         ${
           showSearch
-            ? "h-10 mb-6 opacity-100 duration-500"
+            ? "h-10 mt-12 opacity-100 duration-500"
             : "h-0 opacity-0 duration-200"
         }
       `}>

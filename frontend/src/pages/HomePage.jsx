@@ -21,7 +21,7 @@ const HomePage = () => {
     fetchFeaturedProducts();
   }, [fetchFeaturedProducts]);
   return (
-    <div className="relative min-h-screen text-white overflow-hidden">
+    <div className="relative min-h-screen text-white overflow-hidden py-8 md:py-12">
       <div>
         <AutoCarousel />
       </div>

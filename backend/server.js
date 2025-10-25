@@ -18,11 +18,11 @@ dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const _dirname = path.resolve()
+const __dirname = path.resolve()
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );

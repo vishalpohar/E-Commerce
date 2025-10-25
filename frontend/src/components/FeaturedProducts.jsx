@@ -22,7 +22,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) setItemsPerPage(1);
+      if (window.innerWidth < 640) setItemsPerPage(2);
       else if (window.innerWidth < 1024) setItemsPerPage(2);
       else if (window.innerWidth < 1280) setItemsPerPage(3);
       else setItemsPerPage(4);

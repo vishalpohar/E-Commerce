@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="flex w-full relative flex-col overflow-hidden rounded-lg border border-gray-700 shadow-lg">
+    <div className="flex w-full h-80 md:h-96 relative flex-col overflow-hidden rounded-lg border border-gray-700 shadow-lg">
       <div className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
         <img
           className="object-cover w-full"
@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
         </h5>
         <div className="mt-2 mb-5 flex items-center justify-between">
           <p>
-            <span className="text-3xl font-bold text-yellow-600">
+            <span className="text-xl md:text-2xl font-semibold text-gray-700">
               ${product.price}
             </span>
           </p>

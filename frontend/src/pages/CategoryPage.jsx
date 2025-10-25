@@ -12,10 +12,10 @@ const CategoryPage = () => {
     fetchProductsByCategory(category);
   }, [fetchProductsByCategory]);
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen py-6">
       <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <motion.h1
-          className="text-center text-4xl sm:text-5xl font-serif font-bold text-gray-700 mb-8"
+          className="text-4xl sm:text-5xl font-serif font-bold text-gray-700 mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}>
@@ -23,7 +23,7 @@ const CategoryPage = () => {
         </motion.h1>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center"
+          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}>

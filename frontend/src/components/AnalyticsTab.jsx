@@ -36,7 +36,7 @@ const AnalyticsTab = () => {
 
 	return (
 		<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+			<div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
 				<AnalyticsCard
 					title='Total Users'
 					value={analyticsData.users.toLocaleString()}
@@ -68,7 +68,7 @@ const AnalyticsTab = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.5, delay: 0.25 }}
 			>
-				<ResponsiveContainer width='100%' height={400}>
+				<ResponsiveContainer width='100%' height={400} maxHeight={800}>
 					<LineChart data={dailySalesData}>
 						<CartesianGrid strokeDasharray='3 3' />
 						<XAxis dataKey='date' stroke='#D1D5DB' />

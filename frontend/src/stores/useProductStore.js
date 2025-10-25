@@ -109,8 +109,6 @@ export const useProductStore = create((set) => ({
       );
       const { orders, totalOrders, totalPages } = response.data;
 
-      console.log(orders);
-
       set({ orders, totalOrders, totalPages, loading: false });
     } catch (error) {
       set({ orders: [], error: "Failed to get ordered products", loading: false });
