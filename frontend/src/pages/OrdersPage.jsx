@@ -4,11 +4,9 @@ import { ArrowLeft, ArrowRight, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-import LoadingSpinner from "../components/LoadingSpinner";
-
 const OrdersPage = () => {
   const [page, setPage] = useState(1);
-  const { orders, totalPages, getMyOrders, loading } = useProductStore();
+  const { orders, totalPages, getMyOrders } = useProductStore();
 
   const handleNext = () => {
     setPage(page + 1);
@@ -33,8 +31,6 @@ const OrdersPage = () => {
   useEffect(() => {
     getMyOrders(page);
   }, [page]);
-
-  if (loading) return <LoadingSpinner />;
 
   if (orders.length === 0) {
     return (
