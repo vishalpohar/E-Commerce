@@ -13,11 +13,13 @@ const CartPage = () => {
   const { cart } = useCartStore();
   return (
     <div className="py-8 md:py-16">
-      <h1 className="text-gray-700 text-center text-4xl font-bold mx-28">Your Cart</h1>
+      <h1 className="text-gray-700 text-center text-4xl font-bold mx-28">
+        Your Cart
+      </h1>
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+        <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
           <motion.div
-            className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl"
+            className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl flex flex-col md:flex-row gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}>
@@ -30,7 +32,10 @@ const CartPage = () => {
                 ))}
               </div>
             )}
-            {cart.length > 0 && <PeopleAlsoBought />}
+            <div className="flex flex-col gap-4">
+              <OrderSummary />
+              <GiftCouponCard />
+            </div>
           </motion.div>
 
           {cart.length > 0 && (
@@ -39,8 +44,7 @@ const CartPage = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}>
-              <OrderSummary />
-              <GiftCouponCard />
+              <PeopleAlsoBought />
             </motion.div>
           )}
         </div>
