@@ -176,7 +176,7 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <motion.div
             ref={dropDownRef}
-            className="absolute top-14 right-0 z-40"
+            className="fixed top-[52px] right-0 z-50"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
