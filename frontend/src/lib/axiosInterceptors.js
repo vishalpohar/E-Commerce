@@ -26,6 +26,12 @@ export const setupInterceptors = () => {
 
           return axios(originalRequest);
         } catch (err) {
+          if (!originalRequest._retryAgain) {
+            originalRequest._retryAgain = true;
+            await new Promise(r => setTimeout(r, 3000)); // wait 3s
+            return axios(originalRequest);
+          }
+          
           refreshPromise = null;
           logout();
           return Promise.reject(err);
