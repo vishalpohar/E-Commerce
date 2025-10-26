@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
 import axios from "../lib/axios";
-import Product from "../../../backend/models/product.model";
 
 export const useProductStore = create((set) => ({
+  product: null,
   products: [],
   loading: false,
   orders: [],
@@ -37,8 +37,18 @@ export const useProductStore = create((set) => ({
       toast.error(error.response.data.error || "Failed to fetch products");
     }
   },
-  fetchProductsByCategory: async (category) => {
+  fetchProductById: async (productId) => {
     set({ loading: true });
+    try {
+      const response = await axios.get(`/products/product/${productId}`)
+      set({ product: response.data.product, loading: false})
+    } catch (error) {
+      set({ error: "Failed to fetch product", loading: false });
+      toast.error(error.response.data.error || "Failed to fetch product");
+    }
+  },
+  fetchProductsByCategory: async (category) => {
+    set({ loading: true, products: [] });
     try {
       const response = await axios.get(`/products/category/${category}`);
       set({ products: response.data.products, loading: false });
@@ -91,11 +101,10 @@ export const useProductStore = create((set) => ({
     }
   },
   searchProducts: async (query) => {
-    set({ loading: true });
+    set({ loading: true, products: [] });
     try {
       const response = await axios.get(`/products/search/${query}`);
       set({ products: response.data, loading: false });
-      console.log(response);
     } catch (error) {
       set({ products: [], error: "Failed to search products", loading: false });
       console.log("Error fetching products", error);
@@ -111,7 +120,11 @@ export const useProductStore = create((set) => ({
 
       set({ orders, totalOrders, totalPages, loading: false });
     } catch (error) {
-      set({ orders: [], error: "Failed to get ordered products", loading: false });
+      set({
+        orders: [],
+        error: "Failed to get ordered products",
+        loading: false,
+      });
       console.log("Error fetching products", error);
     }
   },

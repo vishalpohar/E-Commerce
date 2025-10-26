@@ -1,14 +1,18 @@
-import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
 import { useUserStore } from "../stores/useUserStore";
-import LoginPage from "../pages/LoginPage";
 import { useNavigate } from "react-router-dom";
 
 const FeaturedProducts = ({ featuredProducts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
-  const { addToCart } = useCartStore();
+  const { addToCart, isInCart } = useCartStore();
   const { user } = useUserStore();
   const navigate = useNavigate();
 
@@ -22,7 +26,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) setItemsPerPage(2);
+      if (window.innerWidth < 640) setItemsPerPage(1);
       else if (window.innerWidth < 1024) setItemsPerPage(2);
       else if (window.innerWidth < 1280) setItemsPerPage(3);
       else setItemsPerPage(4);
@@ -54,40 +58,53 @@ const FeaturedProducts = ({ featuredProducts }) => {
             <div
               className="flex transition-transform duration-300 ease-in-out"
               style={{
-                transform: `translate(-${
-                  currentIndex * (100 / itemsPerPage)
+                transform: `translateX(-${
+                  (currentIndex / itemsPerPage) * 100
                 }%)`,
               }}>
-              {featuredProducts?.map((product) => (
-                <div
-                  key={product._id}
-                  className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-2">
-                  <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-emerald-500/30">
-                    <div className="overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2 text-gray-600">
-                        {product.name}
-                      </h3>
-                      <p className="text-yellow-600 font-medium mb-4">
-                        ${product.price.toFixed(2)}
-                      </p>
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        className="w-full bg-gray-600 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 
+              {featuredProducts?.map((product) => {
+                const inCart = isInCart(product._id);
+
+                return (
+                  <div
+                    key={product._id}
+                    className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-2">
+                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-emerald-500/30">
+                      <div className="overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold mb-2 text-gray-600">
+                          {product.name}
+                        </h3>
+                        <p className="text-yellow-600 font-medium mb-4">
+                          ${product.price.toFixed(2)}
+                        </p>
+                        {inCart ? (
+                          <button
+                            onClick={() => navigate("/cart")}
+                            className="w-full bg-yellow-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 flex items-center justify-center">
+                            Go to Cart
+                            <ArrowRight className="inlline size-4 ml-1" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            className="w-full bg-gray-600 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 
 												flex items-center justify-center">
-                        <ShoppingCart className="w-5 h-5 mr-2" />
-                        Add to Cart
-                      </button>
+                            <ShoppingCart className="w-5 h-5 mr-2" />
+                            Add to Cart
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <button

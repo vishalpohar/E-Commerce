@@ -46,6 +46,11 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
+  isInCart: (productId) => {
+    const { cart } = get();
+    return cart.some((item) => item._id === productId);
+  },
+
   clearCart: async () => {
     try {
       await axios.delete(`/cart`);

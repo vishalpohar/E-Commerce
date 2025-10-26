@@ -15,6 +15,23 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+export const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({ product });
+  } catch (error) {
+    console.log("Error in getProductById controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 export const getFeaturedProducts = async (req, res) => {
   try {
     let featuredProducts = await redis.get("featured_products");
@@ -159,7 +176,7 @@ export const getMyOrders = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate({path: "products.product"})
+      .populate({ path: "products.product" });
 
     const totalOrders = await Order.countDocuments({ user: user._id });
 
@@ -171,7 +188,7 @@ export const getMyOrders = async (req, res) => {
       orders,
     });
   } catch (error) {
-    console.log("Error in getMyOrders controller", error.message)
+    console.log("Error in getMyOrders controller", error.message);
     res.json(500).json({ success: false, message: error.message });
   }
 };

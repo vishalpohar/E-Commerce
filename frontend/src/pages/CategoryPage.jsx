@@ -4,13 +4,17 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import ProductCard from "../components/ProductCard";
+import { useCartStore } from "../stores/useCartStore";
 
 const CategoryPage = () => {
   const { fetchProductsByCategory, products } = useProductStore();
   const { category } = useParams();
+  useCartStore();
+  
   useEffect(() => {
     fetchProductsByCategory(category);
   }, [fetchProductsByCategory]);
+
   return (
     <div className="min-h-screen py-6">
       <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -34,7 +38,11 @@ const CategoryPage = () => {
           )}
 
           {products?.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard
+              key={product._id}
+              product={product}
+              inCart={useCartStore.getState().isInCart(product._id)}
+            />
           ))}
         </motion.div>
       </div>
