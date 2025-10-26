@@ -26,12 +26,12 @@ const ProductDetailsPage = () => {
 
   const inCart = isInCart(productId);
 
-  const handleAddToCart = () => {
-    if (!user) {
-      toast.success("Please login to Added to cart", { id: "login" });
-    } else {
-      addToCart(product);
+  const handleAddToCart = (product) => {
+    if (user == null) {
+      navigate("/login");
+      return;
     }
+    addToCart(product);
   };
 
   const handlePayment = async () => {
@@ -88,9 +88,9 @@ const ProductDetailsPage = () => {
               </button>
             ) : (
               <button
-                className="flex items-center justify-center text-sm font-semibold bg-gray-600 rounded px-3 py-2"
+                className="flex items-center justify-center text-sm font-semibold bg-gray-600 rounded px-4 py-2"
                 onClick={handleAddToCart}>
-                <ShoppingCart size={16} className="mr-2 md:size-8" />
+                <ShoppingCart size={16} className="mr-2 md:size-6" />
                 Add to Cart
               </button>
             )}

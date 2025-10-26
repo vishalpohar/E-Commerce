@@ -9,12 +9,13 @@ const ProductCard = ({ product, inCart }) => {
   const { user } = useUserStore();
   const { addToCart } = useCartStore();
   const navigate = useNavigate();
-  const handleAddToCart = () => {
-    if (!user) {
-      toast.success("Please login to Added to cart", { id: "login" });
-    } else {
-      addToCart(product);
+
+  const handleAddToCart = (product) => {
+    if (user == null) {
+      navigate("/login");
+      return;
     }
+    addToCart(product);
   };
 
   return (
