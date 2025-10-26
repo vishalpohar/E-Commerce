@@ -88,9 +88,9 @@ const ProductDetailsPage = () => {
               </button>
             ) : (
               <button
-                className="flex items-center justify-center text-sm font-semibold bg-gray-600 rounded px-4 py-2"
-                onClick={handleAddToCart}>
-                <ShoppingCart size={16} className="mr-2 md:size-6" />
+                className="flex items-center justify-center text-sm font-semibold bg-gray-600 rounded px-3 py-2"
+                onClick={() => handleAddToCart(product)}>
+                <ShoppingCart size={16} className="mr-2 md:size-8" />
                 Add to Cart
               </button>
             )}

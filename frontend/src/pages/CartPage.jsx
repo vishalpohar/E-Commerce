@@ -28,7 +28,7 @@ const CartPage = () => {
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
           <motion.div
-            className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl flex flex-col md:flex-row gap-4"
+            className="mx-auto w-full flex-none lg:max-w-6xl flex flex-col md:flex-row gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}>

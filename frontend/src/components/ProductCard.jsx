@@ -9,7 +9,7 @@ const ProductCard = ({ product, inCart }) => {
   const { user } = useUserStore();
   const { addToCart } = useCartStore();
   const navigate = useNavigate();
-
+  
   const handleAddToCart = (product) => {
     if (user == null) {
       navigate("/login");
@@ -55,7 +55,7 @@ const ProductCard = ({ product, inCart }) => {
           <button
             className="w-full flex items-center justify-center rounded bg-gray-600 px-5 py-2.5 text-center text-xs sm:text-sm font-medium
 					 text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300"
-            onClick={handleAddToCart}>
+            onClick={() => handleAddToCart(product)}>
             <ShoppingCart className="mr-2 md:size-5" />
             Add to cart
           </button>
