@@ -50,43 +50,46 @@ const GiftCouponCard = () => {
           />
         </div>
 
-        <motion.button
-          type="button"
-          className="flex w-full items-center justify-center rounded-lg bg-yellow-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleApplyCoupon}>
-          Apply Code
-        </motion.button>
-      </div>
+        {isCouponApplied && coupon ? (
+          <div className="mt-4">
+            <p className="text-xs font-medium text-gray-400">
+              Applied Coupon:{" "}
+              <span className="text-gray-200">
+                {coupon.code} - {coupon.discountPercentage}% off
+              </span>
+            </p>
 
-      {isCouponApplied && coupon && (
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-300">Applied Coupon</h3>
+            <p className="mt-2 text-sm text-gray-400"></p>
 
-          <p className="mt-2 text-sm text-gray-400">
-            {coupon.code} - {coupon.discountPercentage}% off
-          </p>
-
-          <motion.button
-            type="button"
-            className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 
+            <motion.button
+              type="button"
+              className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 
             px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none
              focus:ring-4 focus:ring-red-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleRemoveCoupon}>
+              Remove Coupon
+            </motion.button>
+          </div>
+        ) : (
+          <motion.button
+            type="button"
+            className="flex w-full items-center justify-center rounded-lg bg-yellow-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleRemoveCoupon}>
-            Remove Coupon
+            onClick={handleApplyCoupon}>
+            Apply Code
           </motion.button>
-        </div>
-      )}
+        )}
+      </div>
 
       {coupon && (
         <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-300">
+          <h3 className="text-sm font-medium text-gray-300">
             Your Available Coupon:
           </h3>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 ml-6 text-sm text-gray-400">
             {coupon.code} - {coupon.discountPercentage}% off
           </p>
         </div>

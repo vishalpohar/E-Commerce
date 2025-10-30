@@ -28,7 +28,7 @@ const setCookies = (res, accessToken, refreshToken) => {
     httpOnly: true, // prevent XSS attacks, cross-site scripting attack
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict", // prevents CSRF attack, cross-site request forgery attack
-    maxAge: 2 * 60 * 1000,
+    maxAge: 15 * 60 * 1000,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true, // prevent XSS attacks, cross-site scripting attack
@@ -45,6 +45,26 @@ export const signup = async (req, res) => {
 
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
+
+    const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const STRONG_PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if(!EMAIL_PATTERN.test(email)) {
+      return res
+        .status(400)
+        .json({
+          error: "Please enter a valid email address (e.g., user@example.com).",
+        });
+    }
+
+    if(!STRONG_PASSWORD_PATTERN.test(password)) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.",
+        });
+    }
 
     const user = await User.create({ name, email, password });
 
@@ -135,14 +155,14 @@ export const refreshToken = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "2m" }
+      { expiresIn: "15m" }
     );
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 2 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
     });
 
     res

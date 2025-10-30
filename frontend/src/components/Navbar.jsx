@@ -121,14 +121,8 @@ const Navbar = () => {
                 <>
                   <Link
                     to={"/login"}
-                    className="hover:text-yellow-500 text-yellow-300 font-bold py-1 rounded-md flex items-center transition duration-300 ease-in-out">
+                    className="hover:text-yellow-500 text-white font-bold py-1 rounded-md flex items-center transition duration-300 ease-in-out">
                     Login
-                  </Link>
-                  /
-                  <Link
-                    to={"/signup"}
-                    className="hover:text-yellow-500 text-yellow-300 font-bold py-1 rounded-md flex items-center transition duration-300 ease-in-out">
-                    Sign Up
                   </Link>
                 </>
               )}

@@ -1,14 +1,16 @@
-import { ArrowRight, CheckCircle, HandHeart } from "lucide-react";
+import { ArrowRight, CheckCircle, HandHeart, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore";
 import axios from "../lib/axios";
 import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const { clearCart } = useCartStore();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleCheckoutSuccess = async (sessionId) => {
@@ -17,6 +19,11 @@ const PurchaseSuccessPage = () => {
           sessionId,
         });
         clearCart();
+
+        setTimeout(() => setIsRedirecting(true), 8000);
+        setTimeout(() => {
+          navigate("/");
+        }, 12000);
       } catch (error) {
         console.log(error);
       } finally {
@@ -41,8 +48,14 @@ const PurchaseSuccessPage = () => {
 
   return (
     <div className="h-screen flex items-center justify-center px-4">
-    <Confetti width={window.innerWidth} height={window.innerHeight} gravity={0.1} style={{zIndex:99}} numberOfPieces={700}
-    recycle={false} />
+      <Confetti
+        width={window.innerWidth}
+        height={window.innerHeight}
+        gravity={0.1}
+        style={{ zIndex: 99 }}
+        numberOfPieces={700}
+        recycle={false}
+      />
 
       <div className="max-w-md w-full bg-gray-800 rounded-lg shadow-xl overflow-hidden relative z-10">
         <div className="p-6 sm:p-8">
@@ -89,6 +102,14 @@ const PurchaseSuccessPage = () => {
               <ArrowRight className="ml-2" size={18} />
             </Link>
           </div>
+          {isRedirecting && (
+            <div className="mt-6 flex flex-col items-center justify-center text-center">
+              <Loader2 className="animate-spin w-8 h-8 text-yellow-400 mb-2" />
+              <p className="text-sm text-gray-400">
+                Redirecting you to the homepage...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

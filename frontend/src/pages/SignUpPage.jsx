@@ -1,8 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
+import {
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  Loader,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
+import {
+  validateConfirmPassword,
+  validateEmail,
+  validatePassword,
+} from "../utils/validation";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -11,11 +25,48 @@ const SignUpPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { signup, loading } = useUserStore();
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+
+    let fieldError = "";
+    if (id === "email") fieldError = validateEmail(value);
+    if (id === "password") fieldError = validatePassword(value);
+    if (id === "confirmPassword")
+      fieldError = validateConfirmPassword(formData.password, value);
+
+    setErrors((prev) => ({ ...prev, [id]: fieldError }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const emailError = validateEmail(formData.email);
+    const passwrodError = validatePassword(formData.password);
+    const confirmPasswordError = validateConfirmPassword(
+      formData.password,
+      formData.confirmPassword
+    );
+
+    if (emailError || passwrodError || confirmPasswordError) {
+      setErrors({
+        email: emailError,
+        password: passwrodError,
+        confirmPassword: confirmPasswordError,
+      });
+      return;
+    }
+
     signup(formData);
   };
   return (
@@ -66,21 +117,27 @@ const SignUpPage = () => {
                 className="block text-sm font-medium text-gray-300">
                 Email Address
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="mt-1">
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <input
+                    id="email"
+                    type="text"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={handleChange}
+                    className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                    placeholder="you@example.com"
+                  />
                 </div>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
-                  placeholder="you@example.com"
-                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
               </div>
             </div>
             <div>
@@ -89,21 +146,42 @@ const SignUpPage = () => {
                 className="block text-sm font-medium text-gray-300">
                 Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="mt-1">
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    onFocus={handleChange}
+                    className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                    placeholder="********"
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={() => setShowPassword((prev) => !prev)}>
+                    {showPassword ? (
+                      <EyeOff
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Eye
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
                 </div>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
-                  placeholder="********"
-                />
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                )}
               </div>
             </div>
             <div>
@@ -112,24 +190,44 @@ const SignUpPage = () => {
                 className="block text-sm font-medium text-gray-300">
                 Confirm Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="mt-1">
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    onFocus={handleChange}
+                    className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                    placeholder="********"
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}>
+                    {showConfirmPassword ? (
+                      <EyeOff
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Eye
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
                 </div>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
-                  placeholder="********"
-                />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
             </div>
             <button

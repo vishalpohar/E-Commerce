@@ -91,7 +91,7 @@ const OrderSummary = () => {
           <span className="text-sm font-normal text-gray-400">or</span>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-yellow-400 underline hover:text-yellow-300 hover:no-underline">
+            className="inline-flex items-center gap-2 text-sm font-medium text-yellow-400 hover:text-yellow-300 hover:underline">
             Continue Shopping
             <MoveRight size={16} />
           </Link>
