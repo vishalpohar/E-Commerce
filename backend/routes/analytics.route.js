@@ -10,9 +10,11 @@ const router = express.Router();
 router.get("/", protectRoute, adminRoute, async (req, res) => {
   try {
     const analyticsData = await getAnalyticsData();
+    const duration = parseInt(req.query.range.replace("d", ""));
+    const timeRange = duration * 24 * 60 * 60 * 1000;
 
     const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(endDate.getTime() - timeRange);
 
     const dailySalesData = await getDailySalesData(startDate, endDate);
 

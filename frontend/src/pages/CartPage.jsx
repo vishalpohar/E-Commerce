@@ -1,9 +1,7 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
 import { useCartStore } from "../stores/useCartStore";
-
 import CartItem from "../components/CartItem";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
 import OrderSummary from "../components/OrderSummary";
@@ -13,48 +11,73 @@ const CartPage = () => {
   const { cart } = useCartStore();
 
   if (cart.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-[70vh] px-4">
-        <EmptyCartUI />
-      </div>
-    );
+    return <EmptyCartUI />;
   }
 
   return (
-    <div className="py-8 md:py-16">
-      <h1 className="text-gray-700 text-center text-4xl font-bold mx-28">
-        Your Cart
-      </h1>
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8">
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            Shopping Cart
+          </h1>
+          <p className="text-gray-600">
+            {cart.length} {cart.length === 1 ? "item" : "items"} in your cart
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Cart Items Section */}
           <motion.div
-            className="mx-auto w-full flex-none lg:max-w-6xl flex flex-col md:flex-row gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}>
-            {cart.length > 0 && (
-              <div className="flex-grow space-y-6">
-                {cart.map((item) => (
-                  <CartItem key={item._id} item={item} />
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex-1">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Cart Items
+                </h2>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {cart.map((item, index) => (
+                  <motion.div
+                    key={item._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}>
+                    <CartItem item={item} />
+                  </motion.div>
                 ))}
               </div>
-            )}
-            <div className="flex flex-col gap-4">
-              <OrderSummary />
-              <GiftCouponCard />
             </div>
           </motion.div>
 
-          {cart.length > 0 && (
-            <motion.div
-              className="mx-auto mt-6 w-full flex-1 space-y-6 lg:mt-0 lg:w-full"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}>
-              <PeopleAlsoBought />
-            </motion.div>
-          )}
+          {/* Sidebar - Order Summary & Coupon */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:w-96 space-y-6">
+            <OrderSummary />
+            <GiftCouponCard />
+          </motion.div>
         </div>
+
+        {/* People Also Bought Section */}
+        {cart.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-12">
+            <PeopleAlsoBought />
+          </motion.div>
+        )}
       </div>
     </div>
   );
@@ -64,19 +87,36 @@ export default CartPage;
 
 const EmptyCartUI = () => (
   <motion.div
-    className="flex flex-col items-center justify-center space-y-4 w-full px-4 py-16"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
+    className="min-h-[70vh] flex items-center justify-center px-4"
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}>
-    <ShoppingCart className="h-24 w-24 text-gray-300" />
-    <h3 className="text-2xl font-semibold text-gray-600">Your cart is empty!</h3>
-    <p className="text-gray-400">
-      Looks like you {"haven't"} added anything to your cart yet.
-    </p>
-    <Link
-      className="mt-4 rounded-md bg-yellow-500 px-6 py-2 text-white transition-colors hover:bg-yellow-600"
-      to="/">
-      Start Shopping
-    </Link>
+    <div className="text-center max-w-md">
+      <div className="relative mb-8">
+        <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
+          <ShoppingCart className="h-16 w-16 text-blue-400" />
+        </div>
+        <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+          <span className="text-blue-600 text-sm">0</span>
+        </div>
+      </div>
+
+      <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+        Your cart is empty
+      </h3>
+      <p className="text-gray-600 mb-8 leading-relaxed">
+        Looks like you haven't added anything to your cart yet. Start exploring
+        our collection and find something you love!
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl">
+          Start Shopping
+          <ArrowRight className="ml-2 w-5 h-5" />
+        </Link>
+      </div>
+    </div>
   </motion.div>
 );

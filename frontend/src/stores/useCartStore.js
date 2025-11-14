@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "../lib/axios";
 import { toast } from "react-hot-toast";
+import { formatPriceInRupees } from "../utils/formatCurrency";
 
 export const useCartStore = create((set, get) => ({
   cart: [],
@@ -115,7 +116,7 @@ export const useCartStore = create((set, get) => ({
 
   calculateTotals: () => {
     const { cart, coupon, isCouponApplied } = get();
-    const subtotal = cart.reduce(
+    let subtotal = cart.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
@@ -126,6 +127,9 @@ export const useCartStore = create((set, get) => ({
       total = subtotal - discount;
       set({isCouponApplied: true});
     }
+    
+    subtotal = formatPriceInRupees(subtotal);
+    total = formatPriceInRupees(total);
 
     set({ subtotal, total });
   },

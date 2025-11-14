@@ -17,7 +17,7 @@ export const createCheckoutSession = async (req, res) => {
 
       return {
         price_data: {
-          currency: "usd",
+          currency: "inr",
           product_data: {
             name: product.name,
             images: [product.image],
@@ -46,6 +46,7 @@ export const createCheckoutSession = async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
+      currency: "inr",
       success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
       discounts: coupon
@@ -64,7 +65,7 @@ export const createCheckoutSession = async (req, res) => {
       },
     });
 
-    if (totalAmount >= 20000) {
+    if ((totalAmount/100) >= 3000) {
       await createNewCoupon(req.user._id);
     }
 
@@ -81,18 +82,37 @@ export const checkoutSuccess = async (req, res) => {
   try {
     const { sessionId } = req.body;
 
-    const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
-    if (existingOrder) {
-      return res.status(200).json({
-        success: true,
-        message: "Order already exists for this session",
-        orderId: existingOrder._id,
-      });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status !== "paid") {
+      return res.status(400).json({message: "Payment not completed"});
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const products = JSON.parse(session.metadata.products);
 
-    if (session.payment_status === "paid") {
+    const updatedOrder = await Order.findOneAndUpdate(
+      {stripeSessionId: sessionId},
+      {
+        user: session.metadata.userId,
+        products: products.map((product) => ({
+          product: product.id,
+          quantity: product.quantity,
+          price: product.price,
+        })),
+        totalAmount: session.amount_total / 100,
+        stripeSessionId: sessionId,
+      },
+      {upsert:true, new:true, setDefaultsOnInsert:true}
+    )
+
+    // const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+    // if (existingOrder) {
+    //   return res.status(200).json({
+    //     success: true,
+    //     message: "Order already exists for this session",
+    //     orderId: existingOrder._id,
+    //   });
+    // }
+
       if (session.metadata.couponCode) {
         await Coupon.findOneAndUpdate(
           {
@@ -103,27 +123,13 @@ export const checkoutSuccess = async (req, res) => {
         );
       }
 
-      // create a new order
-      const products = JSON.parse(session.metadata.products);
-      const newOrder = new Order({
-        user: session.metadata.userId,
-        products: products.map((product) => ({
-          product: product.id,
-          quantity: product.quantity,
-          price: product.price,
-        })),
-        totalAmount: session.amount_total / 100,
-        stripeSessionId: sessionId,
-      });
-
-      await newOrder.save();
       res.status(200).json({
         success: true,
         message:
           "Payment successful, order created, and coupon deactivated if used.",
-        orderId: newOrder._id,
+        orderId: updatedOrder._id,
+        totalAmount: session.amount_total / 100,
       });
-    }
   } catch (error) {
     console.error("Error processing successful checkout:", error);
     res.status(500).json({

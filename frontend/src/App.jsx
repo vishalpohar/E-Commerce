@@ -45,7 +45,7 @@ function App() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-white" />
         </div>
       </div>
-      <div className="relative flex flex-col min-h-screen z-10 pt-8">
+      <div className="relative flex flex-col min-h-screen z-10">
         <Navbar />
         <main className="flex-grow">
           <ScrollToTop />

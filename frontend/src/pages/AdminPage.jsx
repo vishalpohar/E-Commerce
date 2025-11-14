@@ -1,6 +1,6 @@
-import { BarChart, PlusCircle, ShoppingBasket } from "lucide-react";
+import { BarChart, PlusCircle, ShoppingBasket, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import CreateProductForm from "../components/CreateProductForm";
 import ProductsList from "../components/ProductsList";
@@ -9,7 +9,7 @@ import { useProductStore } from "../stores/useProductStore";
 
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
-  { id: "products", label: "Products", icon: ShoppingBasket },
+  { id: "products", label: "Manage Products", icon: ShoppingBasket },
   { id: "analytics", label: "Analytics", icon: BarChart },
 ];
 
@@ -22,34 +22,63 @@ const AdminPage = () => {
   }, [fetchAllProducts]);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="relative z-10 container mx-auto px-4 py-16">
-        <motion.h1
-          className="text-4xl font-bold mb-8 text-gray-700 text-center"
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
-          Admin Dashboard
-        </motion.h1>
+          transition={{ duration: 0.6 }}>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-blue-600 rounded-2xl">
+              <Settings className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Manage your store efficiently
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
-        <div className="flex flex-col md:flex-row justify-center mb-8 gap-4">
+        {/* Tab Navigation */}
+        <motion.div
+          className="flex flex-wrap justify-center gap-2 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-2 mx-2 rounded-md transition-colors duration-200 ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-yellow-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25"
+                  : "bg-white text-gray-700 border border-gray-200 hover:border-blue-300 hover:text-blue-600"
               }`}>
-              <tab.icon className="mr-2 h-5 w-5" />
+              <tab.icon className="w-5 h-5" />
               {tab.label}
             </button>
           ))}
-        </div>
-        {activeTab === "create" && <CreateProductForm />}
-        {activeTab === "products" && <ProductsList />}
-        {activeTab === "analytics" && <AnalyticsTab />}
+        </motion.div>
+
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}>
+            {activeTab === "create" && <CreateProductForm />}
+            {activeTab === "products" && <ProductsList />}
+            {activeTab === "analytics" && <AnalyticsTab />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

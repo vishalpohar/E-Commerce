@@ -1,10 +1,11 @@
 import {
-  ShoppingCart,
-  UserPlus,
-  LogIn,
   LogOut,
   Search,
   Menu,
+  User,
+  Package,
+  Handbag,
+  Heart,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
@@ -19,7 +20,6 @@ const Navbar = () => {
   const { cart } = useCartStore();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const searchRef = useRef(null);
@@ -32,17 +32,17 @@ const Navbar = () => {
       setShowSearch(false);
       setSearchValue("");
     } else if (e.key === "Enter" && searchValue.trim() === "") {
-      toast.error("search field cannot be empty");
+      toast.error("Please enter a search term");
     }
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearch(false); // hide dropdown
+        setShowSearch(false);
       }
       if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
-        setIsMobileMenuOpen(false); // hide dropdown
+        setIsMobileMenuOpen(false);
       }
     };
 
@@ -53,184 +53,245 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header>
-      <div className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-yellow-600">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-wrap justify-between items-center">
-            <Link
-              to="/"
-              className="text-lg sm:text-xl md:text-2xl font-extrabold text-yellow-500 items-center space-x-2 flex">
-              E-Commerce
-            </Link>
+    <header className="sticky top-0 z-50">
+      {/* Main Navbar */}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/"
+                className="flex items-center gap-3 text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent select-none">
+                <span className="flex items-center tracking-tight">
+                  B
+                  <Heart
+                    size={25}
+                    className="mx-1 text-blue-600 drop-shadow-sm"
+                    strokeWidth={3}
+                    fill="currentColor"
+                  />
+                  Store
+                </span>
+              </Link>
+            </motion.div>
 
-            {/* === Desktop Navbar === */}
-            <nav className="flex flex-wrap items-center gap-4">
-              <button
-                onClick={() => setShowSearch(!showSearch)}
-                className="text-gray-300 hover:text-yellow-500 transition duration-300 ease-in-out"
-                hidden={showSearch}>
-                <Search />
-              </button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Search Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowSearch(true)}
+                className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <Search size={20} />
+              </motion.button>
+
               {user && (
                 <>
-                  <Link
-                    to={"/cart"}
-                    className="hidden md:flex relative group font-medium px-1 py-2">
-                    <ShoppingCart
-                      className="inline-block mr-1 group-hover:text-yellow-400 transition duration-300 ease-in-out"
-                      size={24}
-                    />
-                    <span className="hidden sm:inline md:text-base group-hover:text-yellow-400 transition duration-300 ease-in-out">
-                      Cart
-                    </span>
-                    {cart.length > 0 && (
-                      <span className="absolute -top-2 -left-2 bg-yellow-500 text-white rounded-full px-2 py-0.5 text-xs group-hover:bg-yellow-400 transition duration-300 ease-in-out">
-                        {cart.length}
-                      </span>
-                    )}
-                  </Link>
+                  {/* Cart */}
+                  <motion.div whileHover={{ scale: 1.05 }} className="relative">
+                    <Link
+                      to="/cart"
+                      className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
+                      <Handbag size={20} />
+                      <span className="text-sm font-medium">Your Bag</span>
+                      {cart.length > 0 && (
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                          {cart.length}
+                        </motion.span>
+                      )}
+                    </Link>
+                  </motion.div>
 
-                  <Link
-                    to={"/orders"}
-                    className="hidden md:flex relative group font-medium px-1 py-2">
-                    <span className="inline md:text-base group-hover:text-yellow-400 transition duration-300 ease-in-out">
-                      Orders
-                    </span>
-                  </Link>
+                  {/* Orders */}
+                  <motion.div whileHover={{ scale: 1.05 }}>
+                    <Link
+                      to="/orders"
+                      className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
+                      <span className="text-sm font-medium">Orders</span>
+                    </Link>
+                  </motion.div>
                 </>
               )}
+
               {isAdmin && (
-                <Link
-                  className="hidden md:flex text-white font-medium relative group px-1 py-2"
-                  to={"/secret-dashboard"}>
-                  <span className="inline text-xs md:text-base group-hover:text-yellow-400 transition duration-300 ease-in-out">
-                    Dashboard
-                  </span>
-                </Link>
-              )}
-              {user ? (
-                <button
-                  className="hidden md:flex items-center bg-gray-700 hover:bg-gray-600 text-white font-medium py-1 px-2 rounded-md transition duration-300 ease-in-out"
-                  onClick={logout}>
-                  <LogOut size={16} />
-                  <span className="inline ml-2 text-xs md:text-base">
-                    Log Out
-                  </span>
-                </button>
-              ) : (
-                <>
+                <motion.div whileHover={{ scale: 1.05 }}>
                   <Link
-                    to={"/login"}
-                    className="hover:text-yellow-500 text-white font-bold py-1 rounded-md flex items-center transition duration-300 ease-in-out">
+                    to="/secret-dashboard"
+                    className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
+                    <span className="text-sm font-medium">Dashboard</span>
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* User Actions */}
+              {user ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={logout}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm">
+                  <LogOut size={16} />
+                  <span className="text-sm font-medium">Logout</span>
+                </motion.button>
+              ) : (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm font-medium">
                     Login
                   </Link>
-                </>
+                </motion.div>
               )}
+            </div>
 
-              {/* === Mobile Navbar === */}
-              <div className="flex md:hidden items-center gap-3 justify-between">
-                {user && (
-                  <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="text-gray-300 hover:text-yellow-500 transition">
-                    <Menu />
-                  </button>
-                )}
-              </div>
-            </nav>
+            {/* Mobile Menu Button */}
+            <div className="flex md:hidden items-center space-x-3">
+              {user ? (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                  <Menu size={20} />
+                </motion.button>
+              ) : (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm font-medium">
+                    Login
+                  </Link>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </motion.nav>
 
-      <div
-        ref={searchRef}
-        className={`flex justify-center items-center overflow-hidden transition-all ease-in-out 
-        ${
-          showSearch
-            ? "h-10 mt-12 opacity-100 duration-500"
-            : "h-0 opacity-0 duration-200"
-        }
-      `}>
-        <div className="relative w-3/4">
-          <input
-            type="search"
-            placeholder="Search for products..."
-            className="border-2 border-gray-500 rounded-3xl outline-none pl-4 pr-10 py-1.5 w-full bg-white text-black transition-all duration-500"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Search
-            className="absolute right-4 top-2.5 text-gray-700 cursor-pointer hover:text-yellow-600 transition"
-            size={20}
-          />
-        </div>
-      </div>
+      {/* Search Overlay */}
+      <AnimatePresence>
+        {showSearch && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              ref={searchRef}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
+              <div className="relative">
+                <Search
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="search"
+                  placeholder="Search for products, brands, and more..."
+                  className="w-full pl-12 pr-4 py-4 border-0 text-lg text-gray-700 focus:ring-0 bg-gray-50 rounded-xl"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                />
+              </div>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-sm text-gray-500">
+                  Press Enter to search
+                </span>
+                <button
+                  onClick={() => setShowSearch(false)}
+                  className="text-sm text-gray-500 hover:text-gray-700">
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             ref={dropDownRef}
-            className="fixed top-[52px] right-0 z-50"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}>
-            <div className="bg-white flex flex-col text-end rounded-sm shadow-lg w-[40vw] p-4 pl-2">
+            initial={{ opacity: 0, x: 300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 300 }}
+            className="fixed top-16 right-4 z-40 bg-white rounded-2xl shadow-xl border border-gray-100 w-64">
+            <div className="p-4 space-y-4">
               {user && (
-                <div className="flex flex-col">
+                <>
                   <Link
-                    to={"/cart"}
+                    to="/cart"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="relative group py-1">
-                    <span className="text-lg font-bold text-yellow-500 group-hover:text-yellow-600">
-                      Cart
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                    <Handbag
+                      className="text-gray-600 group-hover:text-blue-600"
+                      size={20}
+                    />
+                    <span className="font-medium text-gray-700">
+                      Your Bag ({cart.length})
                     </span>
-                    <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
                   </Link>
 
                   <Link
-                    to={"/orders"}
+                    to="/orders"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="relative group py-1">
-                    <span className="text-lg font-bold text-yellow-500 group-hover:text-yellow-600">
-                      Orders
-                    </span>
-                    <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                    <Package
+                      className="text-gray-600 group-hover:text-blue-600"
+                      size={20}
+                    />
+                    <span className="font-medium text-gray-700">Orders</span>
                   </Link>
-                </div>
+                </>
               )}
 
               {isAdmin && (
                 <Link
-                  className="relative group py-1"
-                  to={"/secret-dashboard"}
-                  onClick={() => setIsMobileMenuOpen(false)}>
-                  <span className="text-lg font-bold text-yellow-500 group-hover:text-yellow-600">
-                    Dashboard
-                  </span>
-                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
+                  to="/secret-dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                  <User
+                    className="text-gray-600 group-hover:text-blue-600"
+                    size={20}
+                  />
+                  <span className="font-medium text-gray-700">Dashboard</span>
                 </Link>
               )}
 
-              <hr />
-
-              {user && (
-                <button
-                  onClick={() => {
-                    logout();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="group text-end py-1">
-                  <span
-                    className="text-lg
-                  font-bold
-                  text-red-600
-                  group-hover:text-red-800">
-                    Log Out
-                  </span>
-                </button>
-              )}
+              <div className="border-t border-gray-100 pt-4">
+                {user && (
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 group w-full text-left">
+                    <LogOut
+                      className="text-red-600 group-hover:text-red-700"
+                      size={20}
+                    />
+                    <span className="font-medium text-red-600 group-hover:text-red-700">
+                      Log Out
+                    </span>
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

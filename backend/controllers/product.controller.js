@@ -127,6 +127,7 @@ export const getRecommendedProducts = async (req, res) => {
           name: 1,
           description: 1,
           image: 1,
+          category: 1,
           price: 1,
         },
       },
@@ -147,7 +148,7 @@ export const getSearchedProducts = async (req, res) => {
     const searchResult = await Product.find({
       $or: [
         { name: { $regex: key, $options: "i" } },
-        { description: { $regex: key, $options: "i" } },
+        { category: { $regex: key, $options: "i" } },
       ],
     });
 
@@ -189,7 +190,7 @@ export const getMyOrders = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in getMyOrders controller", error.message);
-    res.json(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
+import { Tag, X, CheckCircle, Gift } from "lucide-react";
 
 const GiftCouponCard = () => {
   const [userInputCode, setUserInputCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { coupon, isCouponApplied, applyCoupon, getMyCoupon, removeCoupon } =
     useCartStore();
 
@@ -15,85 +17,123 @@ const GiftCouponCard = () => {
     if (coupon) setUserInputCode(coupon.code);
   }, [coupon]);
 
-  const handleApplyCoupon = () => {
-    if (!userInputCode) return;
-    applyCoupon(userInputCode);
+  const handleApplyCoupon = async () => {
+    if (!userInputCode.trim()) return;
+
+    setIsLoading(true);
+    try {
+      await applyCoupon(userInputCode);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRemoveCoupon = async () => {
-    await removeCoupon();
-    setUserInputCode("");
+    setIsLoading(true);
+    try {
+      await removeCoupon();
+      setUserInputCode("");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <motion.div
-      className="space-y-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-sm sm:p-6"
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+          <Gift className="w-5 h-5 text-white" />
+        </div>
+        <h2 className="text-xl font-semibold text-gray-900">Apply Coupon</h2>
+      </div>
+
       <div className="space-y-4">
+        {/* Input Field */}
         <div>
           <label
             htmlFor="voucher"
-            className="mb-2 block text-sm font-medium text-gray-300">
-            Do you have a voucher or gift card?
+            className="block text-sm font-medium text-gray-700 mb-2">
+            Enter coupon code
           </label>
-          <input
-            type="text"
-            id="voucher"
-            className="block w-full rounded-lg border border-gray-600 bg-gray-700 
-            p-2.5 text-sm text-white placeholder-gray-400 focus:border-yellow-500 
-            focus:ring-yellow-500"
-            placeholder="Enter code here"
-            value={userInputCode}
-            onChange={(e) => setUserInputCode(e.target.value)}
-            required
-          />
+          <div className="relative">
+            <input
+              type="text"
+              id="voucher"
+              className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              placeholder="e.g. SUMMER25"
+              value={userInputCode}
+              onChange={(e) => setUserInputCode(e.target.value.toUpperCase())}
+              disabled={isCouponApplied}
+            />
+            {isCouponApplied && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* Action Buttons */}
         {isCouponApplied && coupon ? (
-          <div className="mt-4">
-            <p className="text-xs font-medium text-gray-400">
-              Applied Coupon:{" "}
-              <span className="text-gray-200">
-                {coupon.code} - {coupon.discountPercentage}% off
-              </span>
-            </p>
-
-            <p className="mt-2 text-sm text-gray-400"></p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-medium text-green-800">
+                  {coupon.code} - {coupon.discountPercentage}% off applied
+                </span>
+              </div>
+            </div>
 
             <motion.button
               type="button"
-              className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 
-            px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none
-             focus:ring-4 focus:ring-red-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleRemoveCoupon}>
-              Remove Coupon
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-red-300 text-red-600 hover:bg-red-50 font-medium rounded-xl transition-all duration-200"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleRemoveCoupon}
+              disabled={isLoading}>
+              <X className="w-4 h-4" />
+              {isLoading ? "Removing..." : "Remove Coupon"}
             </motion.button>
           </div>
         ) : (
           <motion.button
             type="button"
-            className="flex w-full items-center justify-center rounded-lg bg-yellow-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleApplyCoupon}>
-            Apply Code
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={{ scale: isLoading ? 1 : 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleApplyCoupon}
+            disabled={!userInputCode.trim() || isLoading}>
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Applying...
+              </div>
+            ) : (
+              "Apply Coupon"
+            )}
           </motion.button>
+        )}
+
+        {/* Available Coupon Info */}
+        {coupon && !isCouponApplied && (
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              You have a coupon available: <strong>{coupon.code}</strong> -{" "}
+              {coupon.discountPercentage}% off
+            </p>
+          </div>
         )}
       </div>
 
-      {coupon && (
-        <div className="mt-4">
-          <h3 className="text-sm font-medium text-gray-300">
-            Your Available Coupon:
-          </h3>
-          <p className="mt-2 ml-6 text-sm text-gray-400">
-            {coupon.code} - {coupon.discountPercentage}% off
-          </p>
-        </div>
-      )}
+      {/* Help Text */}
+      <p className="text-xs text-gray-500 mt-4 text-center">
+        Enter your coupon code above to apply discount to your order
+      </p>
     </motion.div>
   );
 };

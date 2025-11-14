@@ -1,15 +1,23 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { ArrowRight, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  Heart,
+  Share2,
+  Shield,
+  Truck,
+  Clock,
+  Star,
+  Handbag,
+} from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
 import { useProductStore } from "../stores/useProductStore";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
-
+import { formatPriceInRupees } from "../utils/formatCurrency";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
 
@@ -19,30 +27,41 @@ const stripePromise = loadStripe(
 
 const ProductDetailsPage = () => {
   const { id: productId } = useParams();
-  const { fetchProductById, product } = useProductStore();
   const { user } = useUserStore();
+  const { fetchProductById, product } = useProductStore();
   const { addToCart, isInCart, coupon } = useCartStore();
   const navigate = useNavigate();
 
   const inCart = isInCart(productId);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const toggleExpanded = () => setIsExpanded((prev) => !prev);
+
+  const displayText = (description) => {
+    return isExpanded
+      ? description
+      : description.length > 150
+      ? description.substring(0, 150) + "..."
+      : description;
+  };
 
   const handleAddToCart = (product) => {
-    if (user == null) {
+    if (!user) {
       navigate("/login");
       return;
     }
-    addToCart(product);
+    addToCart({ ...product, quantity });
   };
 
   const handlePayment = async () => {
     const stripe = await stripePromise;
     const res = await axios.post("/payments/create-checkout-session", {
-      products: [{ ...product, quantity: 1 }],
+      products: [{ ...product, quantity }],
       couponCode: coupon ? coupon.code : null,
     });
 
     const session = res.data;
-
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
     });
@@ -56,61 +75,186 @@ const ProductDetailsPage = () => {
     if (productId) {
       fetchProductById(productId);
     }
-  }, [productId]);
+  }, [productId, fetchProductById]);
 
   if (!product) return <LoadingSpinner />;
 
   return (
-    <div className="container mx-auto px-4 md:px-20 py-8">
-      <div className="flex flex-col md:flex-row w-full h-96 rounded-lg shadow-lg">
-        <div className="relative flex overflow-hidden md:rounded-xl px-6 sm:px-20 md:px-2 md:py-4">
-          <img className="w-full" src={product.image} alt={product.name} />
-        </div>
-        <div className="flex flex-col px-3 py-3">
-          <div className="pb-3">
-            <p className="text-gray-700 font-medium md:text-2xl">
-              {product.name}
-            </p>
-            <p className="text-gray-500 text-xs md:text-xl">
-              {product.description}
-            </p>
-            <p className="text-gray-800 font-semibold md:text-2xl px-3 py-2">
-              $ {product.price}
-            </p>
-          </div>
-          <div className="flex flex-row">
-            {inCart ? (
-              <button
-                onClick={() => navigate("/cart")}
-                className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold py-2 px-4 rounded transition-colors duration-300 flex items-center justify-center">
-                Go to Cart
-                <ArrowRight className="inlline size-4 ml-1" />
-              </button>
-            ) : (
-              <button
-                className="flex items-center justify-center text-sm font-semibold bg-gray-600 rounded px-3 py-2"
-                onClick={() => handleAddToCart(product)}>
-                <ShoppingCart size={16} className="mr-2 md:size-8" />
-                Add to Cart
-              </button>
-            )}
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <nav className="flex mb-8" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+              <a href="/" className="hover:text-blue-600 transition-colors">
+                Home
+              </a>
+            </li>
+            <li className="flex items-center">
+              <span className="mx-2">/</span>
+              <a
+                href={`/${product.category}`}
+                className="hover:text-blue-600 transition-colors capitalize">
+                {product.category}
+              </a>
+            </li>
+            <li className="flex items-center">
+              <span className="mx-2">/</span>
+              <span className="text-gray-900 font-medium">{product.name}</span>
+            </li>
+          </ol>
+        </nav>
 
-            <button
-              className="bg-yellow-500 hover:bg-yellow-400 font-semibold rounded ml-12 px-8 py-2"
-              onClick={handlePayment}>
-              Buy Now
-            </button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+            {/* Image Gallery */}
+            <div className="space-y-4">
+              <div className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Product Details */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                  {product.name}
+                </h1>
+
+                {/* Rating */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-5 h-5 ${
+                          star <= 4
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">(128 reviews)</span>
+                </div>
+
+                {/* Price */}
+                <div className="flex items-baseline gap-3 mb-6">
+                  <span className="text-4xl font-bold text-gray-900">
+                    {formatPriceInRupees(product.price)}
+                  </span>
+                  <span className="text-lg text-gray-500 line-through">
+                    {formatPriceInRupees(product.price * 1.2)}
+                  </span>
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
+                    20% OFF
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Description
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {displayText(product.description)}
+                  {product.description.length > 150 && (
+                    <button
+                      onClick={toggleExpanded}
+                      className="text-blue-600 hover:text-blue-700 font-medium ml-1 transition-colors">
+                      {isExpanded ? "Show less" : "Show more"}
+                    </button>
+                  )}
+                </p>
+              </div>
+
+              {/* Quantity Selector */}
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-green-300">
+                    In stock <br />{" "}
+                    <span className="text-gray-600">Free shipping</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                {inCart ? (
+                  <button
+                    onClick={() => navigate("/cart")}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                    SEE BAG
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="flex-1 bg-gray-900 hover:bg-gray-950 text-white font-semibold py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                    <Handbag className="w-5 h-5" />
+                    ADD TO BAG
+                  </button>
+                )}
+
+                <button
+                  onClick={handlePayment}
+                  className="flex-1 bg-gray-700 hover:bg-gray-900 text-white font-semibold py-4 px-6 transition-all duration-200 shadow-lg hover:shadow-xl">
+                  BUY NOW
+                </button>
+
+                {/* Secondary Actions */}
+                <div className="flex gap-2">
+                  <button className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors">
+                    <Heart className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors">
+                    <Share2 className="w-5 h-5 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+                <div className="flex flex-col md:flex-row items-center md:justify-center gap-3">
+                  <Truck size={25} className="text-green-500" />
+                  <div className="text-center">
+                    <p className="font-medium text-gray-900">Free Shipping</p>
+                    <p className="text-sm text-gray-600">On orders over $50</p>
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row items-center md:justify-center gap-3">
+                  <Shield size={25} className="text-blue-500" />
+                  <div className="text-center">
+                    <p className="font-medium text-gray-900">2-Year Warranty</p>
+                    <p className="text-sm text-gray-600">Quality guaranteed</p>
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row items-center md:justify-center gap-3">
+                  <Clock size={25} className="text-orange-500" />
+                  <div className="text-center">
+                    <p className="font-medium text-gray-900">Support</p>
+                    <p className="text-sm text-gray-600">24/7 assistance</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* People Also Bought */}
+        <motion.div
+          className="mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}>
+          <PeopleAlsoBought />
+        </motion.div>
       </div>
-
-      <motion.div
-        className="mx-auto mt-6 w-full flex-1 space-y-6 lg:mt-0 lg:w-full"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}>
-        <PeopleAlsoBought />
-      </motion.div>
     </div>
   );
 };
