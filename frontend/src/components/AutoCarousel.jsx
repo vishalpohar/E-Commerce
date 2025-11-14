@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const images = [
-  "banner/ourCollections.jpg",
-  "banner/mensFashion.jpg",
-  "banner/footWear.jpg",
-  "banner/sunGlasses.jpg",
+  "banner/ourCollections.webp",
+  "banner/mensFashion.webp",
+  "banner/footWear.webp",
+  "banner/sunGlasses.webp",
 ];
 
 export default function AutoCarousel() {
@@ -68,7 +68,6 @@ export default function AutoCarousel() {
             src={images[current]}
             custom={direction}
             variants={slideVariants}
-            loading="lazy"
             initial="enter"
             animate="center"
             exit="exit"
