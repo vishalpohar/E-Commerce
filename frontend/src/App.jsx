@@ -20,7 +20,7 @@ import SearchPage from "./pages/SearchPage";
 import { useCartStore } from "./stores/useCartStore";
 import OrdersPage from "./pages/OrdersPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
-import ScrollToTop from "./components/ScrollToTop ";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -31,9 +31,8 @@ function App() {
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!user) return;
-    getCartItems();
-  }, [getCartItems, user]);
+    if (user) getCartItems();
+  }, [user]);
 
   if (checkingAuth) return <LoadingSpinner />;
 
@@ -78,7 +77,10 @@ function App() {
               path="/orders"
               element={user ? <OrdersPage /> : <Navigate to="/login" />}
             />
-            <Route path="/product-details/:id" element={<ProductDetailsPage />} />
+            <Route
+              path="/product-details/:id"
+              element={<ProductDetailsPage />}
+            />
             <Route path="/search" element={<SearchPage />} />
             <Route
               path="/purchase-success"

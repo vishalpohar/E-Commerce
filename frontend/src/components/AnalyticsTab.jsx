@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "../lib/axios";
 import {
@@ -163,11 +162,9 @@ const AnalyticsTab = () => {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Chart */}
-        <motion.div
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+        <div
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-500"
+          >
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Sales & Revenue
           </h3>
@@ -208,14 +205,12 @@ const AnalyticsTab = () => {
               />
             </LineChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
 
         {/* Revenue Chart */}
-        <motion.div
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}>
+        <div
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-500"
+          >
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Revenue Trend
           </h3>
@@ -241,7 +236,7 @@ const AnalyticsTab = () => {
               />
             </BarChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -258,16 +253,14 @@ const AnalyticsCard = ({ title, value, change, icon: Icon, color }) => {
   };
 
   return (
-    <motion.div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    <div
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden transform transition-all duration-1000"
+      >
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div
             className={`p-3 rounded-xl bg-gradient-to-r ${colorClasses[color]} bg-opacity-10`}>
-            <Icon className={`w-6 h-6 text-${color}-600`} />
+            <Icon className={`w-6 h-6 text-white-600`} />
           </div>
           <div className="flex items-center gap-1 text-sm font-medium text-green-600">
             <TrendingUp className="w-4 h-4" />
@@ -280,6 +273,6 @@ const AnalyticsCard = ({ title, value, change, icon: Icon, color }) => {
       <div
         className={`absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-r ${colorClasses[color]} opacity-5 rounded-tl-full`}
       />
-    </motion.div>
+    </div>
   );
 };

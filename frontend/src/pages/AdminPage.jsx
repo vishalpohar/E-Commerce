@@ -1,6 +1,5 @@
 import { BarChart, PlusCircle, ShoppingBasket, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 import CreateProductForm from "../components/CreateProductForm";
 import ProductsList from "../components/ProductsList";
@@ -25,11 +24,7 @@ const AdminPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}>
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 bg-blue-600 rounded-2xl">
               <Settings className="w-8 h-8 text-white" />
@@ -43,14 +38,10 @@ const AdminPage = () => {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tab Navigation */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-2 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}>
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -64,21 +55,14 @@ const AdminPage = () => {
               {tab.label}
             </button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Tab Content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}>
-            {activeTab === "create" && <CreateProductForm />}
-            {activeTab === "products" && <ProductsList />}
-            {activeTab === "analytics" && <AnalyticsTab />}
-          </motion.div>
-        </AnimatePresence>
+        <div key={activeTab}>
+          {activeTab === "create" && <CreateProductForm />}
+          {activeTab === "products" && <ProductsList />}
+          {activeTab === "analytics" && <AnalyticsTab />}
+        </div>
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ const ProductCard = ({ product, inCart }) => {
           onClick={() =>
             inCart ? navigate("/cart") : handleAddToCart(product)
           }
-          className={`relative overflow-hidden w-full font-semibold py-4 px-6 transition-all duration-300 flex items-center justify-center shadow-sm group ${
+          className={`relative overflow-hidden w-full text-sm font-semibold py-4 px-6 transition-all duration-300 flex items-center justify-center shadow-sm group ${
             inCart
               ? "bg-blue-500 hover:bg-blue-600 text-white"
               : "bg-gray-900 text-white"
@@ -93,7 +93,7 @@ const ProductCard = ({ product, inCart }) => {
             </>
           ) : (
             <>
-              <Handbag className="mr-2 w-4 h-4" />
+              <Handbag className="mr-2 w-6 h-6" />
               ADD TO BAG
             </>
           )}

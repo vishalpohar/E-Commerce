@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
 import { Tag, X, CheckCircle, Gift } from "lucide-react";
@@ -39,11 +38,8 @@ const GiftCouponCard = () => {
   };
 
   return (
-    <motion.div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}>
+    <div
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transform transition-all duration-500 hover:shadow-lg">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
           <Gift className="w-5 h-5 text-white" />
@@ -89,23 +85,19 @@ const GiftCouponCard = () => {
               </div>
             </div>
 
-            <motion.button
+            <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-red-300 text-red-600 hover:bg-red-50 font-medium rounded-xl transition-all duration-200"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-red-300 text-red-600 hover:bg-red-50 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleRemoveCoupon}
               disabled={isLoading}>
               <X className="w-4 h-4" />
               {isLoading ? "Removing..." : "Remove Coupon"}
-            </motion.button>
+            </button>
           </div>
         ) : (
-          <motion.button
+          <button
             type="button"
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            whileHover={{ scale: isLoading ? 1 : 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleApplyCoupon}
             disabled={!userInputCode.trim() || isLoading}>
             {isLoading ? (
@@ -116,7 +108,7 @@ const GiftCouponCard = () => {
             ) : (
               "Apply Coupon"
             )}
-          </motion.button>
+          </button>
         )}
 
         {/* Available Coupon Info */}
@@ -134,7 +126,7 @@ const GiftCouponCard = () => {
       <p className="text-xs text-gray-500 mt-4 text-center">
         Enter your coupon code above to apply discount to your order
       </p>
-    </motion.div>
+    </div>
   );
 };
 

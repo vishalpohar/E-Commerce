@@ -5,46 +5,29 @@ import {
   HelpCircle,
   RefreshCw,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const PurchaseCancelPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center px-4 py-8">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden relative z-20 border border-gray-100">
+      {/* Simple fade-in using CSS only */}
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden relative z-20 border border-gray-100 animate-fadeIn">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-orange-500 to-red-500 px-8 py-12 text-center text-white">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring" }}
-            className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
             <XCircle className="w-10 h-10 text-white" />
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}>
-            <h1 className="text-3xl font-bold mb-3">Order Cancelled</h1>
-            <p className="text-orange-100 text-lg opacity-90">
-              No charges have been made to your account
-            </p>
-          </motion.div>
+          <h1 className="text-3xl font-bold mb-3">Order Cancelled</h1>
+          <p className="text-orange-100 text-lg opacity-90">
+            No charges have been made to your account
+          </p>
         </div>
 
         {/* Content Section */}
         <div className="px-8 py-8">
           {/* Information Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-200">
+          <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-200">
             <div className="flex items-center gap-3 mb-4">
               <HelpCircle className="w-6 h-6 text-orange-600" />
               <h2 className="text-xl font-semibold text-gray-900">
@@ -72,22 +55,20 @@ const PurchaseCancelPage = () => {
                 </li>
               </ul>
             </div>
-          </motion.div>
+          </div>
 
           {/* Support Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="bg-blue-50 rounded-2xl p-6 mb-8 border border-blue-200">
+          <div className="bg-blue-50 rounded-2xl p-6 mb-8 border border-blue-200">
             <div className="flex items-center gap-3 mb-3">
               <HelpCircle className="w-5 h-5 text-blue-600" />
               <h3 className="font-semibold text-gray-900">Need Help?</h3>
             </div>
+
             <p className="text-sm text-gray-700 mb-4">
               If you encountered any issues or have questions about your order,
               our support team is here to help.
             </p>
+
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Email Support</span>
@@ -102,14 +83,10 @@ const PurchaseCancelPage = () => {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
-            className="space-y-4">
+          <div className="space-y-4">
             <Link
               to="/cart"
               className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
@@ -130,9 +107,20 @@ const PurchaseCancelPage = () => {
               <ArrowLeft className="w-5 h-5" />
               Go Back
             </button>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Fade In Animation (Tailwind custom) */}
+      <style>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.96) translateY(10px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };

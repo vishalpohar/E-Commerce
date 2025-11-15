@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProductStore } from "../stores/useProductStore";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import { useCartStore } from "../stores/useCartStore";
 import { SortAsc } from "lucide-react";
-import { useState } from "react";
 
 const CategoryPage = () => {
   const { fetchProductsByCategory, products } = useProductStore();
@@ -25,9 +24,9 @@ const CategoryPage = () => {
         {/* Header Section */}
         <motion.div
           className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}>
+          transition={{ duration: 0.4 }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
@@ -60,9 +59,9 @@ const CategoryPage = () => {
         {/* Products Grid */}
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}>
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}>
           {products?.length === 0 ? (
             <div className="col-span-full text-center py-16">
               <div className="max-w-md mx-auto">
@@ -79,17 +78,12 @@ const CategoryPage = () => {
               </div>
             </div>
           ) : (
-            products?.map((product, index) => (
-              <motion.div
+            products?.map((product) => (
+              <ProductCard
                 key={product._id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}>
-                <ProductCard
-                  product={product}
-                  inCart={isInCart(product._id)}
-                />
-              </motion.div>
+                product={product}
+                inCart={isInCart(product._id)}
+              />
             ))
           )}
         </motion.div>

@@ -16,12 +16,7 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
       <Link to={`/product-details/${item._id}`}>
         <div className="flex flex-col sm:flex-row gap-6">
           {/* Product Image */}
@@ -109,7 +104,7 @@ const CartItem = ({ item }) => {
           <span className="font-medium">Remove</span>
         </motion.button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

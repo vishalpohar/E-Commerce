@@ -5,9 +5,7 @@ import {
   ArrowRight,
   ShoppingCart,
   Package,
-  CheckCircle,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 
@@ -15,13 +13,9 @@ const OrdersPage = () => {
   const [page, setPage] = useState(1);
   const { orders, totalPages, getMyOrders } = useProductStore();
 
-  const handleNext = () => {
-    setPage(page + 1);
-  };
+  const handleNext = () => setPage((p) => p + 1);
 
-  const handlePrevious = () => {
-    setPage(page - 1);
-  };
+  const handlePrevious = () => setPage((p) => p - 1);
 
   const isPreviousDisabled = orders.length === 0 || page === 1;
   const isNextDisabled =
@@ -70,12 +64,9 @@ const OrdersPage = () => {
         {/* Orders Grid */}
         <div className="grid grid-cols-1 gap-6">
           {orders.map((order) => (
-            <motion.div
+            <div
               key={order._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-500">
               {/* Order Header */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -143,7 +134,7 @@ const OrdersPage = () => {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -189,11 +180,9 @@ const OrdersPage = () => {
 export default OrdersPage;
 
 const EmptyOrdersUI = () => (
-  <motion.div
-    className="min-h-[70vh] flex items-center justify-center px-4"
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}>
+  <div
+    className="min-h-[70vh] flex items-center justify-center px-4 transition-all duration-500"
+  >
     <div className="text-center max-w-md">
       <div className="relative mb-8">
         <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
@@ -218,5 +207,5 @@ const EmptyOrdersUI = () => (
         </Link>
       </div>
     </div>
-  </motion.div>
+  </div>
 );

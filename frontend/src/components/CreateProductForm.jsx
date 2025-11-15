@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { PlusCircle, Upload, Loader, Image, X } from "lucide-react";
+import { PlusCircle, Loader, Image, X } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 
 const categories = [
@@ -63,11 +62,8 @@ const CreateProductForm = () => {
   };
 
   return (
-    <motion.div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    <div
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 transform transition-all duration-500">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-blue-100 rounded-lg">
           <PlusCircle className="w-6 h-6 text-blue-600" />
@@ -239,7 +235,7 @@ const CreateProductForm = () => {
           )}
         </button>
       </form>
-    </motion.div>
+    </div>
   );
 };
 

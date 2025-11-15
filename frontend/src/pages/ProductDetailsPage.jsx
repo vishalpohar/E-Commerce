@@ -10,9 +10,8 @@ import {
   Star,
   Handbag,
 } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
-import { motion } from "framer-motion";
+import {stripePromise} from "../lib/stripe";
 import { useNavigate } from "react-router-dom";
 import { useProductStore } from "../stores/useProductStore";
 import { useUserStore } from "../stores/useUserStore";
@@ -20,10 +19,6 @@ import { useCartStore } from "../stores/useCartStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
-
-const stripePromise = loadStripe(
-  "pk_test_51SFAjxKkfSkHjMbFaeOfZNaqmCFCr8MSkiVek6iKWjTBGQS2R3T74IDiappe8KhaqjI6eovUiCrAVBKPpnM8xBKZ00KNp6Vgue"
-);
 
 const ProductDetailsPage = () => {
   const { id: productId } = useParams();
@@ -247,13 +242,10 @@ const ProductDetailsPage = () => {
         </div>
 
         {/* People Also Bought */}
-        <motion.div
-          className="mt-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}>
+        <div
+          className="mt-12">
           <PeopleAlsoBought />
-        </motion.div>
+        </div>
       </div>
     </div>
   );

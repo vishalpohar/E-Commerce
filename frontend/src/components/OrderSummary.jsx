@@ -1,14 +1,9 @@
-import { motion } from "framer-motion";
 import { useCartStore } from "../stores/useCartStore";
 import { ArrowRight, Shield, Truck, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
+import { stripePromise } from "../lib/stripe";
 import axios from "../lib/axios";
 import { formatPriceInRupees } from "../utils/formatCurrency";
-
-const stripePromise = loadStripe(
-  "pk_test_51SFAjxKkfSkHjMbFaeOfZNaqmCFCr8MSkiVek6iKWjTBGQS2R3T74IDiappe8KhaqjI6eovUiCrAVBKPpnM8xBKZ00KNp6Vgue"
-);
 
 const OrderSummary = () => {
   const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
@@ -40,11 +35,7 @@ const OrderSummary = () => {
   };
 
   return (
-    <motion.div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-500">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">
         Order Summary
       </h2>
@@ -101,13 +92,11 @@ const OrderSummary = () => {
       </div>
 
       {/* Checkout Button */}
-      <motion.button
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl mb-4"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+      <button
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 ease-in-out mb-4"
         onClick={handlePayment}>
         Proceed to Checkout
-      </motion.button>
+      </button>
 
       {/* Continue Shopping */}
       <div className="text-center">
@@ -118,7 +107,7 @@ const OrderSummary = () => {
           <ArrowRight className="ml-1 w-4 h-4" />
         </Link>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

@@ -27,11 +27,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        className="max-w-md w-full space-y-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}>
+      <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
@@ -169,7 +165,7 @@ const LoginPage = () => {
             Secure login with SSL encryption • Your data is protected
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
