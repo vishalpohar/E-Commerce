@@ -2,10 +2,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const images = [
+<<<<<<< HEAD
   "banner/ourCollections.avif",
   "banner/mensFashion.avif",
   "banner/footWear.avif",
   "banner/sunGlasses.avif",
+=======
+  "banner/ourCollections.webp",
+  "banner/mensFashion.webp",
+  "banner/footWear.webp",
+  "banner/sunGlasses.webp",
+>>>>>>> e1376c560db1e01952444b763a166dcd3ba6dd52
 ];
 
 export default function AutoCarousel() {
