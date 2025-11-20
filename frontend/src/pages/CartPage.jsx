@@ -73,7 +73,7 @@ const CartPage = () => {
 export default CartPage;
 
 const EmptyCartUI = () => (
-  <div className="min-h-[70vh] flex items-center justify-center px-4 transition-all duration-500">
+  <div className="min-h-[92vh] flex items-center justify-center px-4 transition-all duration-500">
     <div className="text-center max-w-md">
       <div className="relative mb-8">
         <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto">

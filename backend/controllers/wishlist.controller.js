@@ -1,0 +1,53 @@
+import Product from "../models/product.model.js";
+
+export const addToWishlist = async (req, res) => {
+  try {
+    const { id: productId } = req.params;
+    const user = req.user;
+
+    if (!user.wishlist.includes(productId)) {
+      user.wishlist.push(productId);
+    }
+
+    await user.save();
+    res.json(user.wishlist);
+  } catch (error) {
+    console.log("Error in addToWishlist controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const getWishlistProducts = async (req, res) => {
+  try {
+    const wishlistProducts = await Product.find({
+      _id: { $in: req.user.wishlist },
+    });
+    res.json(wishlistProducts);
+  } catch (error) {
+    console.log("Error in getWishlistProducts controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const removeWishlistProduct = async (req, res) => {
+  try {
+    const { id: productId } = req.params;
+    const user = req.user;
+
+    user.wishlist = user.wishlist.filter(
+      (item) => item.toString() != productId
+    );
+    
+    await user.save();
+    res.json(user.wishlist);
+  } catch (error) {
+    console.log("Error in removeWishlistProduct controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};

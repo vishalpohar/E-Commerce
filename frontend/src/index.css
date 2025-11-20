@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar for Chrome, Safari, Edge */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none;
+  overflow-y: scroll;
+}
+
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;

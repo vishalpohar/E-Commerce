@@ -3,20 +3,26 @@ import { useProductStore } from "../stores/useProductStore";
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { SortAsc, Search } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, ChevronDown, ArrowUpWideNarrow, ArrowDownWideNarrow } from "lucide-react";
 import { useCartStore } from "../stores/useCartStore";
 
 const SearchPage = () => {
   const { search } = useLocation();
   const query = new URLSearchParams(search).get("query");
-  const { products, searchProducts, loading } = useProductStore();
-  const {isInCart} = useCartStore();
-  const [sortBy, setSortBy] = useState("relevance");
+  const { searchProducts, products, total, totalPages, loading } =
+    useProductStore();
+  const { isInCart } = useCartStore();
+  const [sortBy, setSortBy] = useState("newest");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    if (query) searchProducts(query);
-  }, [query, searchProducts]);
+    if (query) searchProducts(query, sortBy, 1, false);
+  }, [query, sortBy]);
+
+  const loadMore = () => {
+    searchProducts(query, sortBy, page + 1, true);
+    setPage((p) => p + 1);
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -33,7 +39,7 @@ const SearchPage = () => {
               {query && (
                 <p className="text-gray-600">
                   {products.length > 0
-                    ? `Found ${products.length} results for "${query}"`
+                    ? `Found ${total} results for "${query}"`
                     : `No results found for "${query}"`}
                 </p>
               )}
@@ -47,12 +53,16 @@ const SearchPage = () => {
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                     className="appearance-none text-gray-700 bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
-                    <option value="relevance">Relevance</option>
+                    <option value="newest">Newest First</option>
                     <option value="price-low">Price: Low to High</option>
                     <option value="price-high">Price: High to Low</option>
-                    <option value="newest">Newest First</option>
                   </select>
-                  <SortAsc className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                  {sortBy === "price-low" && (
+                    <ArrowUpWideNarrow className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                  )}
+                  {sortBy === "price-high" && (
+                    <ArrowDownWideNarrow className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                  )}
                 </div>
               </div>
             )}
@@ -61,19 +71,47 @@ const SearchPage = () => {
 
         {/* Results */}
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              
-                <ProductCard key={product._id} product={product} inCart={isInCart(product._id)} />
-            
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                  inCart={isInCart(product._id)}
+                />
+              ))}
+            </div>
+            {page < totalPages && (
+              <button
+                onClick={loadMore}
+                disabled={loading}
+                className="
+                  mt-10 mx-auto
+                  bg-white text-gray-800 font-semibold
+                  px-6 py-3 rounded-xl
+                  border border-gray-300
+                  shadow-sm
+                  hover:bg-gray-100 hover:border-gray-400
+                  transition-all duration-300
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center justify-center gap-2
+                ">
+                {loading ? (
+                  <>
+                    <span className="animate-spin border-2 border-gray-400 border-t-transparent rounded-full w-5 h-5"></span>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Load More
+                    <ChevronDown />
+                  </>
+                )}
+              </button>
+            )}
+          </>
         ) : (
-          <motion.div
-            className="text-center py-16"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}>
+          <div className="text-center py-16">
             <div className="max-w-md mx-auto">
               <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-10 h-10 text-gray-400" />
@@ -98,7 +136,7 @@ const SearchPage = () => {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

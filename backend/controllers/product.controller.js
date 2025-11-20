@@ -69,6 +69,8 @@ export const createProduct = async (req, res) => {
     if (image) {
       cloudinaryResponse = await cloudinary.uploader.upload(image, {
         folder: "products",
+        quality: "auto",
+        fetch_format: "auto",
       });
     }
 
@@ -144,18 +146,38 @@ export const getRecommendedProducts = async (req, res) => {
 
 export const getSearchedProducts = async (req, res) => {
   try {
-    const { key } = req.params;
-    const searchResult = await Product.find({
+    const { query, sort, page = 1, limit = 10 } = req.query;
+
+    let sortOption =
+      sort === "price-low"
+        ? { price: 1 }
+        : sort === "price-high"
+        ? { price: -1 }
+        : { createdAt: -1 };
+
+    const total = await Product.countDocuments({
       $or: [
-        { name: { $regex: key, $options: "i" } },
-        { category: { $regex: key, $options: "i" } },
+        { name: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
       ],
     });
+
+    const searchResult = await Product.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    })
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     if (!searchResult || searchResult.length === 0)
       return res.status(404).json([]);
 
-    res.status(200).json(searchResult);
+    res
+      .status(200)
+      .json({ searchResult, total, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     console.log("Error in getSearchedProducts controller", error.message);
     res
@@ -173,11 +195,20 @@ export const getMyOrders = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const orders = await Order.find({ user: user._id })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate({ path: "products.product" });
+    let orders = await Order.aggregate([
+      { $match: { user: user._id } },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+    ]);
 
     const totalOrders = await Order.countDocuments({ user: user._id });
 
@@ -195,10 +226,23 @@ export const getMyOrders = async (req, res) => {
 };
 
 export const getProductsByCategory = async (req, res) => {
-  const { category } = req.params;
+  const { category, sort, page = 1, limit = 10 } = req.query;
+
+  let sortOption = {};
+
+  if (sort === "newest") sortOption = { createdAt: -1 };
+  if (sort === "price-low") sortOption = { price: 1 };
+  if (sort === "price-high") sortOption = { price: -1 };
+
   try {
-    const products = await Product.find({ category });
-    res.json({ products });
+    const products = await Product.find({ category })
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments({ category });
+
+    res.json({ products, total, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     console.log("Error in getProductsByCategory controller", error.message);
     res

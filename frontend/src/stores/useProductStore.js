@@ -7,7 +7,7 @@ export const useProductStore = create((set) => ({
   products: [],
   loading: false,
   orders: [],
-  totalOrders: null,
+  total: null,
   totalPages: null,
 
   setProducts: (products) => set({ products }),
@@ -40,18 +40,27 @@ export const useProductStore = create((set) => ({
   fetchProductById: async (productId) => {
     set({ loading: true });
     try {
-      const response = await axios.get(`/products/product/${productId}`)
-      set({ product: response.data.product, loading: false})
+      const response = await axios.get(`/products/product/${productId}`);
+      set({ product: response.data.product, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch product", loading: false });
       toast.error(error.response.data.error || "Failed to fetch product");
     }
   },
-  fetchProductsByCategory: async (category) => {
-    set({ loading: true, products: [] });
+  fetchProductsByCategory: async (category, sortBy, page, append = false) => {
+    set({ loading: true });
     try {
-      const response = await axios.get(`/products/category/${category}`);
-      set({ products: response.data.products, loading: false });
+      const limit = 10;
+      const response = await axios.get(
+        `/products/category?category=${category}&sort=${sortBy}&page=${page}&limit=${limit}`
+      );
+      const { products, total, totalPages } = response.data;
+      set((state) => ({
+        products: append ? [...state.products, ...products] : products,
+        total,
+        totalPages,
+        loading: false,
+      }));
     } catch (error) {
       set({ error: "Failed to fetch products", loading: false });
       toast.error(error.response.data.error || "Failed to fetch products");
@@ -100,11 +109,20 @@ export const useProductStore = create((set) => ({
       console.log("Error fetching featured products", error);
     }
   },
-  searchProducts: async (query) => {
-    set({ loading: true, products: [] });
+  searchProducts: async (query, sortBy, page, append = false) => {
+    set({ loading: true });
     try {
-      const response = await axios.get(`/products/search/${query}`);
-      set({ products: response.data, loading: false });
+      const limit = 10;
+      const response = await axios.get(
+        `/products/search?query=${query}&sort=${sortBy}&page=${page}&limit=${limit}`
+      );
+      const { searchResult, total, totalPages } = response.data;
+      set((state) => ({
+        products: append ? [...state.products, ...searchResult] : searchResult,
+        total,
+        totalPages,
+        loading: false,
+      }));
     } catch (error) {
       set({ products: [], error: "Failed to search products", loading: false });
       console.log("Error fetching products", error);
@@ -118,7 +136,7 @@ export const useProductStore = create((set) => ({
       );
       const { orders, totalOrders, totalPages } = response.data;
 
-      set({ orders, totalOrders, totalPages, loading: false });
+      set({ orders, total: totalOrders, totalPages, loading: false });
     } catch (error) {
       set({
         orders: [],

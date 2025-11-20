@@ -6,13 +6,14 @@ import {
   Package,
   Handbag,
   Heart,
+  UserRound,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const { user, logout } = useUserStore();
@@ -53,7 +54,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="fixed top-0 left-0 w-full z-50">
       {/* Main Navbar */}
       <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6">
@@ -76,7 +77,59 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div className="inline-flex gap-2">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {isAdmin && (
+                <div className="hover:scale-105 duration-200">
+                  <Link
+                    to="/secret-dashboard"
+                    className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                    <span className="text-lg font-light">Dashboard</span>
+                  </Link>
+                </div>
+              )}
+              {user && (
+                <>
+                  {/* Cart */}
+                  <div className="relative hover:scale-105 duration-200">
+                    <Link
+                      to="/cart"
+                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 group">
+                      <Handbag size={20} />
+                      <span className="text-lg font-light">Your Bag</span>
+                      {cart.length > 0 && (
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                          {cart.length}
+                        </motion.span>
+                      )}
+                    </Link>
+                  </div>
+
+                  <div className="hover:scale-105 duration-200">
+                    <Link
+                      to="/wishlist"
+                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                      <Heart size={20} />
+                      <span className="text-lg font-light">Wishlist</span>
+                    </Link>
+                  </div>
+
+                  {/* Orders */}
+                  <div className="hover:scale-105 duration-200">
+                    <Link
+                      to="/orders"
+                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                      <span className="text-lg font-light">Orders</span>
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex ">
               {/* Search Button */}
               <button
                 onClick={() => setShowSearch(true)}
@@ -84,66 +137,32 @@ const Navbar = () => {
                 <Search size={20} />
               </button>
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-6">
-                {user && (
-                  <>
-                    {/* Cart */}
-                    <div className="relative hover:scale-105 duration-200">
-                      <Link
-                        to="/cart"
-                        className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
-                        <Handbag size={20} />
-                        <span className="text-sm font-medium">Your Bag</span>
-                        {cart.length > 0 && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                            {cart.length}
-                          </motion.span>
-                        )}
-                      </Link>
-                    </div>
-
-                    {/* Orders */}
-                    <div className="hover:scale-105 duration-200">
-                      <Link
-                        to="/orders"
-                        className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
-                        <span className="text-sm font-medium">Orders</span>
-                      </Link>
-                    </div>
-                  </>
-                )}
-
-                {isAdmin && (
-                  <div className="hover:scale-105 duration-200">
-                    <Link
-                      to="/secret-dashboard"
-                      className="flex items-center space-x-1 p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
-                      <span className="text-sm font-medium">Dashboard</span>
-                    </Link>
-                  </div>
-                )}
-
+              <div className="hidden md:flex justify-center items-center">
                 {/* User Actions */}
                 {user ? (
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={logout}
-                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 hover:scale-105 transition-all duration-200 shadow-sm">
-                    <LogOut size={16} />
-                    <span className="text-sm font-medium">Logout</span>
-                  </motion.button>
+                  <div className="flex gap-1 justify-center items-center">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={logout}
+                      className="flex items-center space-x-1 px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200">
+                      <LogOut size={20} />
+                      <span className="text-lg font-light">Logout</span>
+                    </motion.button>
+                    <div className="flex items-center">
+                      <UserRound size={20} className="text-gray-600" />
+                      <span className="text-gray-700 text-lg">
+                        {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
+                      </span>
+                    </div>
+                  </div>
                 ) : (
                   <motion.div
                     whileTap={{ scale: 0.95 }}
                     className="hover:scale-105 duration-200">
                     <Link
                       to="/login"
-                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm font-medium">
-                      Login
+                      className="px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200">
+                      <span className="text-lg font-light">Login</span>
                     </Link>
                   </motion.div>
                 )}
@@ -164,8 +183,8 @@ const Navbar = () => {
                     className="hover:scale-105 duration-200">
                     <Link
                       to="/login"
-                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm font-medium">
-                      Login
+                      className="px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200 shadow-sm font-medium">
+                      <span className="text-lg font-light">Login</span>
                     </Link>
                   </motion.div>
                 )}
@@ -225,9 +244,19 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 300 }}
           className="fixed top-16 right-4 z-40 bg-white rounded-2xl shadow-xl border border-gray-100 w-64">
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-2">
             {user && (
               <>
+                <div
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                  <UserRound
+                    className="text-gray-600 group-hover:text-blue-600"
+                    size={20}
+                  />
+                  <span className="font-medium text-gray-700">
+                    {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
+                  </span>
+                </div>
                 <Link
                   to="/cart"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -236,8 +265,21 @@ const Navbar = () => {
                     className="text-gray-600 group-hover:text-blue-600"
                     size={20}
                   />
-                  <span className="font-medium text-gray-700">
+                  <span className="font-light text-gray-700">
                     Your Bag ({cart.length})
+                  </span>
+                </Link>
+
+                <Link
+                  to="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                  <Heart
+                    className="text-gray-600 group-hover:text-blue-600"
+                    size={20}
+                  />
+                  <span className="font-light text-gray-700">
+                    Your Wishlist
                   </span>
                 </Link>
 
@@ -249,7 +291,7 @@ const Navbar = () => {
                     className="text-gray-600 group-hover:text-blue-600"
                     size={20}
                   />
-                  <span className="font-medium text-gray-700">Orders</span>
+                  <span className="font-light text-gray-700">Orders</span>
                 </Link>
               </>
             )}
@@ -263,7 +305,7 @@ const Navbar = () => {
                   className="text-gray-600 group-hover:text-blue-600"
                   size={20}
                 />
-                <span className="font-medium text-gray-700">Dashboard</span>
+                <span className="font-light text-gray-700">Dashboard</span>
               </Link>
             )}
 
@@ -279,7 +321,7 @@ const Navbar = () => {
                     className="text-red-600 group-hover:text-red-700"
                     size={20}
                   />
-                  <span className="font-medium text-red-600 group-hover:text-red-700">
+                  <span className="font-light text-red-600 group-hover:text-red-700">
                     Log Out
                   </span>
                 </button>

@@ -1,14 +1,19 @@
-import { ArrowRight, Eye, Handbag } from "lucide-react";
+import { ArrowRight, Eye, Handbag, Heart } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import { motion } from "framer-motion";
+import { useWishlistStore } from "../stores/useWishlistStore";
 
-const ProductCard = ({ product, inCart }) => {
+const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
   const { user } = useUserStore();
   const { addToCart } = useCartStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const navigate = useNavigate();
+
+  inWishlist = isInWishlist(product._id);
 
   const handleAddToCart = (product) => {
     if (!user) {
@@ -16,6 +21,18 @@ const ProductCard = ({ product, inCart }) => {
       return;
     }
     addToCart(product);
+  };
+
+  const handleWishlist = (product) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (inWishlist) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
   };
 
   return (
@@ -36,8 +53,22 @@ const ProductCard = ({ product, inCart }) => {
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
 
+        <div className="absolute top-2 right-2">
+          <button
+            className="bg-white p-2 rounded-full"
+            onClick={(e) => {
+              e.preventDefault();
+              handleWishlist(product);
+            }}>
+            <Heart
+              className={`w-5 h-5 transition-all duration-300
+              ${inWishlist ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+            />
+          </button>
+        </div>
+
         {/* Quick View Overlay */}
-        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

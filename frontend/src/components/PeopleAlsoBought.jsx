@@ -4,13 +4,14 @@ import LoadingSpinner from "./LoadingSpinner";
 import axios from "../lib/axios";
 import toast from "react-hot-toast";
 import { useCartStore } from "../stores/useCartStore";
-import { motion } from "framer-motion";
 import { TrendingUp } from "lucide-react";
+import { useWishlistStore } from "../stores/useWishlistStore";
 
 const PeopleAlsoBought = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { isInCart } = useCartStore();
+  const {isInWishlist} = useWishlistStore();
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -35,11 +36,7 @@ const PeopleAlsoBought = () => {
   if (recommendations.length === 0) return null;
 
   return (
-    <motion.section
-      className="mt-12"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    <section className="mt-12">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-blue-100 rounded-lg">
           <TrendingUp className="w-5 h-5 text-blue-600" />
@@ -54,22 +51,21 @@ const PeopleAlsoBought = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {recommendations.map((product, index) => (
-          <motion.div
-            key={product._id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}>
-            <ProductCard
-              product={product}
-              inCart={isInCart(product._id)}
-              compact
-            />
-          </motion.div>
-        ))}
+      <div className="overflow-x-auto">
+        <div className="flex space-x-4 pb-2 px-2">
+          {recommendations.map((product) => (
+            <div key={product._id} className="min-w-[280px] max-w-[280px]">
+              <ProductCard
+                product={product}
+                inCart={isInCart(product._id)}
+                inWishlist={isInWishlist(product._id)}
+                compact
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 

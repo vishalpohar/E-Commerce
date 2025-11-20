@@ -11,7 +11,7 @@ import {
   Handbag,
 } from "lucide-react";
 import axios from "../lib/axios";
-import {stripePromise} from "../lib/stripe";
+import { stripePromise } from "../lib/stripe";
 import { useNavigate } from "react-router-dom";
 import { useProductStore } from "../stores/useProductStore";
 import { useUserStore } from "../stores/useUserStore";
@@ -19,15 +19,19 @@ import { useCartStore } from "../stores/useCartStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
+import { useWishlistStore } from "../stores/useWishlistStore";
 
 const ProductDetailsPage = () => {
   const { id: productId } = useParams();
   const { user } = useUserStore();
   const { fetchProductById, product } = useProductStore();
   const { addToCart, isInCart, coupon } = useCartStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const navigate = useNavigate();
 
   const inCart = isInCart(productId);
+  const inWishlist = isInWishlist(productId);
   const [isExpanded, setIsExpanded] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -47,6 +51,18 @@ const ProductDetailsPage = () => {
       return;
     }
     addToCart({ ...product, quantity });
+  };
+
+  const handleWishlist = (product) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (inWishlist) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
   };
 
   const handlePayment = async () => {
@@ -76,7 +92,7 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
@@ -100,11 +116,11 @@ const ProductDetailsPage = () => {
           </ol>
         </nav>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+        <div className="bg-white md:rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 md:p-8">
             {/* Image Gallery */}
             <div className="space-y-4">
-              <div className="aspect-square rounded-2xl bg-gray-100 overflow-hidden">
+              <div className="aspect-square bg-gray-100 overflow-hidden">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -204,8 +220,16 @@ const ProductDetailsPage = () => {
 
                 {/* Secondary Actions */}
                 <div className="flex gap-2">
-                  <button className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors">
-                    <Heart className="w-5 h-5 text-gray-600" />
+                  <button
+                    className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors"
+                    onClick={() => handleWishlist(product)}>
+                    <Heart
+                      className={`w-5 h-5 ${
+                        inWishlist
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-600"
+                      }`}
+                    />
                   </button>
                   <button className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors">
                     <Share2 className="w-5 h-5 text-gray-600" />
@@ -219,7 +243,9 @@ const ProductDetailsPage = () => {
                   <Truck size={25} className="text-green-500" />
                   <div className="text-center">
                     <p className="font-medium text-gray-900">Free Shipping</p>
-                    <p className="text-sm text-gray-600">On orders over $50</p>
+                    <p className="text-sm text-gray-600">
+                      On orders over ₹1000
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row items-center md:justify-center gap-3">
@@ -242,8 +268,7 @@ const ProductDetailsPage = () => {
         </div>
 
         {/* People Also Bought */}
-        <div
-          className="mt-12">
+        <div className="mt-12">
           <PeopleAlsoBought />
         </div>
       </div>

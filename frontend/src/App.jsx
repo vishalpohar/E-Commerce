@@ -21,6 +21,7 @@ import { useCartStore } from "./stores/useCartStore";
 import OrdersPage from "./pages/OrdersPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import ScrollToTop from "./components/ScrollToTop";
+import WishlistPage from "./pages/WishlistPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -46,7 +47,7 @@ function App() {
       </div>
       <div className="relative flex flex-col min-h-screen z-10">
         <Navbar />
-        <main className="flex-grow">
+        <main className="flex-grow pt-16">
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -72,6 +73,10 @@ function App() {
             <Route
               path="/cart"
               element={user ? <CartPage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/wishlist"
+              element={user ? <WishlistPage /> : <Navigate to="/login" />}
             />
             <Route
               path="/orders"

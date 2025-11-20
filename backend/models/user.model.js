@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     role: {
       type: String,
       enum: ["customer", "admin"],
@@ -42,9 +48,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-
-userSchema.index({role: 1});
-
+userSchema.index({ role: 1 });
 
 // Pre-save hook to hash password before saving to database
 userSchema.pre("save", async function (next) {

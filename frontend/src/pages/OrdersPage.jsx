@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { useProductStore } from "../stores/useProductStore";
-import {
-  ArrowLeft,
-  ArrowRight,
-  ShoppingCart,
-  Package,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ShoppingCart, Package } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { formatPriceInRupees } from "../utils/formatCurrency";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const OrdersPage = () => {
   const [page, setPage] = useState(1);
-  const { orders, totalPages, getMyOrders } = useProductStore();
+  const { orders, totalPages, getMyOrders, loading } = useProductStore();
 
   const handleNext = () => setPage((p) => p + 1);
 
@@ -50,6 +47,8 @@ const OrdersPage = () => {
     return <EmptyOrdersUI />;
   }
 
+  if (loading) return <LoadingSpinner />;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,7 +63,10 @@ const OrdersPage = () => {
         {/* Orders Grid */}
         <div className="grid grid-cols-1 gap-6">
           {orders.map((order) => (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -8 }}
               key={order._id}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-500">
               {/* Order Header */}
@@ -96,32 +98,38 @@ const OrdersPage = () => {
               {/* Order Items */}
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {order.products.map((item) => (
-                    <Link to={`/product-details/${item.product._id}`}>
-                      <div
-                        key={item.product._id}
-                        className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
-                        <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border border-gray-200">
-                          <img
-                            src={item.product.image}
-                            alt={item.product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-gray-900 text-sm line-clamp-2">
-                            {item.product.name}
-                          </h4>
-                          <p className="text-gray-600 text-sm">
-                            Qty: {item.quantity}
-                          </p>
-                          <p className="text-gray-900 font-medium text-sm">
-                            {formatPriceInRupees(item.product.price)}
-                          </p>
-                        </div>
+                  {order.products.map((item) => {
+                    const product = order.productDetails.find(
+                      (p) => p._id === item.product
+                    );
+
+                    return (
+                      <div key={product._id}>
+                        <Link to={`/product-details/${product._id}`}>
+                          <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                            <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border border-gray-200">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-gray-900 text-sm line-clamp-2">
+                                {product.name}
+                              </h4>
+                              <p className="text-gray-600 text-sm">
+                                Qty: {item.quantity}
+                              </p>
+                              <p className="text-gray-900 font-medium text-sm">
+                                {formatPriceInRupees(product.price)}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
                       </div>
-                    </Link>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Order Actions */}
@@ -134,7 +142,7 @@ const OrdersPage = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -180,9 +188,7 @@ const OrdersPage = () => {
 export default OrdersPage;
 
 const EmptyOrdersUI = () => (
-  <div
-    className="min-h-[70vh] flex items-center justify-center px-4 transition-all duration-500"
-  >
+  <div className="min-h-[70vh] flex items-center justify-center px-4 transition-all duration-500">
     <div className="text-center max-w-md">
       <div className="relative mb-8">
         <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto">

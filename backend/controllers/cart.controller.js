@@ -50,7 +50,7 @@ export const removeProductFromCart = async (req, res) => {
     if (!productId) {
       user.cartItems = [];
     } else {
-      user.cartItems = user.cartItems.filter((item) => item.id !== productId);
+      user.cartItems = user.cartItems.filter((item) => item._id.toString() !== productId);
     }
     await user.save();
     res.json(user.cartItems);
