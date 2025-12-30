@@ -22,10 +22,18 @@ const Navbar = () => {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [menuIcon, setMenuIcon] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const searchRef = useRef(null);
-  const dropDownRef = useRef(null);
+  const menuRef = useRef(null);
   const navigate = useNavigate();
+
+  const toggleMobileMenu = () => {
+    setMenuIcon(!menuIcon);
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && searchValue !== "") {
@@ -42,8 +50,9 @@ const Navbar = () => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearch(false);
       }
-      if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMobileMenuOpen(false);
+        setMenuIcon(true);
       }
     };
 
@@ -56,29 +65,22 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       {/* Main Navbar */}
-      <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6">
+      <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm px-2 md:px-6">
+        <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div>
               <Link
                 to="/"
-                className="flex items-center gap-3 text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent select-none hover:scale-105 duration-500">
+                className="relative flex items-center gap-3 text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent select-none duration-500">
                 <span className="flex items-center tracking-tight">
-                  B
-                  <Heart
-                    size={25}
-                    className="mx-1 text-blue-600 drop-shadow-sm"
-                    strokeWidth={3}
-                    fill="currentColor"
-                  />
-                  Store
+                  easyBuy
                 </span>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-2 md:space-x-6 px-2">
               {isAdmin && (
                 <div className="hover:scale-105 duration-200">
                   <Link
@@ -96,7 +98,7 @@ const Navbar = () => {
                       to="/cart"
                       className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 group">
                       <Handbag size={20} />
-                      <span className="text-lg font-light">Your Bag</span>
+                      <span className="text-lg font-light">YourBag</span>
                       {cart.length > 0 && (
                         <motion.span
                           initial={{ scale: 0 }}
@@ -108,7 +110,7 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  <div className="hover:scale-105 duration-200">
+                  <div className="relative hover:scale-105 duration-200">
                     <Link
                       to="/wishlist"
                       className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
@@ -144,7 +146,7 @@ const Navbar = () => {
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={logout}
-                      className="flex items-center space-x-1 px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200">
+                      className="flex items-center space-x-1 px-4 py-2 text-gray-800 hover:text-blue-600 transition-all duration-200">
                       <LogOut size={20} />
                       <span className="text-lg font-light">Logout</span>
                     </motion.button>
@@ -161,7 +163,7 @@ const Navbar = () => {
                     className="hover:scale-105 duration-200">
                     <Link
                       to="/login"
-                      className="px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200">
+                      className="px-4 py-2 text-gray-800 hover:text-blue-600 hover:scale-105 transition-all duration-200">
                       <span className="text-lg font-light">Login</span>
                     </Link>
                   </motion.div>
@@ -170,10 +172,10 @@ const Navbar = () => {
 
               {/* Mobile Menu Button */}
               <div className="flex md:hidden items-center space-x-3">
-                {user ? (
+                {user ? ( menuIcon && 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    onClick={toggleMobileMenu}
                     className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
                     <Menu size={20} />
                   </motion.button>
@@ -183,7 +185,7 @@ const Navbar = () => {
                     className="hover:scale-105 duration-200">
                     <Link
                       to="/login"
-                      className="px-4 py-2 text-gray-800 hover:scale-105 transition-all duration-200 shadow-sm font-medium">
+                      className="px-4 py-2 text-gray-800 hover:text-blue-600 hover:scale-105 transition-all duration-200">
                       <span className="text-lg font-light">Login</span>
                     </Link>
                   </motion.div>
@@ -239,16 +241,20 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <motion.div
-          ref={dropDownRef}
-          initial={{ opacity: 0, x: 300 }}
+          ref={menuRef}
+          initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 300 }}
-          className="fixed top-16 right-4 z-40 bg-white rounded-2xl shadow-xl border border-gray-100 w-64">
+          exit={{ opacity: 0, x: 80 }}
+          transition={{
+            type: "spring",
+            stiffness: 120,
+            damping: 20,
+          }}
+          className="fixed top-16 right-0 z-40 bg-white shadow-xl border border-gray-100 w-60 h-full">
           <div className="p-4 space-y-2">
             {user && (
               <>
-                <div
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
                   <UserRound
                     className="text-gray-600 group-hover:text-blue-600"
                     size={20}
@@ -257,9 +263,23 @@ const Navbar = () => {
                     {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
                   </span>
                 </div>
+
+                {isAdmin && (
+                  <Link
+                    to="/secret-dashboard"
+                    onClick={toggleMobileMenu}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                    <User
+                      className="text-gray-600 group-hover:text-blue-600"
+                      size={20}
+                    />
+                    <span className="font-light text-gray-700">Dashboard</span>
+                  </Link>
+                )}
+
                 <Link
                   to="/cart"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
                   <Handbag
                     className="text-gray-600 group-hover:text-blue-600"
@@ -272,7 +292,7 @@ const Navbar = () => {
 
                 <Link
                   to="/wishlist"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
                   <Heart
                     className="text-gray-600 group-hover:text-blue-600"
@@ -285,7 +305,7 @@ const Navbar = () => {
 
                 <Link
                   to="/orders"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
                   <Package
                     className="text-gray-600 group-hover:text-blue-600"
@@ -296,25 +316,12 @@ const Navbar = () => {
               </>
             )}
 
-            {isAdmin && (
-              <Link
-                to="/secret-dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
-                <User
-                  className="text-gray-600 group-hover:text-blue-600"
-                  size={20}
-                />
-                <span className="font-light text-gray-700">Dashboard</span>
-              </Link>
-            )}
-
             <div className="border-t border-gray-100 pt-4">
               {user && (
                 <button
                   onClick={() => {
                     logout();
-                    setIsMobileMenuOpen(false);
+                    toggleMobileMenu();
                   }}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 group w-full text-left">
                   <LogOut

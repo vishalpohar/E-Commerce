@@ -77,9 +77,6 @@ const SignUpPage = () => {
         >
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
-            <UserPlus className="w-8 h-8 text-white" />
-          </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Create Account
           </h2>

@@ -16,14 +16,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
-              </div>
-              <span className="inline-flex text-xl font-bold">
-                BLikeStore
-              </span>
-            </div>
+            <span className="inline-flex text-xl font-bold">easyBuy</span>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Your premier destination for quality fashion and accessories.
               We're committed to bringing you the latest trends with exceptional
@@ -102,7 +95,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-gray-400">
                 <Mail className="w-5 h-5" />
-                <span>support@B-like-store-store.com</span>
+                <span>support@easybuy.com</span>
               </div>
             </div>
           </div>

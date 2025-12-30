@@ -40,7 +40,7 @@ const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -8 }}
-      className="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden">
+      className="group bg-white shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden">
       {/* Product Image */}
       <Link
         className="relative block overflow-hidden bg-gray-50"
@@ -50,6 +50,8 @@ const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
           className="w-full h-48 object-cover transition-transform duration-500"
           src={product.image}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
 
@@ -65,16 +67,6 @@ const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
               ${inWishlist ? "fill-red-500 text-red-500" : "text-gray-600"}`}
             />
           </button>
-        </div>
-
-        {/* Quick View Overlay */}
-        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm hover:bg-white transition-colors duration-200">
-            <Eye className="w-4 h-4 text-gray-700" />
-          </motion.button>
         </div>
 
         {/* In Cart Badge */}
@@ -109,24 +101,22 @@ const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
           onClick={() =>
             inCart ? navigate("/cart") : handleAddToCart(product)
           }
-          className={`relative overflow-hidden w-full text-sm font-semibold py-4 px-6 transition-all duration-300 flex items-center justify-center shadow-sm group ${
+          className={`relative overflow-hidden w-full text-sm font-semibold py-2 px-2 transition-all duration-300 flex items-center justify-center shadow-sm group ${
             inCart
               ? "bg-blue-500 hover:bg-blue-600 text-white"
               : "bg-gray-900 text-white"
           }`}>
-          {/* Shine overlay */}
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-
+            
           {inCart ? (
-            <>
-              SEE BAG
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </>
+            <div className="flex justify-center items-center">
+              <span className="text-[10px] md:text-xs">SEE BAG</span>
+              <ArrowRight className="ml-2" size={20} />
+            </div>
           ) : (
-            <>
-              <Handbag className="mr-2 w-6 h-6" />
-              ADD TO BAG
-            </>
+            <div className="flex justify-center items-center">
+              <Handbag className="mr-2" size={22} />
+              <span className="text-[10px] md:text-xs">ADD TO BAG</span>
+            </div>
           )}
         </motion.button>
       </div>

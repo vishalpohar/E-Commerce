@@ -33,9 +33,11 @@ const ProductDetailsPage = () => {
   const inCart = isInCart(productId);
   const inWishlist = isInWishlist(productId);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showName, setShowName] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
   const toggleExpanded = () => setIsExpanded((prev) => !prev);
+  const toggleName = () => setShowName((prev) => !prev);
 
   const displayText = (description) => {
     return isExpanded
@@ -43,6 +45,14 @@ const ProductDetailsPage = () => {
       : description.length > 150
       ? description.substring(0, 150) + "..."
       : description;
+  };
+
+  const displayName = (name) => {
+    return showName
+    ? name
+    : name.length > 100
+    ? name.substring(0, 100) + "..."
+    : name;
   };
 
   const handleAddToCart = (product) => {
@@ -94,8 +104,8 @@ const ProductDetailsPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="flex mb-8" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-2 text-sm text-gray-600">
+        <nav className="flex mb-4" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2 text-sm text-gray-600 pl-2">
             <li>
               <a href="/" className="hover:text-blue-600 transition-colors">
                 Home
@@ -111,7 +121,12 @@ const ProductDetailsPage = () => {
             </li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
-              <span className="text-gray-900 font-medium">{product.name}</span>
+              <span className="text-gray-900 font-medium">
+                {product.name.substring(0, 60)}
+                {product.name.length > 60 && (
+                  <span>...</span>
+                )}
+              </span>
             </li>
           </ol>
         </nav>
@@ -124,6 +139,8 @@ const ProductDetailsPage = () => {
                 <img
                   src={product.image}
                   alt={product.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -132,8 +149,15 @@ const ProductDetailsPage = () => {
             {/* Product Details */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                  {product.name}
+                <h1 className="text-xl lg:text-3xl font-bold text-gray-900 mb-4">
+                  {displayName(product.name)}
+                  {product.name.length > 100 && (
+                    <button
+                      onClick={toggleName}
+                      className="text-blue-600 hover:text-blue-700 font-medium ml-1 transition-colors">
+                      {showName ? "Show less" : "Show more"}
+                    </button>
+                  )}
                 </h1>
 
                 {/* Rating */}

@@ -1,12 +1,13 @@
 import { create } from "zustand";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import axios from "../lib/axios";
 
-export const useProductStore = create((set) => ({
+export const useProductStore = create((set, get) => ({
   product: null,
   products: [],
   loading: false,
   orders: [],
+  ordersByPage: {},
   total: null,
   totalPages: null,
 
@@ -17,7 +18,7 @@ export const useProductStore = create((set) => ({
     try {
       const res = await axios.post("/products", productData);
       set((prevState) => ({
-        products: [...prevState.products, res.data],
+        products: [...prevState.products, res.data.product],
         loading: false,
       }));
       toast.success("Product created successfully!");
@@ -129,14 +130,27 @@ export const useProductStore = create((set) => ({
     }
   },
   getMyOrders: async (page, limit = 5) => {
+    const {ordersByPage} = get();
+
+    if(ordersByPage[page]) return;
+
     set({ loading: true });
     try {
       const response = await axios.get(
         `/products/orders?page=${page}&limit=${limit}`
       );
+      
       const { orders, totalOrders, totalPages } = response.data;
 
-      set({ orders, total: totalOrders, totalPages, loading: false });
+      set((state) => ({
+        ordersByPage: {
+          ...state.ordersByPage,
+          [page]: orders,
+        },
+        total: totalOrders,
+        totalPages,
+        loading: false,
+      }));
     } catch (error) {
       set({
         orders: [],

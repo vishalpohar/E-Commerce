@@ -50,7 +50,9 @@ export const removeProductFromCart = async (req, res) => {
     if (!productId) {
       user.cartItems = [];
     } else {
-      user.cartItems = user.cartItems.filter((item) => item._id.toString() !== productId);
+      user.cartItems = user.cartItems.filter(
+        (item) => item._id.toString() !== productId
+      );
     }
     await user.save();
     res.json(user.cartItems);
@@ -64,14 +66,20 @@ export const removeProductFromCart = async (req, res) => {
 export const clearCart = async (req, res) => {
   try {
     const user = req.user;
-    await User.findOneAndUpdate(user._id, {$set: {cartItems: []}}, {new:true});
-    res.status(200).json({success:true, message:"Cart cleared successfully"})
+    await User.findOneAndUpdate(
+      user._id,
+      { $set: { cartItems: [] } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Cart cleared successfully" });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
-}
+};
 
 export const updateQuantity = async (req, res) => {
   try {

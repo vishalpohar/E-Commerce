@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 import ProductCard from "../components/ProductCard";
-import { ChevronDown } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useWishlistStore } from "../stores/useWishlistStore";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
+import { useCartStore } from "../stores/useCartStore";
 
 const WishlistPage = () => {
   const { getWishlist, wishlist, isInWishlist, loading } = useWishlistStore();
+  const { isInCart } = useCartStore();
 
   useEffect(() => {
     getWishlist();
-  }, []);
+  }, [wishlist.length, getWishlist]);
+
+  if (loading) return <LoadingSpinner />;
 
   if (wishlist.length === 0)
     return (
@@ -30,8 +33,6 @@ const WishlistPage = () => {
       </div>
     );
 
-  if (loading) return <LoadingSpinner />;
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,11 +51,12 @@ const WishlistPage = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-6">
           {wishlist?.map((product) => (
             <ProductCard
               key={product._id}
               product={product}
+              inCart={isInCart(product._id)}
               inWishlist={isInWishlist(product._id)}
             />
           ))}

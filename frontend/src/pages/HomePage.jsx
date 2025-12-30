@@ -20,21 +20,21 @@ const HomePage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
         {/* Categories Section */}
         <section className="mb-16 lg:mb-24">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <motion.h1
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              className="text-2xl md:text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
               Explore Our Collection
             </motion.h1>
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-gray-600 max-w-2xl mx-auto">
+              className="text-sm md:text-xl text-gray-600 max-w-2xl mx-auto">
               Discover curated fashion pieces that blend style with
               sustainability
             </motion.p>

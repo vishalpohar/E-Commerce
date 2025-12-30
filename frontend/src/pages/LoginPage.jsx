@@ -30,9 +30,6 @@ const LoginPage = () => {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back
           </h2>
@@ -162,7 +159,7 @@ const LoginPage = () => {
         {/* Trust Badges */}
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            Secure login with SSL encryption • Your data is protected
+            Your data is securely encrypted • We never share your information
           </p>
         </div>
       </div>

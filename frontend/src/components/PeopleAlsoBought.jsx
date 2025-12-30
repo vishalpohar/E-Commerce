@@ -52,14 +52,13 @@ const PeopleAlsoBought = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="flex space-x-4 pb-2 px-2">
+        <div className="flex space-x-2 pb-2">
           {recommendations.map((product) => (
-            <div key={product._id} className="min-w-[280px] max-w-[280px]">
+            <div key={product._id} className="min-w-[180px] md:min-w-[280px] max-w-[180px] md:max-w-[280px]">
               <ProductCard
                 product={product}
                 inCart={isInCart(product._id)}
                 inWishlist={isInWishlist(product._id)}
-                compact
               />
             </div>
           ))}

@@ -8,15 +8,21 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 const OrdersPage = () => {
   const [page, setPage] = useState(1);
-  const { orders, totalPages, getMyOrders, loading } = useProductStore();
+  const { ordersByPage, totalPages, getMyOrders, loading } = useProductStore();
 
-  const handleNext = () => setPage((p) => p + 1);
+  const handleNext = () => {
+    setPage((p) => p + 1);
+    window.scrollTo(0, 0);
+  };
 
-  const handlePrevious = () => setPage((p) => p - 1);
+  const handlePrevious = () => {
+    setPage((p) => p - 1);
+    window.scrollTo(0, 0);
+  };
 
-  const isPreviousDisabled = orders.length === 0 || page === 1;
+  const isPreviousDisabled = ordersByPage.length === 0 || page === 1;
   const isNextDisabled =
-    orders.length === 0 || (totalPages != null ? page === totalPages : true);
+    ordersByPage.length === 0 || (totalPages != null ? page === totalPages : true);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -43,11 +49,11 @@ const OrdersPage = () => {
     getMyOrders(page);
   }, [page, getMyOrders]);
 
-  if (orders.length === 0) {
+  if (loading) return <LoadingSpinner />;
+
+  if (ordersByPage.length === 0) {
     return <EmptyOrdersUI />;
   }
-
-  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -62,7 +68,7 @@ const OrdersPage = () => {
 
         {/* Orders Grid */}
         <div className="grid grid-cols-1 gap-6">
-          {orders.map((order) => (
+          {ordersByPage[page]?.map((order) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

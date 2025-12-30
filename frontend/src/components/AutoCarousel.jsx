@@ -31,11 +31,11 @@ export default function AutoCarousel() {
 
   return (
     <div
-      className="relative h-[60vh] sm:h-[70vh] lg:h-[80vh] overflow-hidden bg-black"
+      className="relative h-[40vh] sm:h-[70vh] lg:h-[80vh] overflow-hidden bg-black"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}>
       {/* IMAGES */}
-      <div className="w-full h-full relative">
+      <div>
         {images.map((img, index) => (
           <img
             key={index}
@@ -43,10 +43,10 @@ export default function AutoCarousel() {
             loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
             fetchPriority={index === 0 ? "high" : "auto"}
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out
+            className={`absolute top-0 left-0 w-full h-full object-fit transition-opacity duration-1000 ease-in-out
               ${index === current ? "opacity-100" : "opacity-0"}
             `}
-            alt=""
+            alt="bannerImage"
           />
         ))}
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-black/40" />

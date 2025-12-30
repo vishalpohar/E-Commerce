@@ -59,42 +59,27 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                {categoryName}
-              </h1>
-              <p className="text-gray-600">
-                {products?.length || 0} products available
-              </p>
-            </div>
 
-            {/* Controls */}
-            <div className="flex items-center gap-4 mt-4 lg:mt-0">
-              {/* Sort Dropdown */}
-              <div className="relative">
+        <div className="mb-8">
+          {/* Controls */}
+          {products.length > 0 && (
+            <div className="flex flex-col items-end gap-1 mt-4 lg:mt-0">
+              <div className="relative flex flex-row appearance-none text-gray-700 bg-white border border-gray-300 outline-none rounded-xl px-4 py-2 transition-all duration-200">
+                <p>Sort: </p>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none text-gray-700 bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                  onChange={(e) => setSortBy(e.target.value)}>
                   <option value="newest">Newest First</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
+                  <option value="price-low">Price Low to High</option>
+                  <option value="price-high">Price High to Low</option>
                 </select>
-                {sortBy === "price-low" && (
-                  <ArrowUpWideNarrow className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
-                )}
-                {sortBy === "price-high" && (
-                  <ArrowDownWideNarrow className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
-                )}
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
           {products?.map((product) => (
             <ProductCard
               key={product._id}

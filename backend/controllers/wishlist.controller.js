@@ -10,7 +10,7 @@ export const addToWishlist = async (req, res) => {
     }
 
     await user.save();
-    res.json(user.wishlist);
+    res.status(201).json(user.wishlist);
   } catch (error) {
     console.log("Error in addToWishlist controller", error.message);
     res
@@ -21,10 +21,11 @@ export const addToWishlist = async (req, res) => {
 
 export const getWishlistProducts = async (req, res) => {
   try {
+    const wishlist = req.user.wishlist;
     const wishlistProducts = await Product.find({
-      _id: { $in: req.user.wishlist },
+      _id: { $in: wishlist },
     });
-    res.json(wishlistProducts);
+    res.status(200).json(wishlistProducts);
   } catch (error) {
     console.log("Error in getWishlistProducts controller", error.message);
     res
@@ -43,7 +44,7 @@ export const removeWishlistProduct = async (req, res) => {
     );
     
     await user.save();
-    res.json(user.wishlist);
+    res.status(200).json(user.wishlist);
   } catch (error) {
     console.log("Error in removeWishlistProduct controller", error.message);
     res

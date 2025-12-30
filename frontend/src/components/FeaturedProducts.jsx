@@ -30,8 +30,9 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) setItemsPerPage(1);
-      else if (window.innerWidth < 768) setItemsPerPage(2);
+      // if (window.innerWidth < 640) setItemsPerPage(1);
+      // else 
+      if (window.innerWidth < 640) setItemsPerPage(2);
       else if (window.innerWidth < 1280) setItemsPerPage(3);
       else setItemsPerPage(4);
     };
@@ -63,7 +64,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
     <section className="py-10 lg:py-10 bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16 lg:mb-20">
+        <div className="text-center mb-6 lg:mb-20">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -90,7 +91,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
         {/* Products */}
         <div className="relative">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-2 h-80">
             {visibleProducts.map((product) => {
               const inCart = isInCart(product._id);
 
@@ -98,14 +99,15 @@ const FeaturedProducts = ({ featuredProducts }) => {
                 <motion.div
                   key={product._id}
                   whileHover={{ y: -6 }}
-                  className="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden">
+                  className="group bg-white shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden">
                   <Link to={`/product-details/${product._id}`}>
                     <div className="relative overflow-hidden bg-gray-100">
                       <img
                         src={product.image}
                         alt={product.name}
                         loading="lazy"
-                        className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                        decoding="async"
+                        className="w-full h-32 object-cover transition-transform duration-500 group-hover:scale-105"
                       />
 
                       {inCart && (
@@ -120,13 +122,13 @@ const FeaturedProducts = ({ featuredProducts }) => {
                   {/* Product Info */}
                   <div className="p-6">
                     <Link to={`/product-details/${product._id}`}>
-                      <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors text-lg leading-tight">
+                      <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors md:text-lg leading-tight">
                         {product.name}
                       </h3>
                     </Link>
 
                     <div className="flex items-center justify-between mb-5">
-                      <span className="text-2xl font-bold text-gray-900">
+                      <span className="md:text-2xl font-bold text-gray-900">
                         {formatPriceInRupees(product?.price)}
                       </span>
                     </div>
@@ -138,29 +140,27 @@ const FeaturedProducts = ({ featuredProducts }) => {
                       onClick={() =>
                         inCart ? navigate("/cart") : handleAddToCart(product)
                       }
-                      className={`relative overflow-hidden w-full text-sm font-semibold py-4 px-6 
+                      className={`relative overflow-hidden w-full text-sm font-semibold py-2 px-2 
                       transition-all duration-300 flex items-center justify-center shadow-sm group 
                       ${
                         inCart
                           ? "bg-blue-500 hover:bg-blue-600 text-white"
                           : "bg-gray-900 text-white"
                       }`}>
-                      {/* Shiny swipe effect */}
-                      <span
-                        className="absolute inset-0 w-full h-full bg-gradient-to-r 
-                        from-transparent via-white/30 to-transparent 
-                        -translate-x-full group-hover:translate-x-full 
-                        transition-transform duration-700 ease-in-out"
-                      />
                       {inCart ? (
-                        <>
-                          SEE BAG <ArrowRight className="ml-2 w-4 h-4" />
-                        </>
+                        <div className="flex justify-center items-center py-1">
+                          <span className="text-[10px] md:text-xs">
+                            SEE BAG
+                          </span>
+                          <ArrowRight className="ml-1" size={20} />
+                        </div>
                       ) : (
-                        <>
-                          <Handbag className="mr-2 w-6 h-6" />
-                          ADD TO BAG
-                        </>
+                        <div className="flex justify-center items-center py-1">
+                          <Handbag className="mr-1" size={18} />
+                          <span className="text-[10px] md:text-xs">
+                            ADD TO BAG
+                          </span>
+                        </div>
                       )}
                     </motion.button>
                   </div>

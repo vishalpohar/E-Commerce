@@ -61,14 +61,17 @@ const ProductsList = () => {
                         className="h-12 w-12 object-cover"
                         src={product.image}
                         alt={product.name}
+                        loading="lazy"
                       />
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                        {product.name.substring(0, 50)}...
+                        {product.name?.substring(0, 50)}
+                        {product.name?.length > 50 && "..."}
                       </div>
                       <div className="text-sm text-gray-500 line-clamp-1">
-                        {product.description.substring(0, 50)}...
+                        {product.description?.substring(0, 50)}
+                        {product.description?.length > 50 && "..."}
                       </div>
                     </div>
                   </div>

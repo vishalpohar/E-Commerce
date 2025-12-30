@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 export const useWishlistStore = create((set, get) => ({
   wishlist: [],
   loading: false,
+  hasFetched: false,
   addToWishlist: async (product) => {
     try {
       await axios.post(`/wishlist/add/${product._id}`);
@@ -16,12 +17,16 @@ export const useWishlistStore = create((set, get) => ({
     }
   },
   getWishlist: async () => {
-    set({loading: true});
+    const { wishlist, hasFetched } = get();
+
+    if (hasFetched && wishlist.length > 0) return;
+
+    set({ loading: true });
     try {
       const response = await axios.get("/wishlist");
-      set({ wishlist: response.data, loading:false });
+      set({ wishlist: response.data, loading: false, hasFetched: true });
     } catch (error) {
-      set({ wishlist: [], loading:false });
+      set({ wishlist: [], loading: false });
       toast.error(error.response.data.message || "An error occurred");
     }
   },
@@ -37,6 +42,6 @@ export const useWishlistStore = create((set, get) => ({
   },
   isInWishlist: (productId) => {
     const { wishlist } = get();
-    return wishlist.some((item) => (item._id === productId));
+    return wishlist.some((item) => item._id === productId);
   },
 }));

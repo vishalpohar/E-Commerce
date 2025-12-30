@@ -2,9 +2,7 @@ import { motion } from "framer-motion";
 
 const LoadingSpinner = ({
   size = "medium",
-  text = "Loading ",
   className = "",
-  showText = true,
 }) => {
   const sizeClasses = {
     small: "w-8 h-8",
@@ -22,7 +20,7 @@ const LoadingSpinner = ({
 
   return (
     <motion.div
-      className={`flex flex-col items-center justify-center h-screen ${className}`}
+      className={`flex flex-col items-center justify-center min-h-screen ${className}`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}>
@@ -40,34 +38,6 @@ const LoadingSpinner = ({
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
       </div>
-
-      {/* Loading Text */}
-      {showText && text && (
-        <motion.div
-          className="mt-4 text-center"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}>
-          <p className={`text-gray-600 font-medium ${textSizes[size]} mb-2`}>
-            {text}
-            {/* Dots Animation */}
-            <span className="inline-flex justify-center space-x-1">
-              {[0, 1, 2].map((dot) => (
-                <motion.span
-                  key={dot}
-                  className="w-1 h-1 bg-gray-400 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: dot * 0.2,
-                  }}
-                />
-              ))}
-            </span>
-          </p>
-        </motion.div>
-      )}
     </motion.div>
   );
 };
