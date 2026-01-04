@@ -81,15 +81,15 @@ const ProductCard = ({ product, inCart = false, inWishlist = false }) => {
       </Link>
 
       {/* Product Info */}
-      <div className="p-6">
+      <div className="p-2 lg:p-6">
         <Link to={`/product-details/${product._id}`}>
-          <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300 leading-tight">
+          <h3 className="text-sm lg:text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300 leading-tight">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex items-center justify-between mb-5">
-          <span className="text-2xl font-bold text-gray-900">
+        <div className="flex items-center justify-between py-2">
+          <span className="text-lg lg:text-2xl font-bold text-gray-900">
             {formatPriceInRupees(product.price)}
           </span>
         </div>

@@ -21,9 +21,8 @@ export const addToWishlist = async (req, res) => {
 
 export const getWishlistProducts = async (req, res) => {
   try {
-    const wishlist = req.user.wishlist;
     const wishlistProducts = await Product.find({
-      _id: { $in: wishlist },
+      _id: { $in: req.user.wishlist },
     });
     res.status(200).json(wishlistProducts);
   } catch (error) {
@@ -42,7 +41,7 @@ export const removeWishlistProduct = async (req, res) => {
     user.wishlist = user.wishlist.filter(
       (item) => item.toString() != productId
     );
-    
+
     await user.save();
     res.status(200).json(user.wishlist);
   } catch (error) {

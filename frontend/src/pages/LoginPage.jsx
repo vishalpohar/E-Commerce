@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   LogIn,
@@ -9,7 +8,6 @@ import {
   Loader,
   EyeOff,
   Eye,
-  Shield,
 } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 

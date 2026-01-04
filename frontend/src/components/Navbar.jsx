@@ -20,6 +20,7 @@ const Navbar = () => {
   const isAdmin = user?.role === "admin";
   const { cart } = useCartStore();
 
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [menuIcon, setMenuIcon] = useState(true);
@@ -33,8 +34,6 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && searchValue !== "") {
       navigate(`/search?query=${encodeURIComponent(searchValue.trim())}`);
@@ -46,6 +45,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearch(false);
@@ -59,22 +62,28 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       {/* Main Navbar */}
-      <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm px-2 md:px-6">
+      <nav
+        className={`px-2 md:px-6 text-gray-600 ${
+          isScrolled
+            ? `text-white bg-slate-900/70 backdrop-blur-xl shadow-sm`
+            : `bg-transparent`
+        }`}>
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div>
               <Link
                 to="/"
-                className="relative flex items-center gap-3 text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent select-none duration-500">
-                <span className="flex items-center tracking-tight">
-                  easyBuy
+                className={`relative flex items-center gap-3 text-3xl font-extrabold duration-500 ${isScrolled ? `text-white` : `text-gray-700`}`}>
+                <span className="flex items-center font-serif tracking-tight">
+                  EasyBuy
                 </span>
               </Link>
             </div>
@@ -82,10 +91,10 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-2 md:space-x-6 px-2">
               {isAdmin && (
-                <div className="hover:scale-105 duration-200">
+                <div className="hover:scale-105">
                   <Link
                     to="/secret-dashboard"
-                    className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                    className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
                     <span className="text-lg font-light">Dashboard</span>
                   </Link>
                 </div>
@@ -93,10 +102,10 @@ const Navbar = () => {
               {user && (
                 <>
                   {/* Cart */}
-                  <div className="relative hover:scale-105 duration-200">
+                  <div className="relative hover:scale-105">
                     <Link
                       to="/cart"
-                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 group">
+                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200 group">
                       <Handbag size={20} />
                       <span className="text-lg font-light">YourBag</span>
                       {cart.length > 0 && (
@@ -110,20 +119,20 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  <div className="relative hover:scale-105 duration-200">
+                  <div className="relative hover:scale-105">
                     <Link
                       to="/wishlist"
-                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
                       <Heart size={20} />
                       <span className="text-lg font-light">Wishlist</span>
                     </Link>
                   </div>
 
                   {/* Orders */}
-                  <div className="hover:scale-105 duration-200">
+                  <div className="hover:scale-105">
                     <Link
                       to="/orders"
-                      className="flex items-center space-x-1 p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200">
+                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
                       <span className="text-lg font-light">Orders</span>
                     </Link>
                   </div>
@@ -135,7 +144,7 @@ const Navbar = () => {
               {/* Search Button */}
               <button
                 onClick={() => setShowSearch(true)}
-                className="p-2 text-gray-600 hover:text-blue-600 transition-colors hover:scale-105 duration-200">
+                className="p-2 hover:text-blue-600 transition-colors hover:scale-105 duration-200">
                 <Search size={20} />
               </button>
 
@@ -146,49 +155,55 @@ const Navbar = () => {
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={logout}
-                      className="flex items-center space-x-1 px-4 py-2 text-gray-800 hover:text-blue-600 transition-all duration-200">
+                      className="relative group px-4 py-2 hover:text-blue-600 transition-all duration-200">
                       <LogOut size={20} />
-                      <span className="text-lg font-light">Logout</span>
+                      <span
+                        className="
+                            absolute top-9 left-1/2 -translate-x-1/2
+                            bg-gray-900 text-white text-xs px-3 py-1 rounded-md
+                            opacity-0 scale-95
+                            group-hover:opacity-100 group-hover:scale-100
+                            transition-all duration-200
+                          ">
+                        logout
+                      </span>
                     </motion.button>
-                    <div className="flex items-center">
-                      <UserRound size={20} className="text-gray-600" />
-                      <span className="text-gray-700 text-lg">
+                    <div className="flex items-center justify-center">
+                      <UserRound
+                        size={20}
+                        className={`border-2 rounded-full ${isScrolled ? `border-white` : `border-gray-600`}`}
+                      />
+                      <span className="text-lg">
                         {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <motion.div
-                    whileTap={{ scale: 0.95 }}
-                    className="hover:scale-105 duration-200">
-                    <Link
-                      to="/login"
-                      className="px-4 py-2 text-gray-800 hover:text-blue-600 hover:scale-105 transition-all duration-200">
-                      <span className="text-lg font-light">Login</span>
-                    </Link>
-                  </motion.div>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 hover:text-blue-600 hover:scale-105 transition-all duration-200">
+                    <span className="text-lg font-light">Login</span>
+                  </Link>
                 )}
               </div>
 
               {/* Mobile Menu Button */}
               <div className="flex md:hidden items-center space-x-3">
-                {user ? ( menuIcon && 
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={toggleMobileMenu}
-                    className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
-                    <Menu size={20} />
-                  </motion.button>
+                {user ? (
+                  menuIcon && (
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={toggleMobileMenu}
+                      className="p-2 hover:text-blue-600 transition-colors duration-200">
+                      <Menu size={22} />
+                    </motion.button>
+                  )
                 ) : (
-                  <motion.div
-                    whileTap={{ scale: 0.95 }}
-                    className="hover:scale-105 duration-200">
-                    <Link
-                      to="/login"
-                      className="px-4 py-2 text-gray-800 hover:text-blue-600 hover:scale-105 transition-all duration-200">
-                      <span className="text-lg font-light">Login</span>
-                    </Link>
-                  </motion.div>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 hover:text-blue-600 hover:scale-105 transition-all duration-200">
+                    <span className="text-lg font-light">Login</span>
+                  </Link>
                 )}
               </div>
             </div>
@@ -242,9 +257,9 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <motion.div
           ref={menuRef}
-          initial={{ opacity: 0, x: 80 }}
+          initial={{ opacity: 0, x: 150 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 80 }}
+          exit={{ opacity: 0, x: 150 }}
           transition={{
             type: "spring",
             stiffness: 120,

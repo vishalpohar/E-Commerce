@@ -7,8 +7,12 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for Firefox */
 html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Firefox */
+body {
   scrollbar-width: none;
   overflow-y: scroll;
 }

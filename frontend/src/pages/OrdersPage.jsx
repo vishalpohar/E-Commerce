@@ -12,12 +12,10 @@ const OrdersPage = () => {
 
   const handleNext = () => {
     setPage((p) => p + 1);
-    window.scrollTo(0, 0);
   };
 
   const handlePrevious = () => {
     setPage((p) => p - 1);
-    window.scrollTo(0, 0);
   };
 
   const isPreviousDisabled = ordersByPage.length === 0 || page === 1;
@@ -47,6 +45,7 @@ const OrdersPage = () => {
 
   useEffect(() => {
     getMyOrders(page);
+    window.scrollTo({top:0});
   }, [page, getMyOrders]);
 
   if (loading) return <LoadingSpinner />;

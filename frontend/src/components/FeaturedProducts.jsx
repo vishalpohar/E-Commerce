@@ -175,23 +175,23 @@ const FeaturedProducts = ({ featuredProducts }) => {
               <button
                 onClick={prevSlide}
                 disabled={isStartDisabled}
-                className={`absolute -left-6 top-1/2 transform -translate-y-1/2 p-4 rounded-xl shadow-lg ${
+                className={`absolute -left-4 top-1/2 transform -translate-y-1/2 px-1 md:px-2 py-2 md:py-3 rounded-xl shadow-lg ${
                   isStartDisabled
                     ? "bg-gray-200 cursor-not-allowed"
                     : "bg-white text-gray-700 hover:shadow-xl"
                 }`}>
-                <ChevronLeft className="w-6 h-6" />
+                <ChevronLeft size={25} />
               </button>
 
               <button
                 onClick={nextSlide}
                 disabled={isEndDisabled}
-                className={`absolute -right-6 top-1/2 transform -translate-y-1/2 p-4 rounded-xl shadow-lg ${
+                className={`absolute -right-4 top-1/2 transform -translate-y-1/2 px-1 md:px-2 py-2 md:py-3 rounded-xl shadow-lg ${
                   isEndDisabled
                     ? "bg-gray-200 cursor-not-allowed"
                     : "bg-white text-gray-700 hover:shadow-xl"
                 }`}>
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight size={25} />
               </button>
             </>
           )}
@@ -199,7 +199,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
         {/* Pagination */}
         {featuredProducts.length > itemsPerPage && (
-          <div className="flex justify-center items-center space-x-3 mt-12">
+          <div className="flex justify-center items-center space-x-3 mt-10">
             {Array.from({
               length: Math.ceil(featuredProducts.length / itemsPerPage),
             }).map((_, index) => (
@@ -207,7 +207,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
                 key={index}
                 onClick={() => setCurrentIndex(index * itemsPerPage)}
                 className={`rounded-full transition-all ${
-                  index === Math.floor(currentIndex / itemsPerPage)
+                  index === Math.ceil(currentIndex / itemsPerPage)
                     ? "bg-blue-600 w-8 h-2"
                     : "bg-gray-300 w-2 h-2"
                 }`}
