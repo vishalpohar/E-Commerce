@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   LogIn,
   Mail,
   Lock,
-  ArrowRight,
   Loader,
   EyeOff,
   Eye,
@@ -33,6 +32,8 @@ const LoginPage = () => {
           </h2>
           <p className="text-gray-600">Sign in to your account to continue</p>
         </div>
+
+        <div id="googleSignInDiv"></div>
 
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
@@ -108,7 +109,7 @@ const LoginPage = () => {
 
               <a
                 href="#"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                className="text-sm text-gray-600 hover:text-blue-700 font-medium transition-colors">
                 Forgot password?
               </a>
             </div>
@@ -116,16 +117,16 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              className="w-full border-2 border-gray-400 hover:border-blue-500 text-gray-700 hover:text-blue-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <>
                   <Loader className="w-5 h-5 animate-spin" />
-                  Signing in...
+                  logging in...
                 </>
               ) : (
                 <>
                   <LogIn className="w-5 h-5" />
-                  Sign In
+                  Log In
                 </>
               )}
             </button>
@@ -143,12 +144,11 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="mt-6 text-center">
-              <Link
-                to="/signup"
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                Create an account
-                <ArrowRight className="ml-1 w-4 h-4" />
+            <div className="mt-6">
+              <Link to="/signup" className="flex items-center justify-center">
+                <span className="hover:border-2 hover:border-blue-600 rounded-full px-3 py-1 text-blue-600 font-medium transition-colors">
+                  Sign up
+                </span>
               </Link>
             </div>
           </div>

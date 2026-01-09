@@ -104,15 +104,6 @@ export const checkoutSuccess = async (req, res) => {
       {upsert:true, new:true, setDefaultsOnInsert:true}
     )
 
-    // const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
-    // if (existingOrder) {
-    //   return res.status(200).json({
-    //     success: true,
-    //     message: "Order already exists for this session",
-    //     orderId: existingOrder._id,
-    //   });
-    // }
-
       if (session.metadata.couponCode) {
         await Coupon.findOneAndUpdate(
           {

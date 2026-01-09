@@ -89,12 +89,12 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-2 md:space-x-6 px-2">
+            <div className="hidden md:flex items-center space-x-4 md:space-x-6 lg:space-x-10 px-2">
               {isAdmin && (
                 <div className="hover:scale-105">
                   <Link
                     to="/secret-dashboard"
-                    className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
+                    className="flex items-center space-x-1 hover:text-blue-600 rounded-lg px-2 transition-colors duration-200">
                     <span className="text-lg font-light">Dashboard</span>
                   </Link>
                 </div>
@@ -105,14 +105,14 @@ const Navbar = () => {
                   <div className="relative hover:scale-105">
                     <Link
                       to="/cart"
-                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200 group">
+                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200 group">
                       <Handbag size={20} />
                       <span className="text-lg font-light">YourBag</span>
                       {cart.length > 0 && (
                         <motion.span
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                          className="absolute -top-2 -right-4 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
                           {cart.length}
                         </motion.span>
                       )}
@@ -122,7 +122,7 @@ const Navbar = () => {
                   <div className="relative hover:scale-105">
                     <Link
                       to="/wishlist"
-                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
+                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
                       <Heart size={20} />
                       <span className="text-lg font-light">Wishlist</span>
                     </Link>
@@ -132,7 +132,7 @@ const Navbar = () => {
                   <div className="hover:scale-105">
                     <Link
                       to="/orders"
-                      className="flex items-center space-x-1 p-2 hover:text-blue-600 transition-colors duration-200">
+                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
                       <span className="text-lg font-light">Orders</span>
                     </Link>
                   </div>

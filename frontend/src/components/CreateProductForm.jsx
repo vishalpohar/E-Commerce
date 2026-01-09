@@ -64,18 +64,13 @@ const CreateProductForm = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 transform transition-all duration-500">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-100 rounded-lg">
-          <PlusCircle className="w-6 h-6 text-blue-600" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Add New Product
-          </h2>
-          <p className="text-gray-600 mt-1">
-            Create a new product for your store
-          </p>
-        </div>
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Add New Product
+        </h2>
+        <p className="text-gray-600 mt-1">
+          Create a new product for your store
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -225,13 +220,12 @@ const CreateProductForm = () => {
           {loading ? (
             <>
               <Loader className="w-5 h-5 animate-spin" />
-              Creating Product...
+              Adding Product...
             </>
           ) : (
-            <>
-              <PlusCircle className="w-5 h-5" />
-              Create Product
-            </>
+            <p>
+              Add Product
+            </p>
           )}
         </button>
       </form>

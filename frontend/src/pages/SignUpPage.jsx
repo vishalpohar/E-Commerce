@@ -78,7 +78,7 @@ const SignUpPage = () => {
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Create Account
+            Sign Up
           </h2>
           <p className="text-gray-600">Join thousands of happy customers</p>
         </div>
@@ -229,7 +229,7 @@ const SignUpPage = () => {
                 I agree to the{" "}
                 <a
                   href="#"
-                  className="text-blue-600 hover:text-blue-700 font-medium">
+                  className="text-blue-600 font-medium">
                   Terms and Conditions
                 </a>
               </label>
@@ -238,16 +238,16 @@ const SignUpPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              className="w-full border-2 border-gray-400 hover:border-blue-500 text-gray-700 hover:text-blue-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <>
                   <Loader className="w-5 h-5 animate-spin" />
-                  Creating Account...
+                  Signing Up...
                 </>
               ) : (
                 <>
                   <UserPlus className="w-5 h-5" />
-                  Create Account
+                  Sign Up
                 </>
               )}
             </button>
@@ -258,9 +258,8 @@ const SignUpPage = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                Sign in here
-                <ArrowRight className="ml-1 w-4 h-4 inline" />
+                className="text-gray-700 hover:text-blue-700 hover:underline font-medium transition-colors">
+                login here
               </Link>
             </p>
           </div>
