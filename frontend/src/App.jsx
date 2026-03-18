@@ -6,7 +6,7 @@ import { useUserStore } from "./stores/useUserStore";
 import { useCartStore } from "./stores/useCartStore";
 
 import AuthLayout from "./layouts/AuthLayout";
-import PublicLayout from "./layouts/publicLayout";
+import PublicLayout from "./layouts/PublicLayout";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
