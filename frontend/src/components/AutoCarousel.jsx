@@ -12,7 +12,7 @@ export default function AutoCarousel() {
   const [isPaused, setIsPaused] = useState(false);
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = () => {
@@ -24,7 +24,7 @@ export default function AutoCarousel() {
     if (isPaused) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
+    }, 10000);
     return () => clearInterval(interval);
   }, [isPaused]);
 

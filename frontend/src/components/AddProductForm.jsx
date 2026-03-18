@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PlusCircle, Loader, Image, X } from "lucide-react";
+import { Loader, Image, X } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { toast } from "react-hot-toast";
 
@@ -14,7 +14,7 @@ const categories = [
   "bags",
 ];
 
-const CreateProductForm = () => {
+const AddProductForm = () => {
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
@@ -223,9 +223,7 @@ const CreateProductForm = () => {
               Adding Product...
             </>
           ) : (
-            <p>
-              Add Product
-            </p>
+            <p>Add Product</p>
           )}
         </button>
       </form>
@@ -233,4 +231,4 @@ const CreateProductForm = () => {
   );
 };
 
-export default CreateProductForm;
+export default AddProductForm;

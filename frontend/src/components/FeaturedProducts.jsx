@@ -1,9 +1,7 @@
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowRight,
   Sparkles,
-  Handbag,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
@@ -31,7 +29,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
   useEffect(() => {
     const handleResize = () => {
       // if (window.innerWidth < 640) setItemsPerPage(1);
-      // else 
+      // else
       if (window.innerWidth < 640) setItemsPerPage(2);
       else if (window.innerWidth < 1280) setItemsPerPage(3);
       else setItemsPerPage(4);
@@ -44,7 +42,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
   const nextSlide = () => {
     setCurrentIndex((prev) =>
-      Math.min(prev + itemsPerPage, featuredProducts.length - itemsPerPage)
+      Math.min(prev + itemsPerPage, featuredProducts.length - itemsPerPage),
     );
   };
 
@@ -57,7 +55,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
   const visibleProducts = featuredProducts.slice(
     currentIndex,
-    currentIndex + itemsPerPage
+    currentIndex + itemsPerPage,
   );
 
   return (
@@ -68,9 +66,10 @@ const FeaturedProducts = ({ featuredProducts }) => {
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-600 text-sm font-medium mb-6">
-            <Sparkles size={16} />
-            Featured Collection
+            className="flex justify-center px-4 py-2 mb-4">
+            <p className="w-fit bg-blue-50 rounded-full text-blue-600 text-sm font-medium">
+              Featured Collection
+            </p>
           </motion.div>
 
           <motion.h2
@@ -148,19 +147,11 @@ const FeaturedProducts = ({ featuredProducts }) => {
                           : "bg-gray-900 text-white"
                       }`}>
                       {inCart ? (
-                        <div className="flex justify-center items-center py-1">
-                          <span className="text-[10px] md:text-xs">
-                            SEE BAG
-                          </span>
-                          <ArrowRight className="ml-1" size={20} />
-                        </div>
+                        <p className="text-[10px] md:text-xs py-1">SEE BAG</p>
                       ) : (
-                        <div className="flex justify-center items-center py-1">
-                          <Handbag className="mr-1" size={18} />
-                          <span className="text-[10px] md:text-xs">
-                            ADD TO BAG
-                          </span>
-                        </div>
+                        <p className="text-[10px] md:text-xs py-1">
+                          ADD TO BAG
+                        </p>
                       )}
                     </motion.button>
                   </div>

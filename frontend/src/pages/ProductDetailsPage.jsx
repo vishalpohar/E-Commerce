@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Heart,
-  Share2,
   Shield,
   Truck,
   Clock,
@@ -33,7 +32,8 @@ const ProductDetailsPage = () => {
   const inWishlist = isInWishlist(productId);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showName, setShowName] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+
+  const quantity = 1;
 
   const toggleExpanded = () => setIsExpanded((prev) => !prev);
   const toggleName = () => setShowName((prev) => !prev);
@@ -42,16 +42,16 @@ const ProductDetailsPage = () => {
     return isExpanded
       ? description
       : description.length > 150
-      ? description.substring(0, 150) + "..."
-      : description;
+        ? description.substring(0, 150) + "..."
+        : description;
   };
 
   const displayName = (name) => {
     return showName
-    ? name
-    : name.length > 100
-    ? name.substring(0, 100) + "..."
-    : name;
+      ? name
+      : name.length > 100
+        ? name.substring(0, 100) + "..."
+        : name;
   };
 
   const handleAddToCart = (product) => {
@@ -79,7 +79,7 @@ const ProductDetailsPage = () => {
       navigate("/login");
       return;
     }
-    
+
     const stripe = await stripePromise;
     const res = await axios.post("/payments/create-checkout-session", {
       products: [{ ...product, quantity }],
@@ -103,7 +103,7 @@ const ProductDetailsPage = () => {
   }, [productId, fetchProductById]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         {product /* Breadcrumb */ && (
           <nav className="flex mb-4" aria-label="Breadcrumb">
@@ -163,7 +163,7 @@ const ProductDetailsPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 md:p-8">
               {/* Image Gallery */}
               <div className="space-y-4">
-                <div className="aspect-square bg-gray-100 overflow-hidden">
+                <div className="relative aspect-square bg-gray-100 overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -171,6 +171,20 @@ const ProductDetailsPage = () => {
                     decoding="async"
                     className="w-full h-full object-cover"
                   />
+                  {/* Secondary Actions */}
+                  <div className="absolute top-5 right-5 flex gap-2">
+                    <button
+                    className="bg-white rounded-full p-2 md:p-3"
+                      onClick={() => handleWishlist(product)}>
+                      <Heart
+                        className={
+                          `w-6 h-6 ${inWishlist
+                            ? "fill-red-500 text-red-500"
+                            : "text-gray-600"}`
+                        }
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -239,7 +253,7 @@ const ProductDetailsPage = () => {
                 {/* Quantity Selector */}
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-green-300">
+                    <span className="text-sm text-green-600">
                       In stock <br />{" "}
                       <span className="text-gray-600">Free shipping</span>
                     </span>
@@ -269,24 +283,6 @@ const ProductDetailsPage = () => {
                     className="flex-1 bg-gray-700 hover:bg-gray-900 text-white font-semibold py-4 px-6 transition-all duration-200 shadow-lg hover:shadow-xl">
                     BUY NOW
                   </button>
-
-                  {/* Secondary Actions */}
-                  <div className="flex gap-2">
-                    <button
-                      className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors"
-                      onClick={() => handleWishlist(product)}>
-                      <Heart
-                        className={`w-5 h-5 ${
-                          inWishlist
-                            ? "fill-red-500 text-red-500"
-                            : "text-gray-600"
-                        }`}
-                      />
-                    </button>
-                    <button className="p-4 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors">
-                      <Share2 className="w-5 h-5 text-gray-600" />
-                    </button>
-                  </div>
                 </div>
 
                 {/* Trust Badges */}
@@ -326,7 +322,7 @@ const ProductDetailsPage = () => {
 
         {product && (
           /* People Also Bought */
-          <div className="mt-12">
+          <div className="mt-12 px-2 md:px-0">
             <PeopleAlsoBought />
           </div>
         )}

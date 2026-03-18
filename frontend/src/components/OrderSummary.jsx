@@ -58,8 +58,8 @@ const OrderSummary = () => {
 
         {coupon && isCouponApplied && (
           <div className="flex justify-between items-center">
-            <span className="text-blue-600">Coupon ({coupon.code})</span>
-            <span className="text-blue-600 font-medium">
+            <span className="text-green-500">Coupon ({coupon.code})</span>
+            <span className="text-green-500 font-medium">
               -{coupon.discountPercentage}%
             </span>
           </div>

@@ -1,9 +1,12 @@
 import { useEffect } from "react";
-import ProductCard from "../components/ProductCard";
-import { useWishlistStore } from "../stores/useWishlistStore";
-import PeopleAlsoBought from "../components/PeopleAlsoBought";
-import { useCartStore } from "../stores/useCartStore";
-import SkeletonLoader from "../components/SkeletonLoader";
+
+import { useWishlistStore } from "../../stores/useWishlistStore";
+import { useCartStore } from "../../stores/useCartStore";
+
+import ProductCard from "../../components/ProductCard";
+import PeopleAlsoBought from "../../components/PeopleAlsoBought";
+import SkeletonLoader from "../../components/SkeletonLoader";
+import EmptyWishlistPage from "./EmptyWishlistPage";
 
 const WishlistPage = () => {
   const { getWishlist, wishlist, isInWishlist, loading } = useWishlistStore();
@@ -13,8 +16,10 @@ const WishlistPage = () => {
     getWishlist();
   }, [wishlist.length, getWishlist]);
 
+  if (!loading && wishlist.length === 0) return <EmptyWishlistPage />;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
@@ -53,23 +58,6 @@ const WishlistPage = () => {
             {/* People Also Bought */}
             <div className="mt-12">
               <PeopleAlsoBought />
-            </div>
-          </div>
-        )}
-
-        {!loading && wishlist.length === 0 && (
-          <div className="col-span-full min-h-[90vh] flex text-center">
-            <div className="max-w-md m-auto">
-              <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">❤️</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Your wishlist is empty
-              </h3>
-              <p className="text-gray-600">
-                Looks like you haven’t added anything yet. Browse products and
-                add your favorites to your wishlist.
-              </p>
             </div>
           </div>
         )}

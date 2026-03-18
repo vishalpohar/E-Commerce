@@ -16,7 +16,7 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+    <li className="bg-white border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
       <Link to={`/product-details/${item._id}`}>
         <div className="flex flex-col sm:flex-row gap-6">
           {/* Product Image */}
@@ -104,7 +104,7 @@ const CartItem = ({ item }) => {
           <span className="font-medium">Remove</span>
         </motion.button>
       </div>
-    </div>
+    </li>
   );
 };
 

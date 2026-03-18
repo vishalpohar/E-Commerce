@@ -2,36 +2,62 @@ import {
   LogOut,
   Search,
   Menu,
-  User,
   Package,
   Handbag,
   Heart,
   UserRound,
+  LayoutDashboard,
+  X,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
+const navLinks = [
+  {
+    id: "DASHBOARD",
+    name: "Dashboard",
+    path: "/secret-dashboard",
+    icon: LayoutDashboard,
+    adminOnly: true,
+  },
+  {
+    id: "YOUR_BAG",
+    name: "Your Bag",
+    path: "/cart",
+    icon: Handbag,
+    showCount: true,
+  },
+  {
+    id: "WISHLIST",
+    name: "Wishlist",
+    path: "/wishlist",
+    icon: Heart,
+  },
+  {
+    id: "ORDERS",
+    name: "Orders",
+    path: "/orders",
+    icon: Package,
+  },
+];
+
 const Navbar = () => {
   const { user, logout } = useUserStore();
   const isAdmin = user?.role === "admin";
   const { cart } = useCartStore();
 
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenu, setIsMobileMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [menuIcon, setMenuIcon] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const searchRef = useRef(null);
-  const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
-    setMenuIcon(!menuIcon);
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenu((prev) => !prev);
   };
 
   const handleKeyDown = (e) => {
@@ -45,43 +71,29 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearch(false);
-      }
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMobileMenuOpen(false);
-        setMenuIcon(true);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       {/* Main Navbar */}
-      <nav
-        className={`px-2 md:px-6 text-gray-600 ${
-          isScrolled
-            ? `text-white bg-slate-900/70 backdrop-blur-xl shadow-sm`
-            : `bg-transparent`
-        }`}>
+      <nav className="px-2 md:px-6 bg-white text-gray-600 backdrop-blur-xl shadow-sm">
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div>
               <Link
                 to="/"
-                className={`relative flex items-center gap-3 text-3xl font-extrabold duration-500 ${isScrolled ? `text-white` : `text-gray-700`}`}>
+                className="relative flex items-center gap-3 text-gray-700 text-3xl font-extrabold duration-500">
                 <span className="flex items-center font-serif tracking-tight">
                   EasyBuy
                 </span>
@@ -90,53 +102,29 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4 md:space-x-6 lg:space-x-10 px-2">
-              {isAdmin && (
-                <div className="hover:scale-105">
-                  <Link
-                    to="/secret-dashboard"
-                    className="flex items-center space-x-1 hover:text-blue-600 rounded-lg px-2 transition-colors duration-200">
-                    <span className="text-lg font-light">Dashboard</span>
-                  </Link>
-                </div>
-              )}
               {user && (
-                <>
-                  {/* Cart */}
-                  <div className="relative hover:scale-105">
-                    <Link
-                      to="/cart"
-                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200 group">
-                      <Handbag size={20} />
-                      <span className="text-lg font-light">YourBag</span>
-                      {cart.length > 0 && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute -top-2 -right-4 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                          {cart.length}
-                        </motion.span>
-                      )}
-                    </Link>
-                  </div>
+                <ul className="flex items-center gap-6 lg:gap-10">
+                  {navLinks.map((link) => {
+                    if (link.isAdmin && !isAdmin) return null;
 
-                  <div className="relative hover:scale-105">
-                    <Link
-                      to="/wishlist"
-                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
-                      <Heart size={20} />
-                      <span className="text-lg font-light">Wishlist</span>
-                    </Link>
-                  </div>
-
-                  {/* Orders */}
-                  <div className="hover:scale-105">
-                    <Link
-                      to="/orders"
-                      className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
-                      <span className="text-lg font-light">Orders</span>
-                    </Link>
-                  </div>
-                </>
+                    return (
+                      <li key={link.id}>
+                        <NavLink
+                          to={link.path}
+                          className={({ isActive }) =>
+                            `relative text-lg ${isActive && "text-blue-600 font-semibold border-b-2 border-blue-500"}`
+                          }>
+                          {link.name}
+                          {link.showCount && cart.length > 0 && (
+                            <p className="absolute -top-2 -right-4 bg-blue-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-medium">
+                              {cart.length}
+                            </p>
+                          )}
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </div>
 
@@ -152,8 +140,7 @@ const Navbar = () => {
                 {/* User Actions */}
                 {user ? (
                   <div className="flex gap-1 justify-center items-center">
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={logout}
                       className="relative group px-4 py-2 hover:text-blue-600 transition-all duration-200">
                       <LogOut size={20} />
@@ -167,11 +154,11 @@ const Navbar = () => {
                           ">
                         logout
                       </span>
-                    </motion.button>
+                    </button>
                     <div className="flex items-center justify-center">
                       <UserRound
                         size={20}
-                        className={`border-2 rounded-full ${isScrolled ? `border-white` : `border-gray-600`}`}
+                        className="border-2 rounded-full border-gray-600"
                       />
                       <span className="text-lg">
                         {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
@@ -190,13 +177,12 @@ const Navbar = () => {
               {/* Mobile Menu Button */}
               <div className="flex md:hidden items-center space-x-3">
                 {user ? (
-                  menuIcon && (
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
+                  !isMobileMenu && (
+                    <button
                       onClick={toggleMobileMenu}
                       className="p-2 hover:text-blue-600 transition-colors duration-200">
                       <Menu size={22} />
-                    </motion.button>
+                    </button>
                   )
                 ) : (
                   <Link
@@ -254,103 +240,78 @@ const Navbar = () => {
       )}
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          ref={menuRef}
-          initial={{ opacity: 0, x: 150 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 150 }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-            damping: 20,
-          }}
-          className="fixed top-16 right-0 z-40 bg-white shadow-xl border border-gray-100 w-60 h-full">
-          <div className="p-4 space-y-2">
+      {isMobileMenu && (
+        <div className="fixed flex flex-col bg-white top-16 right-0 z-40 w-full h-full p-4">
+          <button className="self-end mr-3" onClick={toggleMobileMenu}>
+            <X color="#4b5563" />
+          </button>
+          <div className="w-full flex flex-col items-center mt-24">
             {user && (
               <>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                <div className="flex items-center w-[130px] space-x-3 pb-3">
                   <UserRound
                     className="text-gray-600 group-hover:text-blue-600"
                     size={20}
                   />
-                  <span className="font-medium text-gray-700">
+                  <span className="text-lg font-light text-gray-700">
                     {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
                   </span>
                 </div>
 
-                {isAdmin && (
-                  <Link
-                    to="/secret-dashboard"
-                    onClick={toggleMobileMenu}
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
-                    <User
-                      className="text-gray-600 group-hover:text-blue-600"
-                      size={20}
-                    />
-                    <span className="font-light text-gray-700">Dashboard</span>
-                  </Link>
-                )}
+                <ul className="w-full flex flex-col pb-4">
+                  {navLinks.map((link) => {
+                    if (link.adminOnly && !isAdmin) return null;
 
-                <Link
-                  to="/cart"
-                  onClick={toggleMobileMenu}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
-                  <Handbag
-                    className="text-gray-600 group-hover:text-blue-600"
-                    size={20}
-                  />
-                  <span className="font-light text-gray-700">
-                    Your Bag ({cart.length})
-                  </span>
-                </Link>
+                    const Icon = link.icon;
 
-                <Link
-                  to="/wishlist"
-                  onClick={toggleMobileMenu}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
-                  <Heart
-                    className="text-gray-600 group-hover:text-blue-600"
-                    size={20}
-                  />
-                  <span className="font-light text-gray-700">
-                    Your Wishlist
-                  </span>
-                </Link>
-
-                <Link
-                  to="/orders"
-                  onClick={toggleMobileMenu}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
-                  <Package
-                    className="text-gray-600 group-hover:text-blue-600"
-                    size={20}
-                  />
-                  <span className="font-light text-gray-700">Orders</span>
-                </Link>
+                    return (
+                      <li key={link.id} className="w-full">
+                        <NavLink
+                          to={link.path}
+                          onClick={toggleMobileMenu}
+                          className={({ isActive }) =>
+                            `flex justify-center p-3 transition-colors duration-200 group ${isActive && "bg-blue-50"}`
+                          }>
+                          <div className="w-[130px] flex items-center gap-3">
+                            <Icon
+                              className="text-gray-600 group-hover:text-blue-600"
+                              size={20}
+                            />
+                            <span className="text-lg font-light text-gray-700">
+                              {link.name}{" "}
+                              {link.showCount &&
+                                cart.length > 0 &&
+                                `(${cart.length})`}
+                            </span>
+                          </div>
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </ul>
               </>
             )}
 
-            <div className="border-t border-gray-100 pt-4">
-              {user && (
-                <button
-                  onClick={() => {
-                    logout();
-                    toggleMobileMenu();
-                  }}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 group w-full text-left">
-                  <LogOut
-                    className="text-red-600 group-hover:text-red-700"
-                    size={20}
-                  />
-                  <span className="font-light text-red-600 group-hover:text-red-700">
-                    Log Out
-                  </span>
-                </button>
-              )}
-            </div>
+            <hr className="w-full border-t border-gray-400 pb-4" />
+
+            {user && (
+              <button
+                onClick={() => {
+                  logout();
+                  toggleMobileMenu();
+                }}
+                className="flex items-center w-[130px] space-x-3 pt-3 rounded-lg hover:bg-red-50 transition-colors duration-200 group text-left">
+                <LogOut
+                  className="text-red-600 group-hover:text-red-700"
+                  size={20}
+                />
+                <span className="text-lg font-light text-red-600 group-hover:text-red-700">
+                  Log Out
+                </span>
+              </button>
+            )}
           </div>
-        </motion.div>
+        </div>
       )}
     </header>
   );

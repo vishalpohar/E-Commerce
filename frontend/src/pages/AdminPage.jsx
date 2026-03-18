@@ -1,19 +1,19 @@
 import { BarChart, PlusCircle, ShoppingBasket, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import CreateProductForm from "../components/CreateProductForm";
+import AddProductForm from "../components/AddProductForm";
 import ProductsList from "../components/ProductsList";
-import AnalyticsTab from "../components/AnalyticsTab";
+import AnalyticsTab from "../components/analytics/AnalyticsTab";
 import { useProductStore } from "../stores/useProductStore";
 
 const tabs = [
-  { id: "create", label: "Create Product", icon: PlusCircle },
+  { id: "add", label: "Add Product", icon: PlusCircle },
   { id: "products", label: "Manage Products", icon: ShoppingBasket },
   { id: "analytics", label: "Analytics", icon: BarChart },
 ];
 
 const AdminPage = () => {
-  const [activeTab, setActiveTab] = useState("create");
+  const [activeTab, setActiveTab] = useState("add");
   const { fetchAllProducts } = useProductStore();
 
   useEffect(() => {
@@ -21,17 +21,15 @@ const AdminPage = () => {
   }, [fetchAllProducts]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4">
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Admin Dashboard
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Manage your store efficiently
-              </p>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-600 mt-2">Manage your store efficiently</p>
           </div>
         </div>
 
@@ -54,7 +52,7 @@ const AdminPage = () => {
 
         {/* Tab Content */}
         <div key={activeTab}>
-          {activeTab === "create" && <CreateProductForm />}
+          {activeTab === "add" && <AddProductForm />}
           {activeTab === "products" && <ProductsList />}
           {activeTab === "analytics" && <AnalyticsTab />}
         </div>

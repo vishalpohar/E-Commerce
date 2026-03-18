@@ -184,10 +184,7 @@ export const getSearchedProducts = async (req, res) => {
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(limit);
-
-    if (!searchResult || searchResult.length === 0)
-      return res.status(404).json([]);
-
+      
     res
       .status(200)
       .json({ searchResult, total, totalPages: Math.ceil(total / limit) });

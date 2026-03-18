@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const PurchaseCancelPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center px-4 py-8">
+    <div className="bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center px-4 py-8">
       {/* Simple fade-in using CSS only */}
       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden relative z-20 border border-gray-100 animate-fadeIn">
         {/* Header Section */}

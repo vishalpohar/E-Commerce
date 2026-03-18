@@ -5,12 +5,10 @@ import {
   Mail,
   Lock,
   User,
-  ArrowRight,
   Loader,
   Eye,
   EyeOff,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
 import {
   validateConfirmPassword,
@@ -71,7 +69,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div
         className="max-w-md w-full space-y-8"
         >
@@ -258,7 +256,7 @@ const SignUpPage = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-gray-700 hover:text-blue-700 hover:underline font-medium transition-colors">
+                className="text-blue-700 hover:underline font-medium transition-colors">
                 login here
               </Link>
             </p>

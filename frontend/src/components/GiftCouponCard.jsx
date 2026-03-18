@@ -10,7 +10,7 @@ const GiftCouponCard = () => {
 
   useEffect(() => {
     getMyCoupon();
-  }, [getMyCoupon]);
+  }, []);
 
   useEffect(() => {
     if (coupon) setUserInputCode(coupon.code);
@@ -38,78 +38,59 @@ const GiftCouponCard = () => {
   };
 
   return (
-    <div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transform transition-all duration-500 hover:shadow-lg">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-          <Gift className="w-5 h-5 text-white" />
-        </div>
-        <h2 className="text-xl font-semibold text-gray-900">Apply Coupon</h2>
-      </div>
-
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transform transition-all duration-500 hover:shadow-lg">
       <div className="space-y-4">
         {/* Input Field */}
-        <div>
-          <label
-            htmlFor="voucher"
-            className="block text-sm font-medium text-gray-700 mb-2">
-            Enter coupon code
-          </label>
-          <div className="relative">
-            <input
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            {!isCouponApplied && <input
               type="text"
-              id="voucher"
-              className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               placeholder="e.g. SUMMER25"
               value={userInputCode}
               onChange={(e) => setUserInputCode(e.target.value.toUpperCase())}
               disabled={isCouponApplied}
-            />
-            {isCouponApplied && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-              </div>
-            )}
+            />}
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        {isCouponApplied && coupon ? (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium text-green-800">
-                  {coupon.code} - {coupon.discountPercentage}% off applied
-                </span>
+          {/* Action Buttons */}
+          {isCouponApplied && coupon ? (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {coupon.code} - {coupon.discountPercentage}% off applied
+                  </span>
+                </div>
               </div>
-            </div>
 
+              <button
+                type="button"
+                className="flex items-center justify-center text-md py-1 px-2 text-red-600 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleRemoveCoupon}
+                disabled={isLoading}>
+                
+                {isLoading ? "Removing..." : "Remove"}
+              </button>
+            </div>
+          ) : (
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-red-300 text-red-600 hover:bg-red-50 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={handleRemoveCoupon}
-              disabled={isLoading}>
-              <X className="w-4 h-4" />
-              {isLoading ? "Removing..." : "Remove Coupon"}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm font-semibold rounded-md py-2 px-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleApplyCoupon}
+              disabled={!userInputCode.trim() || isLoading}>
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Applying...
+                </div>
+              ) : (
+                "Apply Coupon"
+              )}
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={handleApplyCoupon}
-            disabled={!userInputCode.trim() || isLoading}>
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Applying...
-              </div>
-            ) : (
-              "Apply Coupon"
-            )}
-          </button>
-        )}
+          )}
+        </div>
 
         {/* Available Coupon Info */}
         {coupon && !isCouponApplied && (
