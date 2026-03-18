@@ -23,7 +23,7 @@ export const getWishlistProducts = async (req, res) => {
   try {
     const wishlistProducts = await Product.find({
       _id: { $in: req.user.wishlist },
-    });
+    }, {_id:1,name:1, image:1, price:1});
     res.status(200).json(wishlistProducts);
   } catch (error) {
     console.log("Error in getWishlistProducts controller", error.message);

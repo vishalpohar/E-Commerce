@@ -52,14 +52,10 @@ const OrdersPage = () => {
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {currentOrders?.map((order) => {
-              const productMap = Object.fromEntries(
-                order.productDetails.map((p) => [p._id, p]),
-              );
               return (
                 <OrderDetailsCard
                   key={order._id}
                   order={order}
-                  productMap={productMap}
                 />
               );
             })}

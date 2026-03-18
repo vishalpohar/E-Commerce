@@ -3,9 +3,7 @@ import { useProductStore } from "../stores/useProductStore";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useCartStore } from "../stores/useCartStore";
-import {
-  ChevronDown,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import SkeletonLoader from "../components/SkeletonLoader";
 
 const CategoryPage = () => {
@@ -44,11 +42,14 @@ const CategoryPage = () => {
           {products.length > 0 && (
             <div className="flex flex-row justify-between items-end gap-1">
               <div>
-                <span className="text-gray-700 text-xl font-semibold font-serif">{categoryName} Collection</span>
+                <span className="text-gray-700 text-xl font-semibold font-serif">
+                  {categoryName} Collection
+                </span>
               </div>
               <div className="relative flex flex-row appearance-none text-gray-700 bg-white border border-gray-300 outline-none rounded-lg px-4 py-2 transition-all duration-200">
                 <p>Sort: </p>
                 <select
+                  className="outline-none"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}>
                   <option value="newest">Newest First</option>

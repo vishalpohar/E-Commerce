@@ -16,7 +16,7 @@ const getStatusColor = (status) => {
   }
 };
 
-const OrderDetailsCard = ({order, productMap}) => (
+const OrderDetailsCard = ({order}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ const OrderDetailsCard = ({order, productMap}) => (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {order.products.map((item) => {
-          const product = productMap[item.product];
+          const product = item.product
 
           return (
             <div key={product._id}>

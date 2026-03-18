@@ -38,6 +38,7 @@ const SearchPage = () => {
               <div className="relative flex flex-row appearance-none text-gray-700 bg-white border border-gray-300 outline-none rounded-lg px-4 py-2 transition-all duration-200">
                 <p>Sort: </p>
                 <select
+                  className="outline-none"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}>
                   <option value="newest">Newest First</option>

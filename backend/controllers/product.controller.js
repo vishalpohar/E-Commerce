@@ -40,7 +40,10 @@ export const getFeaturedProducts = async (req, res) => {
     }
 
     // if not in redis, fetch from mongodb
-    featuredProducts = await Product.find({ isFeatured: true }).lean();
+    featuredProducts = await Product.find(
+      { isFeatured: true },
+      { _id: 1, name: 1, image: 1, price: 1 },
+    ).lean();
 
     if (!featuredProducts) {
       return res.status(404).json({ message: "No featured products found" });
@@ -140,9 +143,7 @@ export const getRecommendedProducts = async (req, res) => {
         $project: {
           _id: 1,
           name: 1,
-          description: 1,
           image: 1,
-          category: 1,
           price: 1,
         },
       },
@@ -161,30 +162,32 @@ export const getSearchedProducts = async (req, res) => {
   try {
     const { query, sort, page = 1, limit = 10 } = req.query;
 
-    let sortOption =
+    const sortOption =
       sort === "price-low"
         ? { price: 1 }
         : sort === "price-high"
-        ? { price: -1 }
-        : { createdAt: -1 };
+          ? { price: -1 }
+          : { createdAt: -1 };
 
-    const total = await Product.countDocuments({
+    const filter = {
       $or: [
         { name: { $regex: query, $options: "i" } },
         { category: { $regex: query, $options: "i" } },
       ],
-    });
+    };
 
-    const searchResult = await Product.find({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-      ],
+    const total = await Product.countDocuments(filter);
+
+    const searchResult = await Product.find(filter, {
+      _id: 1,
+      name: 1,
+      image: 1,
+      price: 1,
     })
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(limit);
-      
+
     res
       .status(200)
       .json({ searchResult, total, totalPages: Math.ceil(total / limit) });
@@ -210,14 +213,60 @@ export const getMyOrders = async (req, res) => {
       { $sort: { createdAt: -1 } },
       { $skip: skip },
       { $limit: limit },
+
+      { $unwind: "$products" },
+
       {
         $lookup: {
           from: "products",
-          localField: "products.product",
-          foreignField: "_id",
-          as: "productDetails",
+          let: { productId: "$products.product" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$_id", "$$productId"] },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                image: 1,
+                price: 1,
+              },
+            },
+          ],
+          as: "product",
         },
       },
+
+      { $unwind: "$product" },
+
+      {
+        $project: {
+          _id: 1,
+          createdAt: 1,
+          totalAmount: 1,
+          quantity: "$products.quantity",
+          price: "$products.price",
+          product: 1,
+        },
+      },
+
+      {
+        $group: {
+          _id: "$_id",
+          createdAt: { $first: "$createdAt" },
+          totalAmount: { $first: "$totalAmount" },
+          products: {
+            $push: {
+              quantity: "$quantity",
+              price: "$price",
+              product: "$product",
+            },
+          },
+        },
+      },
+      { $sort: { createdAt: -1 } },
     ]);
 
     const totalOrders = await Order.countDocuments({ user: user._id });
@@ -245,7 +294,10 @@ export const getProductsByCategory = async (req, res) => {
   if (sort === "price-high") sortOption = { price: -1 };
 
   try {
-    const products = await Product.find({ category })
+    const products = await Product.find(
+      { category },
+      { _id: 1, name: 1, image: 1, price: 1 },
+    )
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(Number(limit));
