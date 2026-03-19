@@ -70,14 +70,10 @@ const SignUpPage = () => {
 
   return (
     <div className="bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div
-        className="max-w-md w-full space-y-8"
-        >
+      <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Sign Up
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign Up</h2>
           <p className="text-gray-600">Join thousands of happy customers</p>
         </div>
 
@@ -102,7 +98,7 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="block w-full pl-10 pr-3 py-3 text-gray-700 border border-gray-300 rounded-xl placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="block w-full pl-10 pr-3 py-3 text-gray-700 border border-gray-300 rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   placeholder="John Doe"
                 />
               </div>
@@ -124,7 +120,7 @@ const SignUpPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   onFocus={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 text-gray-700 border rounded-xl placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                  className={`block w-full pl-10 pr-3 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                     errors.email ? "border-red-300" : "border-gray-300"
                   }`}
                   placeholder="you@example.com"
@@ -151,7 +147,7 @@ const SignUpPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   onFocus={handleChange}
-                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                     errors.password ? "border-red-300" : "border-gray-300"
                   }`}
                   placeholder="Create a password"
@@ -188,7 +184,7 @@ const SignUpPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   onFocus={handleChange}
-                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                     errors.confirmPassword
                       ? "border-red-300"
                       : "border-gray-300"
@@ -225,9 +221,7 @@ const SignUpPage = () => {
                 htmlFor="terms"
                 className="ml-2 block text-sm text-gray-700">
                 I agree to the{" "}
-                <a
-                  href="#"
-                  className="text-blue-600 font-medium">
+                <a href="#" className="text-blue-600 font-medium">
                   Terms and Conditions
                 </a>
               </label>

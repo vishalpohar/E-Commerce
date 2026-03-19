@@ -6,7 +6,7 @@ import { useUserStore } from "./stores/useUserStore";
 import { useCartStore } from "./stores/useCartStore";
 
 import AuthLayout from "./layouts/AuthLayout";
-import PublicLayout from "./layouts/publicLayout";
+import PublicLayout from "./layouts/PublicLayout";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -25,6 +25,7 @@ import SearchPage from "./pages/search/SearchPage";
 import WishlistPage from "./pages/wishlist/WishlistPage";
 import OrdersPage from "./pages/orders/OrdersPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -54,6 +55,7 @@ function App() {
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to="/" />}
           />
+          <Route path="/not-found" element={<NotFoundPage />} />
         </Route>
 
         <Route element={<PublicLayout />}>
@@ -109,6 +111,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="*" element={<Navigate to="/not-found" />} />
       </Routes>
       <Toaster />
     </>
