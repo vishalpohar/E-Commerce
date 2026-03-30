@@ -39,13 +39,19 @@ const userSchema = new mongoose.Schema(
     ],
     role: {
       type: String,
-      enum: ["customer", "admin"],
+      enum: ["customer", "seller"],
       default: "customer",
+    },
+    otp: {
+      type: String,
+    },
+    otpExpires: {
+      type: Date,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.index({ role: 1 });

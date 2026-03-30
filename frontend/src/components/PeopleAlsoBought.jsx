@@ -1,39 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ProductCard from "./ProductCard";
 import LoadingSpinner from "./LoadingSpinner";
-import axios from "../lib/axios";
-import toast from "react-hot-toast";
 import { useCartStore } from "../stores/useCartStore";
 import { TrendingUp } from "lucide-react";
 import { useWishlistStore } from "../stores/useWishlistStore";
+import { useProductStore } from "../stores/useProductStore";
 
 const PeopleAlsoBought = () => {
-  const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    fetchRecommendations,
+    recommendedProducts,
+    isFetchingRecommendations,
+  } = useProductStore();
   const { isInCart } = useCartStore();
-  const {isInWishlist} = useWishlistStore();
+  const { isInWishlist } = useWishlistStore();
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const res = await axios.get("/products/recommendations");
-        setRecommendations(res.data);
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message ||
-            "An error occurred while fetching recommendations"
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchRecommendations();
   }, []);
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isFetchingRecommendations) return <LoadingSpinner />;
 
-  if (recommendations.length === 0) return null;
+  if (recommendedProducts.length === 0) return null;
 
   return (
     <section className="mt-12">
@@ -53,8 +41,10 @@ const PeopleAlsoBought = () => {
 
       <div className="overflow-x-auto">
         <div className="flex space-x-2 pb-2">
-          {recommendations.map((product) => (
-            <div key={product._id} className="min-w-[180px] md:min-w-[280px] max-w-[180px] md:max-w-[280px]">
+          {recommendedProducts.map((product) => (
+            <div
+              key={product._id}
+              className="min-w-[180px] md:min-w-[280px] max-w-[180px] md:max-w-[280px]">
               <ProductCard
                 product={product}
                 inCart={isInCart(product._id)}

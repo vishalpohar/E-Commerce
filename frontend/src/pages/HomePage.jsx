@@ -6,14 +6,18 @@ import AutoCarousel from "../components/AutoCarousel";
 import { motion } from "framer-motion";
 
 const HomePage = () => {
-  const { fetchFeaturedProducts, products, isLoading } = useProductStore();
+  const {
+    fetchFeaturedProducts,
+    featuredProducts,
+    isFetchingFeaturedProducts,
+  } = useProductStore();
 
   useEffect(() => {
     fetchFeaturedProducts();
-  }, [fetchFeaturedProducts]);
+  }, []);
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-[90vh] bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Carousel */}
       <div className="relative">
         <AutoCarousel />
@@ -46,8 +50,8 @@ const HomePage = () => {
         </section>
 
         {/* Featured Products */}
-        {!isLoading && products.length > 0 && (
-          <FeaturedProducts featuredProducts={products} />
+        {!isFetchingFeaturedProducts && featuredProducts.length > 0 && (
+          <FeaturedProducts featuredProducts={featuredProducts} />
         )}
       </div>
     </div>

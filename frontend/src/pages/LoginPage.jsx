@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  LogIn,
-  Mail,
-  Lock,
-  Loader,
-  EyeOff,
-  Eye,
-} from "lucide-react";
+import { LogIn, Mail, Lock, Loader, EyeOff, Eye } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 
 const LoginPage = () => {
@@ -81,6 +74,7 @@ const LoginPage = () => {
                 />
                 <button
                   type="button"
+                  tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword((prev) => !prev)}>
                   {showPassword ? (
@@ -107,11 +101,12 @@ const LoginPage = () => {
                 </label>
               </div>
 
-              <a
-                href="#"
-                className="text-sm text-gray-600 hover:text-blue-700 font-medium transition-colors">
+              <Link
+                to="/forgot-password"
+                tabIndex={-1}
+                className="text-sm text-gray-600 hover:text-blue-700 font-medium hover:font-semibold transition-colors">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <button
@@ -144,11 +139,11 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="mt-6">
-              <Link to="/signup" className="flex items-center justify-center">
-                <span className="hover:border-2 hover:border-blue-600 rounded-full px-3 py-1 text-blue-600 font-medium transition-colors">
-                  Sign up
-                </span>
+            <div className="mt-6 flex justify-center">
+              <Link
+                to="/signup"
+                className="text-blue-600 font-medium border-2 border-blue-600 hover:text-white hover:bg-blue-600 rounded-full px-3 py-1 transition-colors">
+                Sign up
               </Link>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trash, Star, Edit, Eye } from "lucide-react";
+import { Trash, Star, Edit, Eye, Package } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import { Link } from "react-router-dom";
@@ -126,7 +126,7 @@ const ProductsList = () => {
 
       {/* Empty State */}
       {(!products || products.length === 0) && (
-        <div className="text-center py-12">
+        <div className="min-h-[40vh] flex flex-col justify-center items-center text-center py-12">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="h-8 w-8 text-gray-400" />
           </div>

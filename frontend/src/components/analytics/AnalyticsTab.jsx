@@ -1,12 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "../../lib/axios";
-import {
-  Users,
-  Package,
-  ShoppingCart,
-  BarChart3,
-  IndianRupee,
-} from "lucide-react";
+import { Package, ShoppingCart, BarChart3, IndianRupee } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -28,17 +22,21 @@ import formatDate from "../../utils/formatDate";
 
 const AnalyticsTab = () => {
   const [analyticsData, setAnalyticsData] = useState({
-    users: 0,
     products: 0,
     totalSales: 0,
     totalRevenue: 0,
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [dailySalesData, setDailySalesData] = useState([]);
   const [timeRange, setTimeRange] = useState("7d");
+  
+  const isFetchingAnalyticsData = useRef(false);
+  
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
+      if (isFetchingAnalyticsData.current) return;
+
+      isFetchingAnalyticsData.current = true;
       try {
         const response = await axios.get(`/analytics?range=${timeRange}`);
         setAnalyticsData(response.data.analyticsData);
@@ -50,7 +48,7 @@ const AnalyticsTab = () => {
       } catch (error) {
         console.error("Error fetching analytics data:", error);
       } finally {
-        setIsLoading(false);
+        isFetchingAnalyticsData.current = false;
       }
     };
 
@@ -59,18 +57,9 @@ const AnalyticsTab = () => {
 
   const analyticsCardData = [
     {
-      id: "TOTAL_USERS",
-      title: "Total Users",
-      value: analyticsData.users.toLocaleString(),
-      change: "+12.5%",
-      icon: Users,
-      color: "blue",
-    },
-    {
       id: "TOTAL_PRODUCTS",
       title: "Total Products",
       value: analyticsData.products.toLocaleString(),
-      change: "+5.2%",
       icon: Package,
       color: "gray",
     },
@@ -92,34 +81,32 @@ const AnalyticsTab = () => {
     },
   ];
 
-  if (isLoading) {
-    return (
-      <div className="h-[50vh] flex justify-center items-center">
-        <ThreeDotsLoader />
-      </div>
-    );
+  if (isFetchingAnalyticsData.current) {
+    return <ThreeDotsLoader height="60" />;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-[90vh] flex flex-col gap-6">
       {/* Time Range Selector */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 rounded-lg">
-            <BarChart3 className="w-6 h-6 text-blue-600" />
+            <BarChart3 className="w-4 h-4 md:w-6 md:h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="md:text-2xl font-semibold text-gray-900">
               Analytics Dashboard
             </h2>
-            <p className="text-gray-600">Track your store performance</p>
+            <p className="text-gray-600 text-xs md:text-base">
+              Track your store performance
+            </p>
           </div>
         </div>
 
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
-          className="px-4 py-2 border text-gray-700 border-gray-300 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+          className="px-4 py-2 border text-gray-700 text-xs md:text-base border-gray-300 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
           <option value="7d">Last 7 days</option>
           <option value="30d">Last 30 days</option>
           <option value="90d">Last 90 days</option>
@@ -127,7 +114,7 @@ const AnalyticsTab = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {analyticsCardData.map((data) => (
           <AnalyticsCard
             key={data.id}
@@ -143,7 +130,7 @@ const AnalyticsTab = () => {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Chart */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-500">
+        <div className="bg-white shadow-sm rounded-2xl border border-gray-300 p-6 transition-all duration-500">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Sales & Revenue
           </h3>

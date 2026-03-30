@@ -2,7 +2,7 @@ import express from "express";
 import {
   createProduct,
   deleteProduct,
-  getAllProducts,
+  getSellerProducts,
   getFeaturedProducts,
   getMyOrders,
   getProductById,
@@ -11,19 +11,19 @@ import {
   getSearchedProducts,
   toggleFeaturedProduct,
 } from "../controllers/product.controller.js";
-import { adminRoute, protectRoute } from "../middleware/auth.middleware.js";
+import { sellerRoute, protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", protectRoute, adminRoute, getAllProducts);
-router.get("/product/:id", getProductById);
+router.get("/seller", protectRoute, sellerRoute, getSellerProducts);
 router.get("/featured", getFeaturedProducts);
 router.get("/category", getProductsByCategory);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/orders", protectRoute, getMyOrders);
 router.get("/search", getSearchedProducts);
-router.post("/", protectRoute, adminRoute, createProduct);
-router.patch("/:id", protectRoute, adminRoute, toggleFeaturedProduct);
-router.delete("/:id", protectRoute, adminRoute, deleteProduct);
+router.post("/", protectRoute, sellerRoute, createProduct);
+router.get("/product/:id", getProductById);
+router.patch("/:id", protectRoute, sellerRoute, toggleFeaturedProduct);
+router.delete("/:id", protectRoute, sellerRoute, deleteProduct);
 
 export default router;

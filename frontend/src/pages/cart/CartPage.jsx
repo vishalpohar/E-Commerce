@@ -9,14 +9,14 @@ import GiftCouponCard from "../../components/GiftCouponCard";
 import EmptyCartPage from "./EmptyCartPage";
 
 const CartPage = () => {
-  const { cart } = useCartStore();
+  const { cart, isFetchingCart } = useCartStore();
 
-  if (cart.length === 0) {
+  if (!isFetchingCart && cart.length === 0) {
     return <EmptyCartPage />;
   }
 
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Animation */}
         <div className="mb-8">

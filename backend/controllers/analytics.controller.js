@@ -1,17 +1,27 @@
+import mongoose from "mongoose";
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
-import User from "../models/user.model.js";
 
-export const getAnalyticsData = async () => {
-  const totalUsers = await User.countDocuments();
-  const totalProducts = await Product.countDocuments();
+export const getAnalyticsData = async (sellerId) => {
+  const sellerObjectId = new mongoose.Types.ObjectId(sellerId);
+  const totalProducts = await Product.countDocuments({
+    seller: sellerObjectId,
+  });
 
   const salesData = await Order.aggregate([
+    { $unwind: "$products" },
+
+    {
+      $match: { "products.seller": sellerObjectId },
+    },
+
     {
       $group: {
         _id: null, // it groups all documents together
-        totalSales: { $sum: 1 },
-        totalRevenue: { $sum: "$totalAmount" },
+        totalSales: { $sum: "$products.quantity" },
+        totalRevenue: {
+          $sum: "$products.itemTotal",
+        },
       },
     },
   ]);
@@ -22,15 +32,15 @@ export const getAnalyticsData = async () => {
   };
 
   return {
-    users: totalUsers,
     products: totalProducts,
     totalSales,
     totalRevenue,
   };
 };
 
-export const getDailySalesData = async (startDate, endDate) => {
+export const getDailySalesData = async (sellerId, startDate, endDate) => {
   try {
+    const sellerObjectId = new mongoose.Types.ObjectId(sellerId);
     const dailySalesData = await Order.aggregate([
       {
         $match: {
@@ -40,11 +50,16 @@ export const getDailySalesData = async (startDate, endDate) => {
           },
         },
       },
+
+      { $unwind: "$products" },
+
+      { $match: { "products.seller": sellerObjectId } },
+
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          sales: { $sum: 1 },
-          revenue: { $sum: "$totalAmount" },
+          sales: { $sum: "$products.quantity" },
+          revenue: { $sum: "$products.itemTotal" },
         },
       },
       { $sort: { _id: 1 } },

@@ -1,11 +1,12 @@
+import mongoose from "mongoose";
 import cloudinary from "../lib/cloudinary.js";
 import { redis } from "../lib/redis.js";
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
 
-export const getAllProducts = async (req, res) => {
+export const getSellerProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({ seller: req.user._id });
     res.json({ products });
   } catch (error) {
     console.log("Error in getAllProducts controller", error.message);
@@ -26,37 +27,6 @@ export const getProductById = async (req, res) => {
     res.json({ product });
   } catch (error) {
     console.log("Error in getProductById controller", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
-export const getFeaturedProducts = async (req, res) => {
-  try {
-    let featuredProducts = await redis.get("featured_products");
-    if (featuredProducts) {
-      return res.json(JSON.parse(featuredProducts));
-    }
-
-    // if not in redis, fetch from mongodb
-    featuredProducts = await Product.find(
-      { isFeatured: true },
-      { _id: 1, name: 1, image: 1, price: 1 },
-    ).lean();
-
-    if (!featuredProducts) {
-      return res.status(404).json({ message: "No featured products found" });
-    }
-
-    // store in redis for future quick access
-    // .lean() is gonna return a plain javascript object instead of a mongodb document
-    // which is good for performance
-    await redis.set("featured_products", JSON.stringify(featuredProducts));
-
-    res.json(featuredProducts);
-  } catch (error) {
-    console.log("Error in getFeaturedProducts controller", error.message);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
@@ -313,17 +283,60 @@ export const getProductsByCategory = async (req, res) => {
   }
 };
 
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    let featuredProducts = await redis.get("featured_products");
+    if (featuredProducts) {
+      return res.json(JSON.parse(featuredProducts));
+    }
+
+    // if not in redis, fetch from mongodb
+    featuredProducts = await Product.find(
+      { isFeatured: true },
+      { _id: 1, name: 1, image: 1, price: 1, isFeatured: 1 },
+    ).lean();
+
+    if (!featuredProducts) {
+      return res.status(404).json({ message: "No featured products found" });
+    }
+
+    // store in redis for future quick access
+    // .lean() is gonna return a plain javascript object instead of a mongodb document
+    // which is good for performance
+    await redis.set("featured_products", JSON.stringify(featuredProducts));
+
+    res.json(featuredProducts);
+  } catch (error) {
+    console.log("Error in getFeaturedProducts controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 export const toggleFeaturedProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-      product.isFeatured = !product.isFeatured;
-      const updatedProduct = await product.save();
-      await updateFeaturedProductsCache();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: "Product not found" });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID" });
     }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      [{ $set: { isFeatured: { $not: "$isFeatured" } } }],
+      {
+        new: true,
+        projection: { _id: 1, name: 1, image: 1, price: 1, isFeatured: 1 },
+      },
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await updateFeaturedProductsCache();
+
+    res.json(updatedProduct);
   } catch (error) {
     console.log("Error in toggleFeaturedProduct controller", error.message);
     res

@@ -6,6 +6,7 @@ import {
   Mail,
   Clock,
   XCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,7 +29,7 @@ const PurchaseSuccessPage = () => {
         const response = await axios.post(
           "/payments/checkout-success",
           { sessionId },
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         clearCart();
@@ -45,7 +46,7 @@ const PurchaseSuccessPage = () => {
     };
 
     const sessionId = new URLSearchParams(window.location.search).get(
-      "session_id"
+      "session_id",
     );
 
     if (sessionId) handleCheckoutSuccess(sessionId);
@@ -57,7 +58,7 @@ const PurchaseSuccessPage = () => {
 
   if (isProcessing) {
     return (
-      <div className="flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-lg font-semibold text-gray-900">
@@ -71,7 +72,7 @@ const PurchaseSuccessPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 px-4">
+      <div className="min-h-[90vh] flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-red-600" />
@@ -83,7 +84,8 @@ const PurchaseSuccessPage = () => {
 
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium">
+            className="inline-flex items-center gap-1 px-6 py-3 text-gray-700 hover:underline rounded-lg transition-colors font-medium">
+              <ArrowLeft size={20} />
             Return to Home
           </Link>
         </div>
@@ -92,7 +94,7 @@ const PurchaseSuccessPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-[90vh] flex items-center justify-center px-4 py-8">
       <Confetti
         width={window.innerWidth}
         height={window.innerHeight}
@@ -102,25 +104,25 @@ const PurchaseSuccessPage = () => {
         style={{ zIndex: 50 }}
       />
 
-      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+      <div className="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100">
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-12 text-center text-white">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-white" />
+        <div className="text-center px-8 py-4">
+          <div className="w-20 h-20 bg-green-50 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-2">
+            <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
 
-          <h1 className="text-3xl lg:text-4xl font-bold mb-3">
+          <h1 className="text-green-500 text-3xl lg:text-4xl font-bold mb-3">
             Order Confirmed!
           </h1>
-          <p className="text-green-100 text-lg opacity-90">
+          <p className="text-green-500 text-lg opacity-90">
             Thank you for your purchase. We're preparing your order.
           </p>
         </div>
 
         {/* CONTENT */}
-        <div className="px-8 py-8">
+        <div className="py-4">
           {/* ORDER DETAILS */}
-          <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-200">
+          <div className="p-6 mb-8 md:px-16">
             <div className="flex items-center gap-3 mb-4">
               <Package className="w-6 h-6 text-blue-600" />
               <h2 className="text-xl font-semibold text-gray-900">
@@ -128,7 +130,7 @@ const PurchaseSuccessPage = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="flex flex-col gap-4 text-sm">
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Order Number</span>
@@ -164,7 +166,7 @@ const PurchaseSuccessPage = () => {
           </div>
 
           {/* DELIVERY TIMELINE */}
-          <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-200">
+          <div className="p-6 mb-6 md:px-16 border-t-2 border-gray-200">
             <div className="flex items-center gap-3 mb-4">
               <Truck className="w-6 h-6 text-orange-600" />
               <h2 className="text-xl font-semibold text-gray-900">
@@ -172,7 +174,7 @@ const PurchaseSuccessPage = () => {
               </h2>
             </div>
 
-            <div className="space-y-4 text-sm">
+            <div className="flex justify-between items-center text-sm">
               <TimelineItem
                 dotColor="bg-green-500"
                 title="Order Confirmed"
@@ -197,7 +199,7 @@ const PurchaseSuccessPage = () => {
           </div>
 
           {/* NEXT STEPS */}
-          <div className="bg-blue-50 rounded-2xl p-6 mb-8 border border-blue-200">
+          <div className="bg-blue-50 p-6 mb-8 md:px-16">
             <div className="flex items-center gap-3 mb-3">
               <Mail className="w-5 h-5 text-blue-600" />
               <h3 className="font-semibold text-gray-900">What's Next?</h3>
@@ -210,18 +212,18 @@ const PurchaseSuccessPage = () => {
           </div>
 
           {/* ACTION BUTTONS */}
-          <div className="space-y-4">
+          <div className="flex justify-center items-center gap-6">
             <Link
               to="/orders"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
-              <Package className="w-5 h-5" />
+              className="text-yellow-500 border-2 border-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
+              <Package className="hidden md:block w-5 h-5" />
               View Order Details
             </Link>
 
             <Link
               to="/"
-              className="w-full bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3">
-              <ArrowRight className="w-5 h-5" />
+              className="text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3">
+              <ArrowRight className="hidden md:block w-5 h-5" />
               Continue Shopping
             </Link>
           </div>

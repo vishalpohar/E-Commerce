@@ -9,7 +9,8 @@ import OrderDetailsCard from "./OrderDetailsCard";
 
 const OrdersPage = () => {
   const [page, setPage] = useState(1);
-  const { ordersByPage, totalPages, getMyOrders, loading } = useProductStore();
+  const { ordersByPage, totalPages, getMyOrders, isFetchingOrders } =
+    useProductStore();
 
   const handleNext = () => {
     if (page < totalPages) setPage((p) => p + 1);
@@ -24,16 +25,15 @@ const OrdersPage = () => {
 
   useEffect(() => {
     getMyOrders(page);
-    window.scrollTo({ top: 0 });
-  }, [page, getMyOrders]);
+  }, [page]);
 
   const currentOrders = ordersByPage[page] || [];
-  if (!loading && currentOrders.length === 0) {
+  if (!isFetchingOrders && currentOrders.length === 0) {
     return <EmptyOrdersPage />;
   }
 
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="min-h-[90vh] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -43,7 +43,7 @@ const OrdersPage = () => {
           <p className="text-gray-600">Track and manage your orders</p>
         </div>
 
-        {loading ? (
+        {isFetchingOrders ? (
           <div className="grid grid-cols-1 gap-4 p-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonLoader key={i} />
@@ -52,12 +52,7 @@ const OrdersPage = () => {
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {currentOrders?.map((order) => {
-              return (
-                <OrderDetailsCard
-                  key={order._id}
-                  order={order}
-                />
-              );
+              return <OrderDetailsCard key={order._id} order={order} />;
             })}
           </div>
         )}

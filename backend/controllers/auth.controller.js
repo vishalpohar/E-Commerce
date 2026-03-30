@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import { redis } from "../lib/redis.js";
 import jwt from "jsonwebtoken";
+import { sendOTPEmail } from "../utils/sendEmail.js";
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
@@ -19,7 +20,7 @@ const storeRefreshToken = async (userId, refreshToken) => {
     `refresh_token:${userId}`,
     refreshToken,
     "EX",
-    7 * 24 * 60 * 60
+    7 * 24 * 60 * 60,
   );
 };
 
@@ -41,7 +42,7 @@ const setCookies = (res, accessToken, refreshToken) => {
 };
 
 export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   try {
     const userExists = await User.findOne({ email });
 
@@ -65,7 +66,7 @@ export const signup = async (req, res) => {
       });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, role });
 
     //authenticate
     const { accessToken, refreshToken } = generateTokens(user._id);
@@ -80,7 +81,7 @@ export const signup = async (req, res) => {
         email: user.email,
         role: user.role,
       },
-      message: "User created successfully",
+      message: "You have signed up successfully.",
     });
   } catch (error) {
     console.log("Error in signup controller", error.message);
@@ -120,7 +121,7 @@ export const logout = async (req, res) => {
     if (refreshToken) {
       const decoded = jwt.verify(
         refreshToken,
-        process.env.REFRESH_TOKEN_SECRET
+        process.env.REFRESH_TOKEN_SECRET,
       );
       await redis.del(`refresh_token:${decoded.userId}`);
     }
@@ -154,7 +155,7 @@ export const refreshToken = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     const isProd = process.env.NODE_ENV === "production";
@@ -166,9 +167,7 @@ export const refreshToken = async (req, res) => {
       maxAge: 15 * 60 * 1000,
     });
 
-    res
-      .status(200)
-      .json({ success: true, message: "Token refresh successfully" });
+    res.json({ success: true, message: "Token refresh successfully" });
   } catch (error) {
     console.log("Error in refreshToken controller", error.message);
     res
@@ -179,10 +178,63 @@ export const refreshToken = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    res.json(req.user);
+    let user = req.user;
+    user = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+    res.json(user);
   } catch (error) {
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const sendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
+
+    await user.save();
+
+    await sendOTPEmail(email, otp);
+
+    res.json({ message: "OTP sent successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+    console.log(newPassword);
+
+    if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    user.password = newPassword;
+
+    user.otp = undefined;
+    user.otpExpires = undefined;
+
+    await user.save();
+
+    res.json({ message: "Password reset successful" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

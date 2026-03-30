@@ -14,12 +14,22 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
+        seller: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
         quantity: {
           type: Number,
           required: true,
           min: 1,
         },
         price: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+        itemTotal: {
           type: Number,
           required: true,
           min: 0,
@@ -36,13 +46,15 @@ const orderSchema = new mongoose.Schema(
       unique: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 orderSchema.index({ createdAt: 1 });
 orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ "products.product": 1 });
 orderSchema.index({ user: 1, "products.product": 1 });
+orderSchema.index({ "products.seller": 1 });
+orderSchema.index({ createdAt: 1, "products.seller": 1 });
 
 const Order = mongoose.model("Order", orderSchema);
 

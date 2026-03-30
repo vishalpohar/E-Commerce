@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   UserPlus,
   Mail,
@@ -8,6 +8,7 @@ import {
   Loader,
   Eye,
   EyeOff,
+  AlertCircle,
 } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 import {
@@ -22,14 +23,17 @@ const SignUpPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "customer",
   });
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
+    password: {},
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const { signup, loading } = useUserStore();
 
@@ -46,17 +50,17 @@ const SignUpPage = () => {
     setErrors((prev) => ({ ...prev, [id]: fieldError }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const emailError = validateEmail(formData.email);
     const passwordError = validatePassword(formData.password);
     const confirmPasswordError = validateConfirmPassword(
       formData.password,
-      formData.confirmPassword
+      formData.confirmPassword,
     );
 
-    if (emailError || passwordError || confirmPasswordError) {
+    if (emailError || Object.keys(passwordError).length > 0 || confirmPasswordError.status==="error") {
       setErrors({
         email: emailError,
         password: passwordError,
@@ -65,7 +69,8 @@ const SignUpPage = () => {
       return;
     }
 
-    signup(formData);
+    const response = await signup(formData);
+    if (response.status) navigate("/login");
   };
 
   return (
@@ -93,13 +98,13 @@ const SignUpPage = () => {
                 <input
                   id="name"
                   type="text"
-                  required
                   value={formData.name}
+                  placeholder="John Doe"
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   className="block w-full pl-10 pr-3 py-3 text-gray-700 border border-gray-300 rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  placeholder="John Doe"
+                  required
                 />
               </div>
             </div>
@@ -119,11 +124,14 @@ const SignUpPage = () => {
                   type="text"
                   value={formData.email}
                   onChange={handleChange}
-                  onFocus={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
-                    errors.email ? "border-red-300" : "border-gray-300"
-                  }`}
+                  onBlur={handleChange}
                   placeholder="you@example.com"
+                  className={`block w-full pl-10 pr-3 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 transition-all duration-200 ${
+                    errors.email
+                      ? "border-red-500 bg-red-50 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
+                  required
                 />
               </div>
               {errors.email && (
@@ -146,14 +154,18 @@ const SignUpPage = () => {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  onFocus={handleChange}
-                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
-                    errors.password ? "border-red-300" : "border-gray-300"
-                  }`}
+                  onBlur={handleChange}
                   placeholder="Create a password"
+                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 transition-all duration-200 ${
+                    Object.keys(errors.password).length > 0
+                      ? "border-red-500 bg-red-50 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
+                  required
                 />
                 <button
                   type="button"
+                  tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword((prev) => !prev)}>
                   {showPassword ? (
@@ -163,8 +175,30 @@ const SignUpPage = () => {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-xs mt-2">{errors.password}</p>
+              {/* Password Requirements */}
+              {Object.keys(errors.password).length > 0 && (
+                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
+                    <div className="text-xs text-yellow-800 space-y-1">
+                      {errors.password.length && (
+                        <p>• {errors.password.length}</p>
+                      )}
+                      {errors.password.uppercase && (
+                        <p>• {errors.password.uppercase}</p>
+                      )}
+                      {errors.password.lowercase && (
+                        <p>• {errors.password.lowercase}</p>
+                      )}
+                      {errors.password.number && (
+                        <p>• {errors.password.number}</p>
+                      )}
+                      {errors.password.special && (
+                        <p>• {errors.password.special}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -183,16 +217,18 @@ const SignUpPage = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  onFocus={handleChange}
-                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
-                    errors.confirmPassword
-                      ? "border-red-300"
-                      : "border-gray-300"
-                  }`}
+                  onBlur={handleChange}
                   placeholder="Confirm your password"
+                  className={`block w-full pl-10 pr-10 py-3 text-gray-700 border rounded-xl placeholder-gray-400 outline-none focus:ring-1 transition-all duration-200 ${
+                    errors.confirmPassword.status === "error"
+                      ? "border-red-500 bg-red-50 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
+                  required
                 />
                 <button
                   type="button"
+                  tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}>
                   {showConfirmPassword ? (
@@ -203,11 +239,25 @@ const SignUpPage = () => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-xs mt-2">
-                  {errors.confirmPassword}
+                <p
+                  className={`${errors.confirmPassword?.status === "success" ? "text-green-500" : "text-red-500"} text-xs mt-1 flex items-center gap-1`}>
+                  {errors.confirmPassword.icon && (
+                    <errors.confirmPassword.icon className="w-3 h-3" />
+                  )}
+                  {errors.confirmPassword.message}
                 </p>
               )}
             </div>
+
+            <select
+              id="role"
+              value={formData.role}
+              onChange={handleChange}
+              onBlur={handleChange}
+              className="w-full text-lg text-gray-700 font-semibold tracking-wide border rounded-xl outline-none px-2 py-3 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 border-gray-300">
+              <option value="customer">Customer</option>
+              <option value="seller">Seller</option>
+            </select>
 
             <div className="flex items-center">
               <input
@@ -230,7 +280,7 @@ const SignUpPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full border-2 border-gray-400 hover:border-blue-500 text-gray-700 hover:text-blue-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              className="w-full border-2 border-blue-600 hover:bg-blue-600 text-blue-600 hover:text-white font-semibold py-3 px-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <>
                   <Loader className="w-5 h-5 animate-spin" />
@@ -250,8 +300,8 @@ const SignUpPage = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-blue-700 hover:underline font-medium transition-colors">
-                login here
+                className="text-blue-700 text-[16px] font-medium hover:underline underline-offset-2 transition-colors">
+                Login
               </Link>
             </p>
           </div>

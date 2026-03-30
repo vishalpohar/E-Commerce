@@ -22,7 +22,7 @@ const navLinks = [
     name: "Dashboard",
     path: "/secret-dashboard",
     icon: LayoutDashboard,
-    adminOnly: true,
+    sellerOnly: true,
   },
   {
     id: "YOUR_BAG",
@@ -47,7 +47,7 @@ const navLinks = [
 
 const Navbar = () => {
   const { user, logout } = useUserStore();
-  const isAdmin = user?.role === "admin";
+  const isSeller = user?.role === "seller";
   const { cart } = useCartStore();
 
   const [isMobileMenu, setIsMobileMenu] = useState(false);
@@ -86,14 +86,14 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       {/* Main Navbar */}
-      <nav className="px-2 md:px-6 bg-white text-gray-600 backdrop-blur-xl shadow-sm">
+      <nav className="px-2 md:px-6 bg-white text-gray-600 backdrop-blur-xl">
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div>
               <Link
                 to="/"
-                className="relative flex items-center gap-3 text-gray-700 text-3xl font-extrabold duration-500">
+                className="relative flex items-center gap-3 text-gray-700 text-3xl outline-none font-extrabold duration-500">
                 <span className="flex items-center font-serif tracking-tight">
                   EasyBuy
                 </span>
@@ -105,7 +105,7 @@ const Navbar = () => {
               {user && (
                 <ul className="flex items-center gap-6 lg:gap-10">
                   {navLinks.map((link) => {
-                    if (link.isAdmin && !isAdmin) return null;
+                    if (link.sellerOnly && !isSeller) return null;
 
                     return (
                       <li key={link.id}>
@@ -241,8 +241,8 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenu && (
-        <div className="fixed flex flex-col bg-white top-16 right-0 z-40 w-full h-full p-4">
-          <button className="self-end mr-3" onClick={toggleMobileMenu}>
+        <div className="fixed flex flex-col bg-white top-16 right-0 z-40 w-full h-full py-4">
+          <button className="self-end mr-5 " onClick={toggleMobileMenu}>
             <X color="#4b5563" />
           </button>
           <div className="w-full flex flex-col items-center mt-24">
@@ -260,7 +260,7 @@ const Navbar = () => {
 
                 <ul className="w-full flex flex-col pb-4">
                   {navLinks.map((link) => {
-                    if (link.adminOnly && !isAdmin) return null;
+                    if (link.sellerOnly && !isSeller) return null;
 
                     const Icon = link.icon;
 
@@ -272,18 +272,23 @@ const Navbar = () => {
                           className={({ isActive }) =>
                             `flex justify-center p-3 transition-colors duration-200 group ${isActive && "bg-blue-50"}`
                           }>
-                          <div className="w-[130px] flex items-center gap-3">
-                            <Icon
-                              className="text-gray-600 group-hover:text-blue-600"
-                              size={20}
-                            />
-                            <span className="text-lg font-light text-gray-700">
-                              {link.name}{" "}
-                              {link.showCount &&
-                                cart.length > 0 &&
-                                `(${cart.length})`}
-                            </span>
-                          </div>
+                          {({ isActive }) => (
+                            <div className="w-[130px] flex items-center gap-3">
+                              <Icon
+                                size={20}
+                                className={
+                                  isActive ? "text-blue-700" : "text-gray-600"
+                                }
+                              />
+                              <span
+                                className={`text-lg font-light ${isActive ? "text-blue-600 font-semibold" : "text-gray-600"}`}>
+                                {link.name}{" "}
+                                {link.showCount &&
+                                  cart.length > 0 &&
+                                  `(${cart.length})`}
+                              </span>
+                            </div>
+                          )}
                         </NavLink>
                       </li>
                     );
@@ -300,12 +305,9 @@ const Navbar = () => {
                   logout();
                   toggleMobileMenu();
                 }}
-                className="flex items-center w-[130px] space-x-3 pt-3 rounded-lg hover:bg-red-50 transition-colors duration-200 group text-left">
-                <LogOut
-                  className="text-red-600 group-hover:text-red-700"
-                  size={20}
-                />
-                <span className="text-lg font-light text-red-600 group-hover:text-red-700">
+                className="flex items-center gap-2 w-[130px] rounded-lg text-red-600 group-hover:text-red-700 transition-colors duration-200 group">
+                <LogOut size={20} />
+                <span className="text-lg font-light group-hover:font-semibold">
                   Log Out
                 </span>
               </button>

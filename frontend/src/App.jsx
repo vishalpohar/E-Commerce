@@ -1,31 +1,32 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
 
 import { useUserStore } from "./stores/useUserStore";
-import { useCartStore } from "./stores/useCartStore";
 
 import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
-import LoadingSpinner from "./components/LoadingSpinner";
+import LoadingSpinner, { ThreeDotsLoader } from "./components/LoadingSpinner";
 import ScrollToTop from "./components/ScrollToTop";
+import { useCartStore } from "./stores/useCartStore";
 
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import AdminPage from "./pages/AdminPage";
-import CategoryPage from "./pages/CategoryPage";
-import CartPage from "./pages/cart/CartPage";
-import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
-import PurchaseCancelPage from "./pages/PurchaseCancelPage";
-import SearchPage from "./pages/search/SearchPage";
-import WishlistPage from "./pages/wishlist/WishlistPage";
-import OrdersPage from "./pages/orders/OrdersPage";
-import ProductDetailsPage from "./pages/ProductDetailsPage";
-import NotFoundPage from "./pages/NotFoundPage";
+const SignUpPage = lazy(() => import("./pages/SignUpPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword/ForgotPassword"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const CategoryPage = lazy(() => import("./pages/category/CategoryPage"));
+const CartPage = lazy(() => import("./pages/cart/CartPage"));
+const SearchPage = lazy(() => import("./pages/search/SearchPage"));
+const WishlistPage = lazy(() => import("./pages/wishlist/WishlistPage"));
+const OrdersPage = lazy(() => import("./pages/orders/OrdersPage"));
+const ProductDetailsPage = lazy(() => import("./pages/ProductDetailsPage"));
+const PurchaseSuccessPage = lazy(() => import("./pages/PurchaseSuccessPage"));
+const PurchaseCancelPage = lazy(() => import("./pages/PurchaseCancelPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -33,13 +34,20 @@ function App() {
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, []);
 
   useEffect(() => {
-    if (user) getCartItems();
-  }, [user]);
+    if (!user) return;
+    getCartItems();
+  }, []);
 
   if (checkingAuth) return <LoadingSpinner />;
+
+  const PageLoader = () => (
+    <div className="flex justify-center items-center">
+      <ThreeDotsLoader height="90" />
+    </div>
+  );
 
   return (
     <>
@@ -49,26 +57,80 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route
             path="/signup"
-            element={!user ? <SignUpPage /> : <Navigate to="/" />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                {!user ? <SignUpPage /> : <Navigate to="/" />}
+              </Suspense>
+            }
           />
           <Route
             path="/login"
-            element={!user ? <LoginPage /> : <Navigate to="/" />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                {!user ? <LoginPage /> : <Navigate to="/" />}
+              </Suspense>
+            }
           />
-          <Route path="/not-found" element={<NotFoundPage />} />
+          <Route
+            path="/forgot-password"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                {!user ? <ForgotPassword /> : <Navigate to="/" />}
+              </Suspense>
+            }
+          />
+          <Route
+            path="/not-found"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <NotFoundPage />
+              </Suspense>
+            }
+          />
         </Route>
 
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/product-details/:id" element={<ProductDetailsPage />} />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <HomePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/category/:category"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <CategoryPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <SearchPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/product-details/:id"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ProductDetailsPage />
+              </Suspense>
+            }
+          />
 
+          {/* PROTECTED */}
           <Route
             path="/cart"
             element={
               <ProtectedRoute>
-                <CartPage />
+                <Suspense fallback={<PageLoader />}>
+                  <CartPage />
+                </Suspense>
               </ProtectedRoute>
             }
           />
@@ -76,7 +138,9 @@ function App() {
             path="/wishlist"
             element={
               <ProtectedRoute>
-                <WishlistPage />
+                <Suspense fallback={<PageLoader />}>
+                  <WishlistPage />
+                </Suspense>
               </ProtectedRoute>
             }
           />
@@ -84,35 +148,44 @@ function App() {
             path="/orders"
             element={
               <ProtectedRoute>
-                <OrdersPage />
+                <Suspense fallback={<PageLoader />}>
+                  <OrdersPage />
+                </Suspense>
               </ProtectedRoute>
             }
           />
           <Route
             path="/purchase-success"
             element={
-              <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
                 <PurchaseSuccessPage />
-              </ProtectedRoute>
+              </Suspense>
             }
           />
           <Route
             path="/purchase-cancel"
             element={
-              <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
                 <PurchaseCancelPage />
-              </ProtectedRoute>
+              </Suspense>
             }
           />
+
+          {/* ADMIN */}
           <Route
             path="/secret-dashboard"
             element={
-              user?.role === "admin" ? <AdminPage /> : <Navigate to="/login" />
+              <ProtectedRoute sellerOnly>
+                <Suspense fallback={<PageLoader />}>
+                  <DashboardPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
         </Route>
         <Route path="*" element={<Navigate to="/not-found" />} />
       </Routes>
+
       <Toaster />
     </>
   );

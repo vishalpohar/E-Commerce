@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
 const EmptySearchPage = ({query}) => (
-  <div className="min-h-[60vh] text-center py-16">
+  <div className="min-h-[90vh] text-center py-16">
     <div className="max-w-md mx-auto">
       <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
         <Search className="w-10 h-10 text-gray-400" />

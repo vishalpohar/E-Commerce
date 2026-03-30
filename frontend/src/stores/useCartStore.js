@@ -9,13 +9,21 @@ export const useCartStore = create((set, get) => ({
   total: 0,
   subtotal: 0,
   isCouponApplied: false,
+  isFetchingCart: false,
+  isFetchingCoupon: false,
 
   getMyCoupon: async () => {
+    const { isFetchingCoupon } = get();
+    if (isFetchingCoupon) return;
+
+    set({ isFetchingCoupon: true });
     try {
       const response = await axios.get("/coupons");
       set({ coupon: response.data });
     } catch (error) {
       console.error("Error fetching coupon", error);
+    } finally {
+      set({ isFetchingCoupon: false });
     }
   },
 
@@ -37,13 +45,19 @@ export const useCartStore = create((set, get) => ({
   },
 
   getCartItems: async () => {
+    const { isFetchingCart } = get();
+
+    if (isFetchingCart) return;
+
+    set({ isFetchingCart: true });
     try {
       const res = await axios.get("/cart");
       set({ cart: res.data });
       get().calculateTotals();
     } catch (error) {
       set({ cart: [] });
-      toast.error(error.response.data.message || "An error occurred");
+    } finally {
+      set({ isFetchingCart: false });
     }
   },
 
@@ -68,13 +82,13 @@ export const useCartStore = create((set, get) => ({
 
       set((prevState) => {
         const existingItem = prevState.cart.find(
-          (item) => item._id === product._id
+          (item) => item._id === product._id,
         );
         const newCart = existingItem
           ? prevState.cart.map((item) =>
               item._id === product._id
                 ? { ...item, quantity: item.quantity + 1 }
-                : item
+                : item,
             )
           : [...prevState.cart, { ...product, quantity: 1 }];
         return { cart: newCart };
@@ -107,7 +121,7 @@ export const useCartStore = create((set, get) => ({
       await axios.put(`/cart/${productId}`, { quantity });
       set((prevState) => ({
         cart: prevState.cart.map((item) =>
-          item._id === productId ? { ...item, quantity } : item
+          item._id === productId ? { ...item, quantity } : item,
         ),
       }));
       get().calculateTotals();
@@ -118,16 +132,16 @@ export const useCartStore = create((set, get) => ({
     const { cart, coupon, isCouponApplied } = get();
     let subtotal = cart.reduce(
       (sum, item) => sum + item.price * item.quantity,
-      0
+      0,
     );
     let total = subtotal;
 
     if (coupon) {
       const discount = subtotal * (coupon.discountPercentage / 100);
       total = subtotal - discount;
-      set({isCouponApplied: true});
+      set({ isCouponApplied: true });
     }
-    
+
     subtotal = formatPriceInRupees(subtotal);
     total = formatPriceInRupees(total);
 

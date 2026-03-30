@@ -2,7 +2,7 @@ import { ArrowRight, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const EmptyCartPage = () => (
-  <div className="min-h-[80vh] flex items-center justify-center px-4 transition-all duration-500">
+  <div className="min-h-[90vh] flex items-center justify-center px-4 transition-all duration-500">
     <div className="text-center max-w-md">
       <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-10">
         <ShoppingCart className="h-16 w-16 text-blue-400" />

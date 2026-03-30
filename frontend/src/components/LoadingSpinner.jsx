@@ -33,14 +33,16 @@ const LoadingSpinner = ({ size = "medium", className = "" }) => {
   );
 };
 
-export const ThreeDotsLoader = () => (
-  <ThreeDots
-    height="50"
-    width="50"
-    color="#2563eb"
-    ariaLabel="three-dots-loading"
-    visible={true}
-  />
+export const ThreeDotsLoader = ({ height = "80", color = "#2563eb" }) => (
+  <div style={{minHeight: `${height}vh`}} className="flex justify-center items-center">
+    <ThreeDots
+      height="50"
+      width="50"
+      color={color}
+      ariaLabel="three-dots-loading"
+      visible={true}
+    />
+  </div>
 );
 
 export default LoadingSpinner;

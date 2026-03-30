@@ -12,7 +12,7 @@ export default function AutoCarousel() {
   const [isPaused, setIsPaused] = useState(false);
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => prev - 1);
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
@@ -22,11 +22,13 @@ export default function AutoCarousel() {
   // Auto sliding
   useEffect(() => {
     if (isPaused) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 10000);
+    }, 5000);
+
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, images.length]);
 
   return (
     <div>
@@ -35,20 +37,20 @@ export default function AutoCarousel() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}>
         {/* IMAGES */}
-        <div className="relative h-full w-full overflow-hidden">
-          <div
-            className="flex h-full transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-            {images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                className="w-full h-full flex-shrink-0 object-cover"
-                alt="banner"
-                draggable="true"
-              />
-            ))}
-          </div>
+        <div
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+          {images.map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              loading={index === 0 ? "eager" : "lazy"}
+              className="w-full h-full flex-shrink-0 object-cover"
+              alt={`banner-${index}`}
+              width={1200}
+              height={600}
+            />
+          ))}
         </div>
       </div>
 

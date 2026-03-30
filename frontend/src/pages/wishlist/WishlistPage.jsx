@@ -9,19 +9,20 @@ import SkeletonLoader from "../../components/SkeletonLoader";
 import EmptyWishlistPage from "./EmptyWishlistPage";
 
 const WishlistPage = () => {
-  const { getWishlist, wishlist, isInWishlist, loading } = useWishlistStore();
+  const { getWishlist, wishlist, isInWishlist, isWishlistLoading } =
+    useWishlistStore();
   const { isInCart } = useCartStore();
 
   useEffect(() => {
     getWishlist();
-  }, [wishlist.length, getWishlist]);
+  }, []);
 
-  if (!loading && wishlist.length === 0) return <EmptyWishlistPage />;
+  if (!isWishlistLoading && wishlist.length === 0) return <EmptyWishlistPage />;
 
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="min-h[90vh] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {loading ? (
+        {isWishlistLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonLoader key={i} />

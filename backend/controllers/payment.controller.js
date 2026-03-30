@@ -37,7 +37,7 @@ export const createCheckoutSession = async (req, res) => {
       });
       if (coupon) {
         totalAmount -= Math.round(
-          (totalAmount * coupon.discountPercentage) / 100
+          (totalAmount * coupon.discountPercentage) / 100,
         );
       }
     }
@@ -58,14 +58,18 @@ export const createCheckoutSession = async (req, res) => {
         products: JSON.stringify(
           products.map((p) => ({
             id: p._id,
+            seller: p.seller,
             quantity: p.quantity,
             price: p.price,
-          }))
+            itemTotal: p.quantity * p.price,
+          })),
         ),
       },
     });
 
-    if ((totalAmount/100) >= 3000) {
+    console.log(session.metadata.products);
+
+    if (totalAmount / 100 >= 3000) {
       await createNewCoupon(req.user._id);
     }
 
@@ -84,43 +88,45 @@ export const checkoutSuccess = async (req, res) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     if (session.payment_status !== "paid") {
-      return res.status(400).json({message: "Payment not completed"});
+      return res.status(400).json({ message: "Payment not completed" });
     }
 
     const products = JSON.parse(session.metadata.products);
 
     const updatedOrder = await Order.findOneAndUpdate(
-      {stripeSessionId: sessionId},
+      { stripeSessionId: sessionId },
       {
         user: session.metadata.userId,
         products: products.map((product) => ({
           product: product.id,
+          seller: product.seller,
           quantity: product.quantity,
           price: product.price,
+          itemTotal: product.itemTotal,
         })),
         totalAmount: session.amount_total / 100,
         stripeSessionId: sessionId,
       },
-      {upsert:true, new:true, setDefaultsOnInsert:true}
-    )
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
 
-      if (session.metadata.couponCode) {
-        await Coupon.findOneAndUpdate(
-          {
-            code: session.metadata.couponCode,
-            userId: session.metadata.userId,
-          },
-          { isActive: false }
-        );
-      }
+    if (session.metadata.couponCode) {
+      await Coupon.findOneAndUpdate(
+        {
+          code: session.metadata.couponCode,
+          userId: session.metadata.userId,
+        },
+        { isActive: false },
+      );
+    }
 
-      res.status(200).json({
-        success: true,
-        message:
-          "Payment successful, order created, and coupon deactivated if used.",
-        orderId: updatedOrder._id,
-        totalAmount: session.amount_total / 100,
-      });
+    res.status(200).json({
+      success: true,
+      message:
+        "Payment successful, order created, and coupon deactivated if used.",
+      orderId: updatedOrder._id,
+      totalAmount: session.amount_total / 100,
+    });
   } catch (error) {
     console.error("Error processing successful checkout:", error);
     res.status(500).json({

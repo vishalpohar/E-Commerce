@@ -18,11 +18,12 @@ import { useCartStore } from "../stores/useCartStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
 import { useWishlistStore } from "../stores/useWishlistStore";
+import { ThreeDotsLoader } from "../components/LoadingSpinner";
 
 const ProductDetailsPage = () => {
   const { id: productId } = useParams();
   const { user } = useUserStore();
-  const { fetchProductById, product } = useProductStore();
+  const { fetchProductById, product, isFetchingProduct } = useProductStore();
   const { addToCart, isInCart, coupon } = useCartStore();
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
@@ -100,10 +101,12 @@ const ProductDetailsPage = () => {
     if (productId) {
       fetchProductById(productId);
     }
-  }, [productId, fetchProductById]);
+  }, [productId]);
+
+  if (isFetchingProduct) return <ThreeDotsLoader height="80" />;
 
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="min-h-[90vh] py-8">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         {product /* Breadcrumb */ && (
           <nav className="flex mb-4" aria-label="Breadcrumb">
@@ -174,14 +177,14 @@ const ProductDetailsPage = () => {
                   {/* Secondary Actions */}
                   <div className="absolute top-5 right-5 flex gap-2">
                     <button
-                    className="bg-white rounded-full p-2 md:p-3"
+                      className="bg-white rounded-full p-2 md:p-3"
                       onClick={() => handleWishlist(product)}>
                       <Heart
-                        className={
-                          `w-6 h-6 ${inWishlist
+                        className={`w-6 h-6 ${
+                          inWishlist
                             ? "fill-red-500 text-red-500"
-                            : "text-gray-600"}`
-                        }
+                            : "text-gray-600"
+                        }`}
                       />
                     </button>
                   </div>
