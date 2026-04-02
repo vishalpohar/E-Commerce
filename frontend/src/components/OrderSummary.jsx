@@ -94,6 +94,7 @@ const OrderSummary = () => {
       {/* Checkout Button */}
       <button
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 ease-in-out mb-4"
+        aria-label="Proceed to Checkout"
         onClick={handlePayment}>
         Proceed to Checkout
       </button>

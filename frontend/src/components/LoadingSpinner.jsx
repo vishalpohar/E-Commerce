@@ -1,40 +1,27 @@
-import { motion } from "framer-motion";
-import { ThreeDots } from "react-loader-spinner";
+import { Oval, ThreeDots } from "react-loader-spinner";
 
-const LoadingSpinner = ({ size = "medium", className = "" }) => {
-  const sizeClasses = {
-    small: "w-8 h-8",
-    medium: "w-12 h-12",
-    large: "w-16 h-16",
-    xl: "w-20 h-20",
-  };
-
+const LoadingSpinner = () => {
   return (
-    <motion.div
-      className={`flex flex-col items-center justify-center min-h-screen ${className}`}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}>
-      {/* Main Spinner Container */}
-      <div className="relative">
-        {/* Outer Ring */}
-        <motion.div
-          className={`${sizeClasses[size]} border-4 border-gray-200 rounded-full`}
-        />
-
-        {/* Animated Ring */}
-        <motion.div
-          className={`absolute top-0 left-0 ${sizeClasses[size]} border-4 border-blue-600 border-t-transparent rounded-full`}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
-    </motion.div>
+    <div className="flex flex-col items-center justify-center min-h-screen scale-105 duration-200">
+      <Oval
+        visible={true}
+        height="80"
+        width="80"
+        color="#2563eb"
+        secondaryColor="#93c5fa"
+        strokeWidth={4}
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+      />
+    </div>
   );
 };
 
 export const ThreeDotsLoader = ({ height = "80", color = "#2563eb" }) => (
-  <div style={{minHeight: `${height}vh`}} className="flex justify-center items-center">
+  <div
+    style={{ minHeight: `${height}vh` }}
+    className="flex justify-center items-center">
     <ThreeDots
       height="50"
       width="50"

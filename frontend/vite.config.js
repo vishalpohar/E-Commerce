@@ -1,15 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { analyzer } from "vite-bundle-analyzer";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:5000",
-      },
-    },
-  },
-  envDir: "../",
+  plugins: [react(), analyzer()],
 });

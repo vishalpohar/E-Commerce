@@ -1,10 +1,9 @@
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
 import { useUserStore } from "../stores/useUserStore";
 import { Link, useNavigate } from "react-router-dom";
 import { formatPriceInRupees } from "../utils/formatCurrency";
-import { motion } from "framer-motion";
 
 const FeaturedProducts = ({ featuredProducts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,29 +58,13 @@ const FeaturedProducts = ({ featuredProducts }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-6 lg:mb-20">
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="flex justify-center px-4 py-2 mb-4">
-            <p className="w-fit bg-blue-50 rounded-full text-blue-600 text-sm font-medium">
-              Featured Collection
-            </p>
-          </motion.div>
-
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
             Editor's Picks
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Carefully selected items that define this season's aesthetic
-          </motion.p>
+          </p>
         </div>
 
         {/* Products */}
@@ -91,10 +74,9 @@ const FeaturedProducts = ({ featuredProducts }) => {
               const inCart = isInCart(product._id);
 
               return (
-                <motion.div
+                <div
                   key={product._id}
-                  whileHover={{ y: -6 }}
-                  className="group bg-white shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden">
+                  className="group bg-white shadow-sm hover:shadow-2xl border border-gray-100 overflow-hidden hover:-translate-y-4 transition-all duration-500">
                   <Link to={`/product-details/${product._id}`}>
                     <div className="relative overflow-hidden bg-gray-100">
                       <img
@@ -117,7 +99,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
                   {/* Product Info */}
                   <div className="p-6">
                     <Link to={`/product-details/${product._id}`}>
-                      <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors md:text-lg leading-tight">
+                      <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 transition-colors md:text-lg leading-tight">
                         {product.name}
                       </h3>
                     </Link>
@@ -129,12 +111,11 @@ const FeaturedProducts = ({ featuredProducts }) => {
                     </div>
 
                     {/* Cart Button */}
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.97 }}
+                    <button
                       onClick={() =>
                         inCart ? navigate("/cart") : handleAddToCart(product)
                       }
+                      aria-label="Bag"
                       className={`relative overflow-hidden w-full text-sm font-semibold py-2 px-2 
                       transition-all duration-300 flex items-center justify-center shadow-sm group 
                       ${
@@ -149,9 +130,9 @@ const FeaturedProducts = ({ featuredProducts }) => {
                           ADD TO BAG
                         </p>
                       )}
-                    </motion.button>
+                    </button>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -161,6 +142,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
             <>
               <button
                 onClick={prevSlide}
+                aria-label="Previous Slide"
                 disabled={isStartDisabled}
                 className={`absolute -left-4 top-1/2 transform -translate-y-1/2 px-1 md:px-2 py-2 md:py-3 rounded-xl shadow-lg ${
                   isStartDisabled
@@ -172,6 +154,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
 
               <button
                 onClick={nextSlide}
+                aria-label="Next Slide"
                 disabled={isEndDisabled}
                 className={`absolute -right-4 top-1/2 transform -translate-y-1/2 px-1 md:px-2 py-2 md:py-3 rounded-xl shadow-lg ${
                   isEndDisabled
@@ -192,6 +175,7 @@ const FeaturedProducts = ({ featuredProducts }) => {
             }).map((_, index) => (
               <button
                 key={index}
+                aria-label={`Open Product ${index}`}
                 onClick={() => setCurrentIndex(index * itemsPerPage)}
                 className={`rounded-full transition-all ${
                   index === Math.ceil(currentIndex / itemsPerPage)

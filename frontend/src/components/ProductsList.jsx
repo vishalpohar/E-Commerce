@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Trash, Star, Edit, Eye, Package } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
@@ -8,11 +7,7 @@ const ProductsList = () => {
   const { deleteProduct, toggleFeaturedProduct, products } = useProductStore();
 
   return (
-    <motion.div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
         <h2 className="text-xl font-semibold text-gray-900">
@@ -47,13 +42,10 @@ const ProductsList = () => {
           </thead>
 
           <tbody className="bg-white divide-y divide-gray-100">
-            {products?.map((product, index) => (
-              <motion.tr
+            {products?.map((product) => (
+              <tr
                 key={product._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="hover:bg-gray-50 transition-colors duration-150">
+                className="hover:bg-gray-50 transition-colors duration-150 animate-fadeSlideRight">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-12 w-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
@@ -89,6 +81,7 @@ const ProductsList = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
                     onClick={() => toggleFeaturedProduct(product._id)}
+                    aria-label={`Featured: ${product.isFeatured}`}
                     className={`p-2 rounded-lg transition-all duration-200 ${
                       product.isFeatured
                         ? "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"
@@ -108,17 +101,20 @@ const ProductsList = () => {
                       className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
                       <Eye className="h-4 w-4" />
                     </Link>
-                    <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200">
+                    <button
+                      aria-label="Edit"
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200">
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => deleteProduct(product._id)}
+                      aria-label="Trash"
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200">
                       <Trash className="h-4 w-4" />
                     </button>
                   </div>
                 </td>
-              </motion.tr>
+              </tr>
             ))}
           </tbody>
         </table>
@@ -138,7 +134,7 @@ const ProductsList = () => {
           </p>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

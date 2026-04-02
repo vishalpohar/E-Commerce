@@ -1,7 +1,7 @@
 const EmptyCategoryPage = () => (
   <div className="h-[80vh] flex flex-col justify-center items-center text-center">
     <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-      <span className="text-6xl">📦</span>
+      <img src="/productNotFound.jpg" alt="Product not found" width="350px" height="350px" />
     </div>
     <h3 className="text-xl font-semibold text-gray-900 mb-2">
       No products found

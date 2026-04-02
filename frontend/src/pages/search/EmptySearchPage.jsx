@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-const EmptySearchPage = ({query}) => (
+const EmptySearchPage = ({ query }) => (
   <div className="min-h-[90vh] text-center py-16">
     <div className="max-w-md mx-auto">
       <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -16,6 +16,7 @@ const EmptySearchPage = ({query}) => (
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <button
           onClick={() => window.history.back()}
+          aria-label="Go Back"
           className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 transition-colors font-medium">
           Go Back
         </button>

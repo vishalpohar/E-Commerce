@@ -43,14 +43,16 @@ const GiftCouponCard = () => {
         {/* Input Field */}
         <div className="flex gap-2">
           <div className="relative flex-1">
-            {!isCouponApplied && <input
-              type="text"
-              className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
-              placeholder="e.g. SUMMER25"
-              value={userInputCode}
-              onChange={(e) => setUserInputCode(e.target.value.toUpperCase())}
-              disabled={isCouponApplied}
-            />}
+            {!isCouponApplied && (
+              <input
+                type="text"
+                className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                placeholder="e.g. SUMMER25"
+                value={userInputCode}
+                onChange={(e) => setUserInputCode(e.target.value.toUpperCase())}
+                disabled={isCouponApplied}
+              />
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -68,9 +70,9 @@ const GiftCouponCard = () => {
               <button
                 type="button"
                 className="flex items-center justify-center text-md py-1 px-2 text-red-600 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Remove"
                 onClick={handleRemoveCoupon}
                 disabled={isLoading}>
-                
                 {isLoading ? "Removing..." : "Remove"}
               </button>
             </div>
@@ -78,6 +80,7 @@ const GiftCouponCard = () => {
             <button
               type="button"
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm font-semibold rounded-md py-2 px-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Apply Coupon"
               onClick={handleApplyCoupon}
               disabled={!userInputCode.trim() || isLoading}>
               {isLoading ? (

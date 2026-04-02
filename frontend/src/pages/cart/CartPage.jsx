@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 import { useCartStore } from "../../stores/useCartStore";
 
 import CartItem from "../../components/CartItem";
@@ -40,14 +38,10 @@ const CartPage = () => {
 
               {/* Stagger animation only for items */}
               <ul className="divide-y divide-gray-100">
-                {cart.map((item, index) => (
-                  <motion.div
-                    key={item._id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.08 }}>
+                {cart.map((item) => (
+                  <div key={item._id} className="animate-fadeSlideUp">
                     <CartItem item={item} />
-                  </motion.div>
+                  </div>
                 ))}
               </ul>
             </div>

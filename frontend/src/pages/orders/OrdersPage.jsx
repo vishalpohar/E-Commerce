@@ -62,6 +62,7 @@ const OrdersPage = () => {
           <div className="flex justify-center items-center gap-4 mt-12">
             <button
               onClick={handlePrevious}
+              aria-label="Previous"
               disabled={isPreviousDisabled}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 isPreviousDisabled
@@ -80,6 +81,7 @@ const OrdersPage = () => {
 
             <button
               onClick={handleNext}
+              aria-label="Next"
               disabled={isNextDisabled}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 isNextDisabled

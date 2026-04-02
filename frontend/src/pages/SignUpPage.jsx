@@ -167,6 +167,7 @@ const SignUpPage = () => {
                   type="button"
                   tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label="Eye"
                   onClick={() => setShowPassword((prev) => !prev)}>
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
@@ -230,6 +231,7 @@ const SignUpPage = () => {
                   type="button"
                   tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label="Eye"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}>
                   {showConfirmPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
@@ -254,7 +256,7 @@ const SignUpPage = () => {
               value={formData.role}
               onChange={handleChange}
               onBlur={handleChange}
-              className="w-full text-lg text-gray-700 font-semibold tracking-wide border rounded-xl outline-none px-2 py-3 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 border-gray-300">
+              className="w-full text-sm text-gray-700 font-semibold tracking-wide border rounded-xl outline-none px-2 py-3 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 border-gray-300">
               <option value="customer">Customer</option>
               <option value="seller">Seller</option>
             </select>
@@ -280,6 +282,7 @@ const SignUpPage = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-label="Sign Up"
               className="w-full border-2 border-blue-600 hover:bg-blue-600 text-blue-600 hover:text-white font-semibold py-3 px-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <>

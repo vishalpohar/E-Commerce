@@ -49,6 +49,7 @@ const Footer = () => {
                   <li key={item}>
                     <Link
                       to={`/${item.toLowerCase().replace(" ", "-")}`}
+                      aria-label={`Open ${item}`}
                       className="text-gray-400 hover:text-white transition-colors duration-200">
                       {item}
                     </Link>
@@ -72,6 +73,7 @@ const Footer = () => {
                 <li key={item}>
                   <a
                     href="#"
+                    aria-label={`Open ${item}`}
                     className="text-gray-400 hover:text-white transition-colors duration-200">
                     {item}
                   </a>
@@ -118,6 +120,7 @@ const Footer = () => {
                 <a
                   key={item}
                   href="#"
+                  aria-label={`Open ${item}`}
                   className="text-gray-400 hover:text-white transition-colors duration-200">
                   {item}
                 </a>

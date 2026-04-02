@@ -2,9 +2,18 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const images = [
-  "banner/menShirts.avif",
-  "banner/menPants.avif",
-  "banner/shoes.avif",
+  {
+    name: "menShirts",
+    alt: "Men Shirts Banner",
+  },
+  {
+    name: "menPants",
+    alt: "Men Pants Banner",
+  },
+  {
+    name: "shoes",
+    alt: "Shoes Banner",
+  },
 ];
 
 export default function AutoCarousel() {
@@ -28,12 +37,12 @@ export default function AutoCarousel() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isPaused, images.length]);
+  }, [isPaused]);
 
   return (
     <div>
       <div
-        className="relative h-[35vh] sm:h-[50vh] lg:h-[80vh] rounded-xl overflow-hidden mx-2 md:mx-8 mt-4"
+        className="relative h-[35vh] sm:h-[50vh] xl:h-[70vh] rounded-xl overflow-hidden mx-2 md:mx-8 mt-4"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}>
         {/* IMAGES */}
@@ -43,12 +52,16 @@ export default function AutoCarousel() {
           {images.map((img, index) => (
             <img
               key={index}
-              src={img}
+              src={`/banner/${img.name}-1024.avif`}
+              srcSet={`/banner/${img.name}-640.avif 640w,
+                /banner/${img.name}-1024.avif 1024w,
+                /banner/${img.name}-1280.avif 1280w`}
+              sizes="(max-width: 768px) 100vw, 1200px"
               loading={index === 0 ? "eager" : "lazy"}
               className="w-full h-full flex-shrink-0 object-cover"
-              alt={`banner-${index}`}
+              alt={img.alt}
               width={1200}
-              height={600}
+              height={675}
             />
           ))}
         </div>
@@ -57,12 +70,14 @@ export default function AutoCarousel() {
       <div className="absolute inset-0 flex items-center justify-between mx-2 md:mx-6 px-2 md:px-4">
         <button
           onClick={handlePrevious}
+          aria-label="Previous Slide"
           className="bg-white/30 hover:bg-white rounded-full shadow-lg p-2 transition-all duration-300 backdrop-blur-sm">
           <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
         </button>
 
         <button
           onClick={handleNext}
+          aria-label="Next Slide"
           className="bg-white/30 hover:bg-white rounded-full shadow-lg p-2 transition-all duration-300 backdrop-blur-sm">
           <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
         </button>

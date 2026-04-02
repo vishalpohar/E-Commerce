@@ -7,7 +7,7 @@ export const getCartProducts = async (req, res) => {
 
     const cartItems = products.map((product) => {
       const item = req.user.cartItems.find(
-        (cartItem) => cartItem.id === product.id
+        (cartItem) => cartItem.id === product.id,
       );
       return { ...product.toJSON(), quantity: item.quantity };
     });
@@ -51,7 +51,7 @@ export const removeProductFromCart = async (req, res) => {
       user.cartItems = [];
     } else {
       user.cartItems = user.cartItems.filter(
-        (item) => item._id.toString() !== productId
+        (item) => item._id.toString() !== productId,
       );
     }
     await user.save();
@@ -69,7 +69,7 @@ export const clearCart = async (req, res) => {
     await User.findOneAndUpdate(
       user._id,
       { $set: { cartItems: [] } },
-      { new: true }
+      { new: true },
     );
     res
       .status(200)

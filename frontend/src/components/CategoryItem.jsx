@@ -1,14 +1,33 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const categories = [
-  { href: "/pants", name: "Pants", imageUrl: "/products/jeans.avif" },
-  { href: "/shirts", name: "Shirts", imageUrl: "/products/shirts.avif" },
-  { href: "/t-shirts", name: "T-shirts", imageUrl: "/products/tshirts.avif" },
-  { href: "/shoes", name: "Shoes", imageUrl: "/products/shoes.avif" },
-  { href: "/glasses", name: "Glasses", imageUrl: "/products/glasses.avif" },
-  { href: "/jackets", name: "Jackets", imageUrl: "/products/jackets.avif" },
-  { href: "/bags", name: "Bags", imageUrl: "/products/bags.avif" },
+  { href: "/pants", name: "Pants", imageName: "jeans", alt: "Jeans Category" },
+  {
+    href: "/shirts",
+    name: "Shirts",
+    imageName: "shirts",
+    alt: "Shirts Category",
+  },
+  {
+    href: "/t-shirts",
+    name: "T-shirts",
+    imageName: "tshirts",
+    alt: "Tshirts Category",
+  },
+  { href: "/shoes", name: "Shoes", imageName: "shoes", alt: "Jeans Category" },
+  {
+    href: "/glasses",
+    name: "Glasses",
+    imageName: "glasses",
+    alt: "Glasses Category",
+  },
+  {
+    href: "/jackets",
+    name: "Jackets",
+    imageName: "jackets",
+    alt: "Jackets Category",
+  },
+  { href: "/bags", name: "Bags", imageName: "bags", alt: "Bags Category" },
 ];
 
 const CategoryItem = () => {
@@ -20,14 +39,14 @@ const CategoryItem = () => {
           to={`/category${category.href}`}
           className="group block relative overflow-hidden h-64 md:h-80 lg:h-96 w-full bg-gray-100">
           {/* Background Image */}
-          <motion.img
-            src={category.imageUrl}
-            alt={category.name}
+          <img
+            src={`/products/${category.imageName}-400.webp`}
+            srcSet={`/products/${category.imageName}-300.webp 300w, /products/${category.imageName}-300.webp 400w`}
+            alt={category.alt}
             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             loading="lazy"
-            decoding="async"
-            width={233}
-            height={349}
+            width={300}
+            height={450}
           />
 
           {/* Gradient Overlay */}

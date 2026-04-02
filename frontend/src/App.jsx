@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
 import { useUserStore } from "./stores/useUserStore";
@@ -13,9 +13,13 @@ import LoadingSpinner, { ThreeDotsLoader } from "./components/LoadingSpinner";
 import ScrollToTop from "./components/ScrollToTop";
 import { useCartStore } from "./stores/useCartStore";
 
+import "./index.css";
+
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword/ForgotPassword"));
+const ForgotPassword = lazy(
+  () => import("./pages/ForgotPassword/ForgotPassword"),
+);
 const HomePage = lazy(() => import("./pages/HomePage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const CategoryPage = lazy(() => import("./pages/category/CategoryPage"));
@@ -37,7 +41,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
     getCartItems();
   }, []);
 

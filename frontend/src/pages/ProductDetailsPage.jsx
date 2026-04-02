@@ -178,6 +178,7 @@ const ProductDetailsPage = () => {
                   <div className="absolute top-5 right-5 flex gap-2">
                     <button
                       className="bg-white rounded-full p-2 md:p-3"
+                      aria-label="Add to Whislist"
                       onClick={() => handleWishlist(product)}>
                       <Heart
                         className={`w-6 h-6 ${
@@ -199,6 +200,7 @@ const ProductDetailsPage = () => {
                     {product.name.length > 100 && (
                       <button
                         onClick={toggleName}
+                        aria-label="Control Name"
                         className="text-blue-600 hover:text-blue-700 font-medium ml-1 transition-colors">
                         {showName ? "Show less" : "Show more"}
                       </button>
@@ -246,6 +248,7 @@ const ProductDetailsPage = () => {
                     {product.description.length > 150 && (
                       <button
                         onClick={toggleExpanded}
+                        aria-label="Control Description"
                         className="text-blue-600 hover:text-blue-700 font-medium ml-1 transition-colors">
                         {isExpanded ? "Show less" : "Show more"}
                       </button>
@@ -268,6 +271,7 @@ const ProductDetailsPage = () => {
                   {inCart ? (
                     <button
                       onClick={() => navigate("/cart")}
+                      aria-label="See Bag"
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
                       SEE BAG
                       <ArrowRight className="w-5 h-5" />
@@ -275,6 +279,7 @@ const ProductDetailsPage = () => {
                   ) : (
                     <button
                       onClick={() => handleAddToCart(product)}
+                      aria-label="Add to Bag"
                       className="flex-1 bg-gray-900 hover:bg-gray-950 text-white font-semibold py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
                       <Handbag className="w-5 h-5" />
                       ADD TO BAG
@@ -283,6 +288,7 @@ const ProductDetailsPage = () => {
 
                   <button
                     onClick={handlePayment}
+                    aria-label="Buy Now"
                     className="flex-1 bg-gray-700 hover:bg-gray-900 text-white font-semibold py-4 px-6 transition-all duration-200 shadow-lg hover:shadow-xl">
                     BUY NOW
                   </button>

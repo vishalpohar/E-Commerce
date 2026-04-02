@@ -1,4 +1,4 @@
-import { BarChart, PlusCircle, ShoppingBasket, Settings } from "lucide-react";
+import { BarChart, PlusCircle, ShoppingBasket } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import AddProductForm from "../components/AddProductForm";
@@ -40,6 +40,7 @@ const AdminPage = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              aria-label={`Open ${tab.label}`}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-full text-xs md:text-base font-medium border-2 transition-all duration-200 ${
                 activeTab === tab.id

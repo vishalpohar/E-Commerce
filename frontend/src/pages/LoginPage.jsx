@@ -76,6 +76,7 @@ const LoginPage = () => {
                   type="button"
                   tabIndex={-1}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label="Eye"
                   onClick={() => setShowPassword((prev) => !prev)}>
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
@@ -112,6 +113,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-label="Log In"
               className="w-full border-2 border-gray-400 hover:border-blue-500 text-gray-700 hover:text-blue-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <>

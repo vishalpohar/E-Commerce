@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import formatDate from "../../utils/formatDate";
 import { formatPriceInRupees } from "../../utils/formatCurrency";
 
@@ -16,12 +15,8 @@ const getStatusColor = (status) => {
   }
 };
 
-const OrderDetailsCard = ({order}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    whileHover={{ y: -8 }}
-    className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-500">
+const OrderDetailsCard = ({ order }) => (
+  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:-translate-y-4 duration-500 animate-fadeSlideUp">
     {/* Order Header */}
     <div className="p-6 border-b border-gray-100">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -50,7 +45,7 @@ const OrderDetailsCard = ({order}) => (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {order.products.map((item) => {
-          const product = item.product
+          const product = item.product;
 
           return (
             <div key={product._id}>
@@ -83,15 +78,19 @@ const OrderDetailsCard = ({order}) => (
 
       {/* Order Actions */}
       <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-100">
-        <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 transition-colors font-medium">
+        <button
+          aria-label="View Details"
+          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 transition-colors font-medium">
           View Details
         </button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium">
+        <button
+          aria-label="Track Order"
+          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium">
           Track Order
         </button>
       </div>
     </div>
-  </motion.div>
+  </div>
 );
 
 export default OrderDetailsCard;

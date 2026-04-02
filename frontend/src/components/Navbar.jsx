@@ -14,7 +14,6 @@ import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
 
 const navLinks = [
   {
@@ -60,6 +59,11 @@ const Navbar = () => {
     setIsMobileMenu((prev) => !prev);
   };
 
+  const getDisplayName = (name) => {
+    if (!name) return "User";
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && searchValue !== "") {
       navigate(`/search?query=${encodeURIComponent(searchValue.trim())}`);
@@ -93,10 +97,9 @@ const Navbar = () => {
             <div>
               <Link
                 to="/"
-                className="relative flex items-center gap-3 text-gray-700 text-3xl outline-none font-extrabold duration-500">
-                <span className="flex items-center font-serif tracking-tight">
-                  EasyBuy
-                </span>
+                aria-label="Website Logo"
+                className="relative flex items-center gap-3 text-gray-700 text-3xl font-serif tracking-tight outline-none font-extrabold duration-500">
+                EasyBuy
               </Link>
             </div>
 
@@ -111,6 +114,7 @@ const Navbar = () => {
                       <li key={link.id}>
                         <NavLink
                           to={link.path}
+                          aria-label={`Open ${link.name}`}
                           className={({ isActive }) =>
                             `relative text-lg ${isActive && "text-blue-600 font-semibold border-b-2 border-blue-500"}`
                           }>
@@ -132,6 +136,7 @@ const Navbar = () => {
               {/* Search Button */}
               <button
                 onClick={() => setShowSearch(true)}
+                aria-label="Open Search"
                 className="p-2 hover:text-blue-600 transition-colors hover:scale-105 duration-200">
                 <Search size={20} />
               </button>
@@ -142,6 +147,7 @@ const Navbar = () => {
                   <div className="flex gap-1 justify-center items-center">
                     <button
                       onClick={logout}
+                      aria-label="Open Logout"
                       className="relative group px-4 py-2 hover:text-blue-600 transition-all duration-200">
                       <LogOut size={20} />
                       <span
@@ -161,13 +167,14 @@ const Navbar = () => {
                         className="border-2 rounded-full border-gray-600"
                       />
                       <span className="text-lg">
-                        {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
+                        {getDisplayName(user.name)}
                       </span>
                     </div>
                   </div>
                 ) : (
                   <Link
                     to="/login"
+                    aria-label="Login"
                     className="px-4 py-2 hover:text-blue-600 hover:scale-105 transition-all duration-200">
                     <span className="text-lg font-light">Login</span>
                   </Link>
@@ -180,6 +187,7 @@ const Navbar = () => {
                   !isMobileMenu && (
                     <button
                       onClick={toggleMobileMenu}
+                      aria-label="Open Menu"
                       className="p-2 hover:text-blue-600 transition-colors duration-200">
                       <Menu size={22} />
                     </button>
@@ -187,6 +195,7 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to="/login"
+                    aria-label="Login"
                     className="px-4 py-2 hover:text-blue-600 hover:scale-105 transition-all duration-200">
                     <span className="text-lg font-light">Login</span>
                   </Link>
@@ -199,17 +208,11 @@ const Navbar = () => {
 
       {/* Search Overlay */}
       {showSearch && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <motion.div
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${showSearch ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <div
             ref={searchRef}
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.9 }}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
+            className={`bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 transform transition-all duration-300 ${showSearch ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}>
             <div className="relative">
               <Search
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -218,7 +221,7 @@ const Navbar = () => {
               <input
                 type="search"
                 placeholder="Search for products, brands, and more..."
-                className="w-full pl-12 pr-4 py-4 border-0 text-lg text-gray-700 focus:ring-0 bg-gray-50 rounded-xl"
+                className="w-full pl-12 pr-4 py-4 text-lg text-gray-700 outline-none ring-2 focus:ring-blue-500 bg-gray-50 rounded-xl"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -231,24 +234,28 @@ const Navbar = () => {
               </span>
               <button
                 onClick={() => setShowSearch(false)}
+                aria-label="Cancel"
                 className="text-sm text-gray-500 hover:text-gray-700">
                 Cancel
               </button>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
 
       {/* Mobile Menu */}
       {isMobileMenu && (
         <div className="fixed flex flex-col bg-white top-16 right-0 z-40 w-full h-full py-4">
-          <button className="self-end mr-5 " onClick={toggleMobileMenu}>
+          <button
+            className="self-end mr-5"
+            aria-label="Close"
+            onClick={toggleMobileMenu}>
             <X color="#4b5563" />
           </button>
           <div className="w-full flex flex-col items-center mt-24">
             {user && (
               <>
-                <div className="flex items-center w-[130px] space-x-3 pb-3">
+                <div className="flex items-center w-[150px] space-x-3 pb-3">
                   <UserRound
                     className="text-gray-600 group-hover:text-blue-600"
                     size={20}
@@ -268,12 +275,13 @@ const Navbar = () => {
                       <li key={link.id} className="w-full">
                         <NavLink
                           to={link.path}
+                          aria-label={`Open ${link.name}`}
                           onClick={toggleMobileMenu}
                           className={({ isActive }) =>
                             `flex justify-center p-3 transition-colors duration-200 group ${isActive && "bg-blue-50"}`
                           }>
                           {({ isActive }) => (
-                            <div className="w-[130px] flex items-center gap-3">
+                            <div className="w-[150px] flex items-center gap-3">
                               <Icon
                                 size={20}
                                 className={
@@ -301,11 +309,12 @@ const Navbar = () => {
 
             {user && (
               <button
+                aria-label="Logout"
                 onClick={() => {
                   logout();
                   toggleMobileMenu();
                 }}
-                className="flex items-center gap-2 w-[130px] rounded-lg text-red-600 group-hover:text-red-700 transition-colors duration-200 group">
+                className="flex items-center gap-2 w-[150px] rounded-lg text-red-600 group-hover:text-red-700 transition-colors duration-200 group">
                 <LogOut size={20} />
                 <span className="text-lg font-light group-hover:font-semibold">
                   Log Out

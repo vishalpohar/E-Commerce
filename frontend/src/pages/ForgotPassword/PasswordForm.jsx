@@ -110,6 +110,7 @@ const PasswordForm = ({
           !confirmPassword ||
           newPassword !== confirmPassword
         }
+        aria-label="Reset Password"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
         {loading ? (
           <>
