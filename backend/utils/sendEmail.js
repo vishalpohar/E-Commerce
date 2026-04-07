@@ -1,11 +1,19 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import envars from "../lib/enVars.js";
 
-const resend = new Resend(envars.resend_api_key);
+export const sendOTPEmail = async (email="gmyidea675@gmail.com", otp=552314) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: envars.email_user,
+      pass: envars.email_pass,
+    },
+  });
 
-export const sendOTPEmail = async (email, otp) => {
-  await resend.emails.send({
-    from: "EasyBuy <onboarding@resend.dev>",
+  await transporter.sendMail({
+    from: `EasyBuy <${envars.email_user}>`,
     to: email,
     subject: "Your Verification Code",
     html: `
