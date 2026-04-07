@@ -13,6 +13,8 @@ const envars = {
   upstash_redis_url: process.env.UPSTASH_REDIS_URL,
 
   stripe_secret_key: process.env.STRIPE_SECRET_KEY,
+
+  resend_api_key: process.env.RESEND_API_KEY,
   email_user: process.env.EMAIL_USER,
   email_pass: process.env.EMAIL_PASS,
 };

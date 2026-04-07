@@ -200,6 +200,12 @@ export const sendOTP = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    if (user.otp && user.otpExpires > Date.now())
+      return res.status(400).json({
+        message:
+          "Verification code already sent. Please wait before requesting again",
+      });
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     user.otp = otp;
@@ -209,7 +215,7 @@ export const sendOTP = async (req, res) => {
 
     await sendOTPEmail(email, otp);
 
-    res.json({ message: "OTP sent successfully" });
+    res.json({ message: "Verification code sent successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

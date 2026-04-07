@@ -19,7 +19,7 @@ export const useUserStore = create((set, get) => ({
         role,
       });
       set({ loading: false });
-      toast.success(res.data.message || "Account Created Successfully.")
+      toast.success(res.data.message || "Account Created Successfully.");
       return res;
     } catch (error) {
       set({ loading: false });
@@ -55,9 +55,11 @@ export const useUserStore = create((set, get) => ({
 
     try {
       const response = await axios.get("/auth/profile");
-      set({ user: response.data, checkingAuth: false });
+      set({ user: response.data });
     } catch (error) {
-      set({ checkingAuth: false, user: null });
+      set({ user: null });
+    } finally {
+      set({ checkingAuth: false });
     }
   },
 
