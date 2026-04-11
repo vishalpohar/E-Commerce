@@ -141,10 +141,11 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-4 flex">
               <Link
                 to="/signup"
-                className="text-blue-600 font-medium border-2 border-blue-600 hover:text-white hover:bg-blue-600 rounded-full px-3 py-1 transition-colors">
+                aria-label="Sign Up"
+                className="w-full text-blue-600 text-center font-medium border-2 border-blue-600 hover:text-white hover:bg-blue-600 rounded-xl px-3 py-3 transition-colors">
                 Sign up
               </Link>
             </div>

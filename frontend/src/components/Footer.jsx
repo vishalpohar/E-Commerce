@@ -21,23 +21,17 @@ const Footer = () => {
             committed to bringing you the latest trends with exceptional
             service.
           </p>
-          <div className="flex items-center gap-4">
-            <a
-              href="#"
-              className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+          <ul className="list-none flex items-center gap-4">
+            <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
               <Facebook className="w-5 h-5" />
-            </a>
-            <a
-              href="#"
-              className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+            </li>
+            <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
               <Twitter className="w-5 h-5" />
-            </a>
-            <a
-              href="#"
-              className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+            </li>
+            <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
               <Instagram className="w-5 h-5" />
-            </a>
-          </div>
+            </li>
+          </ul>
         </div>
         <div className="flex gap-10 flex-wrap">
           {/* Quick Links */}
@@ -46,13 +40,10 @@ const Footer = () => {
             <ul className="space-y-3">
               {["Home", "Shop", "Categories", "New Arrivals", "Sale"].map(
                 (item) => (
-                  <li key={item}>
-                    <Link
-                      to={`/${item.toLowerCase().replace(" ", "-")}`}
-                      aria-label={`Open ${item}`}
-                      className="text-gray-400 hover:text-white transition-colors duration-200">
-                      {item}
-                    </Link>
+                  <li
+                    key={item}
+                    className="text-gray-400 hover:text-white transition-colors duration-200">
+                    {item}
                   </li>
                 ),
               )}
@@ -70,13 +61,10 @@ const Footer = () => {
                 "Size Guide",
                 "FAQs",
               ].map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
-                    aria-label={`Open ${item}`}
-                    className="text-gray-400 hover:text-white transition-colors duration-200">
-                    {item}
-                  </a>
+                <li
+                  key={item}
+                  className="text-gray-400 hover:text-white transition-colors duration-200">
+                  {item}
                 </li>
               ))}
             </ul>
@@ -110,20 +98,18 @@ const Footer = () => {
             <p className="text-gray-400 text-sm text-center md:text-left">
               © 2024 Ecommerce Store. All rights reserved.
             </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
+            <div className="list-none flex flex-wrap justify-center gap-6 text-sm">
               {[
                 "Privacy Policy",
                 "Terms of Service",
                 "Cookie Policy",
                 "Disclaimer",
               ].map((item) => (
-                <a
+                <li
                   key={item}
-                  href="#"
-                  aria-label={`Open ${item}`}
                   className="text-gray-400 hover:text-white transition-colors duration-200">
                   {item}
-                </a>
+                </li>
               ))}
             </div>
           </div>

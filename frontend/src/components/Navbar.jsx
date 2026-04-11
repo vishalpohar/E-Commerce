@@ -116,7 +116,7 @@ const Navbar = () => {
                           to={link.path}
                           aria-label={`Open ${link.name}`}
                           className={({ isActive }) =>
-                            `relative text-lg ${isActive && "text-blue-600 font-semibold border-b-2 border-blue-500"}`
+                            `relative text-lg font-medium ${isActive ? "text-blue-600 font-semibold border-blue-500 hover:text-blue-700" : "hover:text-gray-900"}`
                           }>
                           {link.name}
                           {link.showCount && cart.length > 0 && (
