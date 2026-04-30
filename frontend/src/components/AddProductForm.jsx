@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Loader, Image, X } from "lucide-react";
-import { useProductStore } from "../stores/useProductStore";
+import { Loader, Image, X, Astroid } from "lucide-react";
 import { toast } from "react-hot-toast";
+
+import { useProductStore } from "../stores/useProductStore";
+import { useAIStore } from "../stores/useAIStore";
 
 const categories = [
   "pants",
@@ -22,8 +24,18 @@ const AddProductForm = () => {
     category: "",
     image: "",
   });
+  const [regenCount, setRegenCount] = useState(0);
 
   const { createProduct, loading } = useProductStore();
+  const { getDescription, generating } = useAIStore();
+
+  const generateDescription = async () => {
+    const description = await getDescription(newProduct.name);
+
+    if (!description) return;
+
+    setNewProduct((prev) => ({ ...prev, description }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +102,7 @@ const AddProductForm = () => {
               onChange={(e) =>
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
-              className="w-full px-4 py-3 border text-gray-700 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full px-4 py-3 border text-gray-700 border-gray-300 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Enter product name"
               required
             />
@@ -113,7 +125,7 @@ const AddProductForm = () => {
               }
               step="1"
               min="0"
-              className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full px-4 py-3 text-gray-700 border border-gray-300 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="0"
               required
             />
@@ -134,7 +146,7 @@ const AddProductForm = () => {
             onChange={(e) =>
               setNewProduct({ ...newProduct, category: e.target.value })
             }
-            className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            className="w-full px-4 py-3 text-gray-700 border border-gray-300 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             required>
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -147,11 +159,33 @@ const AddProductForm = () => {
 
         {/* Description */}
         <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700 mb-2">
-            Description *
-          </label>
+          <div className="flex justify-between items-center">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2">
+              Description *
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                setRegenCount((prev) => prev + 1);
+                generateDescription();
+              }}
+              disabled={!newProduct.name || generating}
+              className="flex items-center gap-2 text-xs text-white bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 mb-2 rounded-full shadow-md hover:shadow-lg cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              {generating ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <p className="inline-flex gap-2">
+                    <Astroid size={16} fill="white" />
+                    {regenCount > 0 ? "Regenerate" : "Generate"}
+                  </p>
+                </>
+              )}
+            </button>
+          </div>
+
           <textarea
             id="description"
             name="description"
@@ -160,7 +194,7 @@ const AddProductForm = () => {
               setNewProduct({ ...newProduct, description: e.target.value })
             }
             rows="4"
-            className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
+            className="w-full px-4 py-3 text-gray-700 border border-gray-300 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
             placeholder="Enter product description..."
             required
           />

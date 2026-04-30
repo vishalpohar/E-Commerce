@@ -11,7 +11,7 @@ export const useProductStore = create((set, get) => ({
   recommendedProducts: [],
   ordersByPage: {},
 
-  isFetchingAllProducts: false,
+  isFetchingSellerProducts: false,
   isFetchingProduct: false,
   loading: false,
   isFetchingCategory: false,
@@ -41,19 +41,26 @@ export const useProductStore = create((set, get) => ({
       set({ loading: false });
     }
   },
-  fetchSellerProducts: async () => {
-    const { isFetchingAllProducts, products } = get();
-    if (isFetchingAllProducts || products.length) return;
+  fetchSellerProducts: async (page = 1, limit = 10) => {
+    if (get().isFetchingSellerProducts) return;
 
-    set({ isFetchingAllProducts: true });
+    set({ isFetchingSellerProducts: true });
     try {
-      const response = await axios.get("/products/seller");
-      set({ products: response.data.products });
+      const response = await axios.get(
+        `/products/seller?page=${page}&limit=${limit}`,
+      );
+      set((prev) => ({
+        products:
+          page === 1
+            ? response.data.products
+            : [...prev.products, ...response.data.products],
+        totalPages: response.data.totalPages,
+      }));
     } catch (error) {
       set({ error: "Failed to fetch products" });
       toast.error(error?.response?.data?.error || "Failed to fetch products");
     } finally {
-      set({ isFetchingAllProducts: false });
+      set({ isFetchingSellerProducts: false });
     }
   },
   fetchProductById: async (productId) => {

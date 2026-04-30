@@ -16,7 +16,6 @@ const SearchPage = () => {
   const {
     searchProducts,
     searchedProducts,
-    total,
     totalPages,
     isSearching,
     clearSearchedProducts,

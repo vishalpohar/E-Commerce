@@ -1,10 +1,53 @@
+import { useEffect, useRef, useState } from "react";
 import { Trash, Star, Edit, Eye, Package } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { formatPriceInRupees } from "../utils/formatCurrency";
 import { Link } from "react-router-dom";
+import { ThreeDotsLoader } from "./LoadingSpinner";
 
 const ProductsList = () => {
-  const { deleteProduct, toggleFeaturedProduct, products } = useProductStore();
+  const [page, setPage] = useState(1);
+  const {
+    fetchSellerProducts,
+    deleteProduct,
+    toggleFeaturedProduct,
+    products,
+    totalPages,
+    isFetchingSellerProducts,
+  } = useProductStore();
+
+  const loadMoreRef = useRef(null);
+
+  useEffect(() => {
+    fetchSellerProducts();
+  }, []);
+
+  const loadMore = () => {
+    fetchSellerProducts(page + 1);
+    setPage((p) => p + 1);
+  };
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+
+        if (entry.isIntersecting && !isFetchingSellerProducts && page < totalPages) {
+          loadMore();
+        }
+      },
+      {
+        rootMargin: "100px", // preload before reaching bottom
+      },
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [page, totalPages, isFetchingSellerProducts]);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -118,6 +161,12 @@ const ProductsList = () => {
             ))}
           </tbody>
         </table>
+        {/* 👇 Infinite scroll trigger */}
+        <div ref={loadMoreRef} className="h-10" />
+
+        {isFetchingSellerProducts && (
+          <ThreeDotsLoader height="10" color="#4b5563" />
+        )}
       </div>
 
       {/* Empty State */}

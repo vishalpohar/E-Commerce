@@ -1,12 +1,9 @@
-import { Link } from "react-router-dom";
 import {
-  Facebook,
-  Twitter,
-  Instagram,
   Mail,
   Phone,
   MapPin,
 } from "lucide-react";
+import {FaFacebook, FaInstagram, FaTwitter} from 'react-icons/fa'
 
 const Footer = () => {
   return (
@@ -23,13 +20,13 @@ const Footer = () => {
           </p>
           <ul className="list-none flex items-center gap-4">
             <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
-              <Facebook className="w-5 h-5" />
+              <FaFacebook className="w-5 h-5" />
             </li>
             <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
-              <Twitter className="w-5 h-5" />
+              <FaTwitter className="w-5 h-5" />
             </li>
             <li className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-200">
-              <Instagram className="w-5 h-5" />
+              <FaInstagram className="w-5 h-5" />
             </li>
           </ul>
         </div>

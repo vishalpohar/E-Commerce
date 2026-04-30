@@ -1,10 +1,9 @@
 import { BarChart, PlusCircle, ShoppingBasket } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import AddProductForm from "../components/AddProductForm";
 import ProductsList from "../components/ProductsList";
 import AnalyticsTab from "../components/analytics/AnalyticsTab";
-import { useProductStore } from "../stores/useProductStore";
 
 const tabs = [
   { id: "add", label: "Add Product", icon: PlusCircle },
@@ -14,11 +13,6 @@ const tabs = [
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("add");
-  const { fetchSellerProducts } = useProductStore();
-
-  useEffect(() => {
-    fetchSellerProducts();
-  }, []);
 
   return (
     <div className="py-8">

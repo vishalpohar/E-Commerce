@@ -4,8 +4,8 @@ import envars from "../lib/enVars.js";
 export const sendOTPEmail = async (email="gmyidea675@gmail.com", otp=552314) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
       user: envars.email_user,
       pass: envars.email_pass,

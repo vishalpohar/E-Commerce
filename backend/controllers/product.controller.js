@@ -6,8 +6,18 @@ import Product from "../models/product.model.js";
 
 export const getSellerProducts = async (req, res) => {
   try {
-    const products = await Product.find({ seller: req.user._id });
-    res.json({ products });
+    const { page = 1, limit = 10 } = req.query;
+
+    const total = await Product.countDocuments({ seller: req.user._id });
+
+    const products = await Product.find({ seller: req.user._id })
+      .sort({
+        createdAt: -1,
+      })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.json({ products, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     console.log("Error in getAllProducts controller", error.message);
     res
