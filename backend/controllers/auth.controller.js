@@ -111,7 +111,7 @@ export const login = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -131,9 +131,7 @@ export const logout = async (req, res) => {
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal Server error", error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -170,9 +168,7 @@ export const refreshToken = async (req, res) => {
     res.json({ success: true, message: "Token refresh successfully" });
   } catch (error) {
     console.log("Error in refreshToken controller", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -187,9 +183,8 @@ export const getProfile = async (req, res) => {
     };
     res.json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    console.error("getProfile error:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -213,11 +208,22 @@ export const sendOTP = async (req, res) => {
 
     await user.save();
 
-    await sendOTPEmail(email, otp);
+    try {
+      await sendOTPEmail(email, otp);
+    } catch (emailErr) {
+      console.error("Email failed:", emailErr);
+
+      return res.status(500).json({
+        message: "OTP generated but email failed. Try again later.",
+      });
+    }
 
     res.json({ message: "Verification code sent successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("sendOTP error:", err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 
@@ -240,6 +246,7 @@ export const resetPassword = async (req, res) => {
 
     res.json({ message: "Password reset successful" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("resetPassword error:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
