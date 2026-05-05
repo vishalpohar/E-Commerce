@@ -95,7 +95,7 @@ const Footer = () => {
             <p className="text-gray-400 text-sm text-center md:text-left">
               © 2024 Ecommerce Store. All rights reserved.
             </p>
-            <div className="list-none flex flex-wrap justify-center gap-6 text-sm">
+            <ul className="list-none flex flex-wrap justify-center gap-6 text-sm">
               {[
                 "Privacy Policy",
                 "Terms of Service",
@@ -108,7 +108,7 @@ const Footer = () => {
                   {item}
                 </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </div>

@@ -32,11 +32,22 @@ export default function AutoCarousel() {
   useEffect(() => {
     if (isPaused) return;
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        setIsPaused(true);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, [isPaused]);
 
   return (
@@ -48,7 +59,10 @@ export default function AutoCarousel() {
         {/* IMAGES */}
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+          style={{
+            transform: `translateX(-${currentIndex * 100}%)`,
+            willChange: "transform",
+          }}>
           {images.map((img, index) => (
             <img
               key={index}
@@ -89,6 +103,7 @@ export default function AutoCarousel() {
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
+            aria-label="Current Image"
             className={`rounded-full transition-all duration-500 ${
               index === currentIndex
                 ? "bg-black w-8 h-2"
