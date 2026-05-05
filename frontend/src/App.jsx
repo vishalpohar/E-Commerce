@@ -15,22 +15,20 @@ import { useCartStore } from "./stores/useCartStore";
 
 import "./index.css";
 
-const SignUpPage = lazy(() => import("./pages/SignUpPage"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const ForgotPassword = lazy(
-  () => import("./pages/ForgotPassword/ForgotPassword"),
-);
-const HomePage = lazy(() => import("./pages/HomePage"));
-const DashboardPage = lazy(() => import("./pages/DashboardPage"));
-const CategoryPage = lazy(() => import("./pages/category/CategoryPage"));
-const CartPage = lazy(() => import("./pages/cart/CartPage"));
-const SearchPage = lazy(() => import("./pages/search/SearchPage"));
-const WishlistPage = lazy(() => import("./pages/wishlist/WishlistPage"));
-const OrdersPage = lazy(() => import("./pages/orders/OrdersPage"));
-const ProductDetailsPage = lazy(() => import("./pages/ProductDetailsPage"));
-const PurchaseSuccessPage = lazy(() => import("./pages/PurchaseSuccessPage"));
-const PurchaseCancelPage = lazy(() => import("./pages/PurchaseCancelPage"));
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
+import CategoryPage from "./pages/category/CategoryPage";
+import CartPage from "./pages/cart/CartPage";
+import SearchPage from "./pages/search/SearchPage";
+import WishlistPage from "./pages/wishlist/WishlistPage";
+import OrdersPage from "./pages/orders/OrdersPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
+import PurchaseCancelPage from "./pages/PurchaseCancelPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
